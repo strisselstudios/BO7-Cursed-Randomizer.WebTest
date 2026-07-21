@@ -1,14 +1,22 @@
 /* ==========================================================
    1. PRODUCER CARD DISPLAY ELEMENTS
    ----------------------------------------------------------
-   Adds the tier-description area and inactive INFO control to
-   every producer card without requiring every card in the HTML
-   file to be rewritten.
+   Adds the tier-description area and interactive INFO control
+   to every producer card without requiring every card in the
+   HTML file to be rewritten.
 ========================================================== */
 
 function initializeProducerCardExtras() {
   producerCards.forEach(
     (card) => {
+      const producerKey =
+        card.dataset.producer;
+
+      const producer =
+        producerData[
+          producerKey
+        ];
+
       const information =
         card.querySelector(
           ".producer-information"
@@ -64,26 +72,57 @@ function initializeProducerCardExtras() {
             "span"
           );
 
+        const producerIsRevealed =
+          typeof isProducerRevealed ===
+            "function" &&
+          isProducerRevealed(
+            producerKey
+          );
+
         infoControl.className =
           "producer-info-button";
 
         infoControl.textContent =
           "INFO";
 
+        /*
+         * A real button cannot be nested inside the producer
+         * card because the card itself is already a button.
+         */
         infoControl.setAttribute(
-          "aria-hidden",
-          "true"
+          "role",
+          "button"
         );
 
+        infoControl.setAttribute(
+          "tabindex",
+          producerIsRevealed
+            ? "0"
+            : "-1"
+        );
+
+        infoControl.setAttribute(
+          "aria-label",
+          `View ${
+            producer?.name ??
+            "producer"
+          } harvest dossier`
+        );
+
+        if (!producerIsRevealed) {
+          infoControl.setAttribute(
+            "aria-hidden",
+            "true"
+          );
+        }
+
         /*
-         * INFO is intentionally inactive for now.
-         * These listeners prevent it from buying or selling
-         * the producer underneath it.
+         * Prevent pointer input from reaching the producer card
+         * transaction listener.
          */
         infoControl.addEventListener(
           "pointerdown",
           (event) => {
-            event.preventDefault();
             event.stopPropagation();
           }
         );
@@ -93,6 +132,29 @@ function initializeProducerCardExtras() {
           (event) => {
             event.preventDefault();
             event.stopPropagation();
+
+            openProducerInfo(
+              producerKey
+            );
+          }
+        );
+
+        infoControl.addEventListener(
+          "keydown",
+          (event) => {
+            if (
+              event.key !== "Enter" &&
+              event.key !== " "
+            ) {
+              return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            openProducerInfo(
+              producerKey
+            );
           }
         );
 
