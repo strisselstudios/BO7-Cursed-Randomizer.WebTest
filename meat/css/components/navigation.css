@@ -1,0 +1,137 @@
+/* ==========================================================
+   1. DESKTOP PANEL TABS
+   ----------------------------------------------------------
+   Desktop and tablet tab controls.
+========================================================== */
+
+.desktop-panel-tabs {
+  position: relative;
+  z-index: 11;
+
+  flex-shrink: 0;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  border-bottom: 1px solid var(--border-color);
+}
+
+.desktop-tab {
+  min-width: 0;
+  min-height: 76px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.25rem;
+
+  padding: 0.5rem;
+
+  background: var(--button-background);
+  color: var(--primary-text);
+
+  border: none;
+  border-right: 1px solid var(--border-color);
+
+  font-family: inherit;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.desktop-tab:last-child {
+  border-right: none;
+}
+
+.desktop-tab:hover {
+  background: var(--button-hover);
+}
+
+.desktop-tab.active-tab {
+  background: var(--panel-background-light);
+  color: var(--accent-bright);
+}
+
+
+/* ==========================================================
+   2. SHARED ICON SLOTS
+   ----------------------------------------------------------
+   Reserved containers for future navigation, producer,
+   settings, and return-button artwork.
+========================================================== */
+
+.tab-icon-slot,
+.mobile-nav-icon-slot,
+.return-icon-slot,
+.producer-icon-slot,
+.settings-icon-slot {
+  display: block;
+
+  flex-shrink: 0;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+}
+
+.tab-icon-slot {
+  width: 34px;
+  height: 34px;
+}
+
+.mobile-nav-icon-slot {
+  width: 34px;
+  height: 34px;
+}
+
+.return-icon-slot {
+  width: 26px;
+  height: 26px;
+}
+
+.producer-icon-slot {
+  width: 52px;
+  height: 52px;
+}
+
+.settings-icon-slot {
+  width: 28px;
+  height: 28px;
+}
+
+
+/* ==========================================================
+   3. FUTURE ICON IMAGES
+   ----------------------------------------------------------
+   Shared image rules for artwork inserted into icon slots.
+========================================================== */
+
+.tab-icon-slot img,
+.mobile-nav-icon-slot img,
+.return-icon-slot img,
+.producer-icon-slot img,
+.settings-icon-slot img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+   4. MOBILE BOTTOM NAVIGATION
+   ----------------------------------------------------------
+   Hidden by default and enabled by the portrait mobile
+   stylesheet on narrow screens.
+========================================================== */
+
+.mobile-bottom-navigation {
+  display: none;
+}

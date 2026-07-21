@@ -1,0 +1,288 @@
+/* ==========================================================
+   1. PORTRAIT DISCLAIMER POSITION
+   ----------------------------------------------------------
+   Positions the Activision disclaimer beneath the portrait
+   utility controls.
+========================================================== */
+
+@media (orientation: portrait) {
+  .disclaimer {
+    bottom:
+      calc(
+        env(safe-area-inset-bottom, 0px)
+        + 0.1vh
+      );
+  }
+}
+
+
+/* ==========================================================
+   2. SMALL PORTRAIT BASE
+   ----------------------------------------------------------
+   Narrow portrait phones allow the title to wrap and center
+   the left control column.
+========================================================== */
+
+@media (
+  max-width: 600px
+) and (
+  orientation: portrait
+) {
+  .ui {
+    grid-template-rows:
+      auto
+      auto
+      1fr
+      auto;
+  }
+
+  .title {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .left-controls {
+    justify-self: center;
+    width: min(92vw, 330px);
+  }
+
+  .configure-content {
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(130px, 1fr)
+      );
+  }
+}
+
+
+/* ==========================================================
+   3. PORTRAIT HUD LAYOUT
+   ----------------------------------------------------------
+   Portrait positioning for output, Spin, Mr. Peeks, the tier
+   dropdown, Zomdle, MEAT.exe, and bottom utility buttons.
+========================================================== */
+
+@media (orientation: portrait) {
+  #output {
+    top: 34vh;
+
+    max-height: 38vh;
+
+    overflow-y: auto;
+
+    pointer-events: auto;
+  }
+
+  #spinButton {
+    bottom:
+      calc(
+        var(--safe-bottom)
+        + 14vh
+      );
+  }
+
+  #mrPeeksImage {
+    top: 42vh;
+
+    width:
+      clamp(
+        135px,
+        30vw,
+        190px
+      );
+  }
+
+  #mrPeeksNoseZone {
+    top: 48.5vh;
+    left: 56%;
+
+    width: 58px;
+    height: 58px;
+  }
+
+  .tier-button {
+    text-align: center;
+  }
+
+  .tier-menu {
+    left: 50%;
+
+    width: min(88vw, 520px);
+
+    box-sizing: border-box;
+
+    transform:
+      translateX(-50%);
+  }
+
+  .tier-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    text-align: center;
+  }
+
+  .tier-option span,
+  .tier-option small {
+    display: block;
+
+    width: 100%;
+
+    text-align: center;
+  }
+
+  .bottom-links {
+    left: 0;
+    right: 0;
+
+    bottom:
+      calc(
+        var(--safe-bottom)
+        + 12vh
+      );
+
+    display: grid;
+    grid-template-columns:
+      1fr
+      1fr;
+
+    align-items: end;
+
+    padding: 0 1rem;
+
+    box-sizing: border-box;
+
+    transform: none;
+
+    pointer-events: none;
+  }
+
+  .bottom-left {
+    display: contents;
+  }
+
+  #themeToggleButton {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  #creditsButton {
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  #themeToggleButton,
+  #creditsButton {
+    width: 10ch;
+    min-height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 3px 7px;
+
+    box-sizing: border-box;
+
+    font-size: 0.6rem;
+    line-height: 1.05;
+    text-align: center;
+
+    pointer-events: auto;
+  }
+
+  #zomdleButton {
+    position: fixed;
+
+    left: 50%;
+
+    bottom:
+      calc(
+        var(--safe-bottom)
+        + 5vh
+      );
+
+    width:
+      clamp(
+        130px,
+        34vw,
+        210px
+      );
+
+    transform:
+      translateX(-50%);
+
+    z-index:
+      var(--z-bottom-links);
+
+    pointer-events: auto;
+  }
+
+  #zomdleButton:active {
+    transform:
+      translateX(-50%)
+      translateY(2px)
+      scale(0.98);
+  }
+
+  .meat-exe-button {
+    right: 0.75rem;
+    top: 34vh;
+
+    width:
+      clamp(
+        78px,
+        22vw,
+        120px
+      );
+  }
+}
+
+
+/* ==========================================================
+   4. SMALL PORTRAIT RELIC GRID
+   ----------------------------------------------------------
+   Very narrow portrait screens use two relic columns.
+   Forced last-row placement classes are disabled.
+========================================================== */
+
+@media (
+  orientation: portrait
+) and (
+  max-width: 430px
+) {
+  .relic-grid {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .relic-center,
+  .relic-left,
+  .relic-right {
+    grid-column: auto;
+  }
+
+  .relic-item {
+    width: 100%;
+    min-width: 0;
+
+    font-size:
+      clamp(
+        0.72rem,
+        4vw,
+        0.95rem
+      );
+
+    line-height: 1.1;
+  }
+}

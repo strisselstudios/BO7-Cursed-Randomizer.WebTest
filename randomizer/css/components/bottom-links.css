@@ -1,0 +1,141 @@
+/* ==========================================================
+   1. BOTTOM UTILITY BAR
+   ----------------------------------------------------------
+   Shared container for Light Mode, Credits and Zomdle.
+   Positioning changes later inside responsive layouts.
+========================================================== */
+
+.bottom-links {
+  position: fixed;
+
+  left: clamp(0.5rem, 2vw, 2rem);
+  right: clamp(0.5rem, 2vw, 2rem);
+  bottom: calc(var(--safe-bottom) + 1.2vh);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+
+  gap: .5rem;
+
+  z-index: var(--z-bottom-links);
+}
+
+.bottom-left {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+
+/* ==========================================================
+   2. ZOMDLE BUTTON
+   ----------------------------------------------------------
+   Appearance only.
+   Positioning is handled entirely inside responsive layouts.
+========================================================== */
+
+.zomdle-button {
+  display: block;
+
+  width: clamp(165px, 19vw, 270px);
+
+  aspect-ratio: 3 / 1;
+
+  padding: 0;
+
+  background: transparent;
+
+  border: none;
+  border-radius: 0;
+
+  overflow: visible;
+
+  text-decoration: none;
+
+  filter:
+    drop-shadow(0 0 4px white)
+    drop-shadow(0 0 10px rgba(160,90,255,.75));
+}
+
+#zomdleVideo {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+   3. MEAT.EXE BUTTON
+   ----------------------------------------------------------
+   Promotional button for the MEAT.exe minigame page.
+   Layers Stu over the transparent MEAT.exe ring logo.
+========================================================== */
+
+.meat-exe-button {
+  position: fixed;
+
+  right: 1.2rem;
+  top: 60vh;
+
+  width: clamp(95px, 10vw, 150px);
+
+  display: grid;
+  place-items: center;
+
+  z-index: var(--z-bottom-links);
+
+  text-decoration: none;
+  pointer-events: auto;
+}
+
+.meat-main-logo,
+.meat-stu-logo {
+  grid-area: 1 / 1;
+}
+
+.meat-main-logo {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  position: relative;
+  top: 12px;
+
+  z-index: 1;
+
+  filter:
+    drop-shadow(0 0 4px black)
+    drop-shadow(0 0 8px rgba(255, 0, 0, 0.65));
+}
+
+.meat-stu-logo {
+  display: block;
+
+  width: 58%;
+  height: auto;
+
+  position: relative;
+  top: -10px;
+  left: -1.5px;
+
+  z-index: 2;
+
+  pointer-events: none;
+
+  animation: meatStuBob 2.4s ease-in-out infinite;
+
+  filter:
+    drop-shadow(0 0 4px black)
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.65));
+}
+
+.meat-exe-button:active {
+  transform: translateY(2px) scale(0.98);
+}

@@ -1,0 +1,66 @@
+/* ==========================================================
+   1. RANDOMIZER OUTPUT TEXT
+   ----------------------------------------------------------
+   Map heading, map result, relic heading, and placeholders.
+========================================================== */
+
+.output-heading {
+  margin-bottom: clamp(0.2rem, 1vh, 0.6rem);
+
+  color: var(--text-color);
+  font-size: clamp(1.1rem, 2vw, 2rem);
+  font-weight: bold;
+}
+
+.map-output {
+  margin-bottom: clamp(1rem, 4vh, 3rem);
+}
+
+.map-name {
+  margin-bottom: clamp(0.3rem, 1vh, 1rem);
+
+  color: var(--text-color);
+  font-size: clamp(1rem, 1.8vw, 1.8rem);
+  font-weight: bold;
+}
+
+.map-placeholder {
+  min-height: clamp(3rem, 8vh, 5.8rem);
+}
+
+
+/* ==========================================================
+   2. RELIC GRID
+   ----------------------------------------------------------
+   Generated relic layout.
+   Default is 3 columns. Small portrait screens switch to
+   2 columns later in the responsive section.
+========================================================== */
+
+.relic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(90px, 1fr));
+  justify-items: center;
+  gap: clamp(0.2rem, 1vh, 0.6rem) clamp(0.4rem, 2vw, 2.25rem);
+}
+
+.relic-item {
+  min-width: 90px;
+
+  color: var(--text-color);
+  font-size: clamp(0.8rem, 1.6vw, 1.5rem);
+  font-weight: bold;
+  text-align: center;
+}
+
+.relic-center {
+  grid-column: 2;
+}
+
+.relic-left {
+  grid-column: 1;
+}
+
+.relic-right {
+  grid-column: 3;
+}

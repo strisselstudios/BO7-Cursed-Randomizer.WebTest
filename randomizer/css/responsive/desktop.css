@@ -1,0 +1,88 @@
+/* ==========================================================
+   1. FIXED HUD BASE POSITIONS
+   ----------------------------------------------------------
+   Base fixed-position rules for the main HUD elements.
+   Orientation-specific overrides are loaded afterward.
+========================================================== */
+
+#output {
+  position: fixed;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  z-index: var(--z-output);
+
+  width: min(90vw, 900px);
+  margin: 0;
+
+  color: var(--text-color);
+
+  text-align: center;
+  text-shadow: 0 0 5px var(--shadow-color);
+
+  pointer-events: none;
+}
+
+#spinButton {
+  position: fixed;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  z-index: var(--z-spin);
+
+  pointer-events: auto;
+}
+
+#spinButton:active {
+  transform:
+    translateX(-50%)
+    translateY(2px)
+    scale(0.98);
+}
+
+#mrPeeksImage {
+  position: fixed;
+
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#mrPeeksNoseZone {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+/* ==========================================================
+   2. ACTIVISION DISCLAIMER
+   ----------------------------------------------------------
+   Shared disclaimer appearance. Its final position is set by
+   the portrait and landscape responsive stylesheets.
+========================================================== */
+
+.disclaimer {
+  position: fixed;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  color: var(--text-color);
+
+  text-shadow:
+    0 0 3px var(--shadow-color);
+
+  font-size:
+    clamp(0.55rem, 0.8vw, 0.7rem);
+
+  text-align: center;
+
+  opacity: 0.7;
+
+  pointer-events: none;
+
+  white-space: nowrap;
+
+  z-index: var(--z-ui);
+}

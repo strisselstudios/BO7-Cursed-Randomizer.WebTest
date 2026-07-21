@@ -1,0 +1,29 @@
+/* ==========================================================
+   1. TITLE HEADER
+   ----------------------------------------------------------
+   Main page title and Mr. Peeks icons.
+========================================================== */
+
+.title {
+  justify-self: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.4rem, 1vw, 0.9rem);
+
+  margin: 0;
+
+  color: var(--text-color);
+  font-size: clamp(1.4rem, 4vw, 4rem);
+  font-weight: bold;
+  text-shadow: 0 0 6px var(--shadow-color);
+  white-space: nowrap;
+}
+
+.title-icon {
+  width: clamp(24px, 5vw, 48px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}

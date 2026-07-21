@@ -1,0 +1,45 @@
+/* ==========================================================
+   1. GLOBAL FOUNDATION
+   ----------------------------------------------------------
+   Site-wide variables and the controlled layer system.
+   All z-index values should come from here.
+========================================================== */
+
+:root {
+  --text-color: white;
+  --shadow-color: black;
+  --panel-bg: rgba(0, 0, 0, 0.9);
+  --panel-text: white;
+  --button-bg: rgba(0, 0, 0, 0.45);
+  --button-text: white;
+  --button-border: white;
+
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  --z-background: 0;
+  --z-ui: 1;
+  --z-output: 15;
+  --z-bottom-links: 30;
+  --z-mrpeeks: 35;
+  --z-nose: 40;
+  --z-spin: 60;
+  --z-dropdown: 80;
+  --z-modal: 1000;
+}
+
+
+/* ==========================================================
+   2. LIGHT MODE VARIABLES
+   ----------------------------------------------------------
+   Only swaps color variables when light mode is active.
+========================================================== */
+
+body.light-mode {
+  --text-color: black;
+  --shadow-color: white;
+  --panel-bg: rgba(255, 255, 255, 0.9);
+  --panel-text: black;
+  --button-bg: rgba(255, 255, 255, 0.75);
+  --button-text: black;
+  --button-border: black;
+}

@@ -1,0 +1,172 @@
+/* ==========================================================
+   1. SETTINGS VIEW
+   ----------------------------------------------------------
+   Game preferences, save tools, and reset controls.
+========================================================== */
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 1rem;
+
+  padding: 0.75rem;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.settings-button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+
+  padding: 0.75rem;
+
+  background: var(--button-background);
+  color: var(--primary-text);
+
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+
+  font-family: inherit;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.settings-button:hover {
+  background: var(--button-hover);
+}
+
+.danger-button {
+  color: var(--accent-bright);
+  border-color: var(--accent);
+}
+
+/* ==========================================================
+   2. RESET CONFIRMATION
+   ----------------------------------------------------------
+   Full-screen confirmation dialog for permanent resets.
+========================================================== */
+
+.reset-confirmation-overlay[hidden] {
+  display: none !important;
+}
+
+.reset-confirmation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: grid;
+  place-items: center;
+
+  padding: 1rem;
+
+  background: rgba(0, 0, 0, 0.82);
+}
+
+.reset-confirmation-dialog {
+  width: min(100%, 460px);
+
+  padding: 1.5rem;
+
+  background: #0b100d;
+  color: var(--primary-text);
+
+  border:
+    2px solid
+    var(--accent);
+
+  border-radius: 8px;
+
+  box-shadow:
+    0 0 30px
+    rgba(0, 0, 0, 0.8);
+
+  text-align: center;
+}
+
+.reset-confirmation-dialog h2 {
+  margin: 0 0 1rem;
+
+  color: var(--accent-bright);
+}
+
+.reset-confirmation-dialog p {
+  margin: 0;
+
+  line-height: 1.6;
+}
+
+.reset-confirmation-actions {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 0.75rem;
+
+  margin-top: 1.5rem;
+}
+
+.reset-confirmation-button {
+  min-height: 46px;
+
+  padding: 0.75rem;
+
+  border-radius: 6px;
+
+  font-family: inherit;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.cancel-reset-button {
+  background:
+    var(--button-background);
+
+  color:
+    var(--primary-text);
+
+  border:
+    1px solid
+    var(--border-color);
+}
+
+.cancel-reset-button:hover {
+  background:
+    var(--button-hover);
+}
+
+.confirm-reset-button {
+  background: var(--accent);
+  color: #ffffff;
+
+  border:
+    1px solid
+    var(--accent-bright);
+}
+
+.confirm-reset-button:hover {
+  filter: brightness(1.15);
+}
+
+body.reset-dialog-open {
+  overflow: hidden;
+}

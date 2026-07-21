@@ -1,0 +1,21 @@
+/* ==========================================================
+   1. TABLET PORTRAIT FIX
+   ----------------------------------------------------------
+   Portrait tablets need the output slightly higher and taller
+   than phones.
+========================================================== */
+
+@media (
+  orientation: portrait
+) and (
+  min-width: 600px
+) and (
+  max-width: 1000px
+) {
+  #output {
+    top: 30vh;
+    max-height: 42vh;
+    overflow-y: auto;
+    pointer-events: auto;
+  }
+}

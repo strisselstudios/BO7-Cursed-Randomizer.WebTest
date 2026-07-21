@@ -1,0 +1,98 @@
+/* ==========================================================
+   1. CONFIGURE WINDOW
+   ----------------------------------------------------------
+   Configure modal layout, checkbox columns, and footer buttons.
+========================================================== */
+
+.configure-box {
+  display: flex;
+  flex-direction: column;
+
+  height: min(90svh, 520px);
+
+  font-family: Arial, sans-serif;
+}
+
+.configure-content {
+  flex: 1;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+
+  gap: clamp(0.5rem, 2vw, 1.75rem);
+
+  padding: clamp(0.5rem, 2vw, 0.9rem);
+
+  overflow-y: auto;
+}
+
+.config-column h3,
+.config-column label {
+  color: var(--panel-text);
+}
+
+.config-column h3 {
+  margin: 0 0 8px 0;
+
+  font-size: clamp(0.75rem, 1.2vw, 0.9rem);
+}
+
+.config-column label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+
+  white-space: nowrap;
+}
+
+.configure-footer {
+  flex-shrink: 0;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+
+  padding: 8px 12px;
+
+  box-sizing: border-box;
+}
+
+.configure-footer button {
+  padding: 0.5rem;
+
+  font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+}
+
+
+/* ==========================================================
+   2. DISABLED / COMING SOON ITEMS
+   ----------------------------------------------------------
+   Disabled map entries inside the Configure window.
+========================================================== */
+
+.disabled-map {
+  color: #777;
+  text-decoration: line-through;
+  cursor: default;
+}
+
+.disabled-map input {
+  pointer-events: none;
+}
+
+.coming-soon-map {
+  margin-bottom: 8px;
+}
+
+.coming-soon-text {
+  margin-left: 22px;
+  margin-top: -2px;
+
+  font-size: clamp(0.6rem, 1vw, 0.75rem);
+  font-style: italic;
+
+  color: #999;
+}

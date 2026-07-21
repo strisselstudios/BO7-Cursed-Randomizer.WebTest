@@ -1,0 +1,377 @@
+/* ==========================================================
+   1. MEAT AURA PULSE
+   ----------------------------------------------------------
+   Pulses the green aura behind the clickable meat artwork.
+========================================================== */
+
+@keyframes meatAuraPulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+
+/* ==========================================================
+   2. MEAT RELEASE
+   ----------------------------------------------------------
+   Performs the main elastic rebound after the player releases
+   the meat.
+========================================================== */
+
+@keyframes meatRelease {
+  0% {
+    transform:
+      translate(
+        var(--impact-shift-x, 0px),
+        var(--impact-shift-y, 0px)
+      )
+      scaleX(
+        var(--held-scale-x, 0.9)
+      )
+      scaleY(
+        var(--held-scale-y, 0.81)
+      )
+      skewX(
+        var(--held-skew-x, 0deg)
+      )
+      rotate(
+        var(--impact-rotation, 0deg)
+      );
+  }
+
+  38% {
+    transform:
+      translate(
+        var(--impact-rebound-x, 0px),
+        var(--impact-rebound-y, 0px)
+      )
+      scaleX(1.075)
+      scaleY(0.95)
+      skewX(0deg)
+      rotate(
+        var(
+          --impact-rebound-rotation,
+          0deg
+        )
+      );
+  }
+
+  62% {
+    transform:
+      translate(
+        var(--impact-settle-x, 0px),
+        var(--impact-settle-y, 0px)
+      )
+      scaleX(0.975)
+      scaleY(0.875)
+      skewX(0deg)
+      rotate(
+        var(
+          --impact-settle-rotation,
+          0deg
+        )
+      );
+  }
+
+  81% {
+    transform:
+      translate(0, 0)
+      scaleX(1.025)
+      scaleY(0.915)
+      skewX(0deg)
+      rotate(0.35deg);
+  }
+
+  100% {
+    transform:
+      translate(0, 0)
+      scaleX(1)
+      scaleY(0.9)
+      skewX(0deg)
+      rotate(0deg);
+  }
+}
+
+
+/* ==========================================================
+   3. MEAT SETTLING WOBBLE
+   ----------------------------------------------------------
+   Adds the smaller secondary wobble after the main release.
+========================================================== */
+
+@keyframes meatSettleWobble {
+  0% {
+    transform:
+      translate(0, 0)
+      scaleX(1)
+      scaleY(0.9)
+      rotate(0deg);
+  }
+
+  28% {
+    transform:
+      translate(1px, -1px)
+      scaleX(1.012)
+      scaleY(0.895)
+      rotate(-0.7deg);
+  }
+
+  55% {
+    transform:
+      translate(-1px, 0)
+      scaleX(0.994)
+      scaleY(0.905)
+      rotate(0.45deg);
+  }
+
+  78% {
+    transform:
+      translate(0, 0)
+      scaleX(1.004)
+      scaleY(0.898)
+      rotate(-0.18deg);
+  }
+
+  100% {
+    transform:
+      translate(0, 0)
+      scaleX(1)
+      scaleY(0.9)
+      rotate(0deg);
+  }
+}
+
+
+/* ==========================================================
+   4. MEAT IDLE BREATHING
+   ----------------------------------------------------------
+   Gives untouched meat a slow, subtle living motion.
+========================================================== */
+
+@keyframes meatIdleBreathing {
+  0%,
+  100% {
+    transform:
+      translateY(-40px)
+      scale(1)
+      rotate(-0.2deg);
+  }
+
+  45% {
+    transform:
+      translateY(-42px)
+      scale(1.012)
+      rotate(0.25deg);
+  }
+
+  70% {
+    transform:
+      translateY(-39px)
+      scale(0.997)
+      rotate(0.1deg);
+  }
+}
+
+
+/* ==========================================================
+   5. MEAT STRONG-IMPACT SHAKE
+   ----------------------------------------------------------
+   Shakes the meat view after sufficiently strong edge presses.
+========================================================== */
+
+@keyframes meatScreenShake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  20% {
+    transform: translate3d(2px, -1px, 0);
+  }
+
+  40% {
+    transform: translate3d(-2px, 1px, 0);
+  }
+
+  60% {
+    transform: translate3d(1px, 0, 0);
+  }
+
+  80% {
+    transform: translate3d(-1px, 0, 0);
+  }
+}
+
+
+/* ==========================================================
+   6. FLOATING MEAT TEXT
+   ----------------------------------------------------------
+   Moves, rotates, enlarges, and fades the temporary +MEAT
+   feedback text.
+========================================================== */
+
+@keyframes floatingMeatText {
+  0% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      translate(0, 8px)
+      rotate(
+        var(
+          --text-start-rotation,
+          0deg
+        )
+      )
+      scale(0.82);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  55% {
+    opacity: 1;
+
+    transform:
+      translate(-50%, -50%)
+      translate(
+        var(--text-drift-x-mid, 0px),
+        -34px
+      )
+      rotate(
+        var(
+          --text-mid-rotation,
+          0deg
+        )
+      )
+      scale(1.08);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      translate(
+        var(--text-drift-x-end, 0px),
+        -82px
+      )
+      rotate(
+        var(
+          --text-end-rotation,
+          0deg
+        )
+      )
+      scale(1.16);
+  }
+}
+
+
+/* ==========================================================
+   7. MEAT PARTICLE BURST
+   ----------------------------------------------------------
+   Sends the temporary meat fragments outward from each click.
+========================================================== */
+
+@keyframes meatParticleBurst {
+  0% {
+    opacity: 1;
+
+    transform:
+      translate(-50%, -50%)
+      translate(0, 0)
+      rotate(0deg)
+      scale(1);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      translate(
+        var(--particle-x),
+        var(--particle-y)
+      )
+      rotate(
+        var(--particle-rotation)
+      )
+      scale(0.35);
+  }
+}
+
+/* ==========================================================
+   8. DISABLED ANIMATION STATE
+   ----------------------------------------------------------
+   Stops visual movement without disabling gameplay.
+========================================================== */
+
+body.animations-disabled *,
+body.animations-disabled *::before,
+body.animations-disabled *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+
+/* Prevent pointer-follow movement. */
+
+body.animations-disabled .meat-button {
+  --follow-x: 0px;
+  --follow-y: 0px;
+  --follow-rotation: 0deg;
+  --press-scale: 1;
+}
+
+
+/* Keep the aura directly behind the meat. */
+
+body.animations-disabled .meat-button-wrapper {
+  --aura-shift-x: 0px;
+  --aura-shift-y: 0px;
+  --aura-scale: 1;
+}
+
+
+/* Return the meat artwork to its resting shape. */
+
+body.animations-disabled .meat-button img {
+  transform:
+    translate(0, 0)
+    scaleX(1)
+    scaleY(0.9)
+    rotate(0deg) !important;
+}
+
+
+/* Remove effects that require animation. */
+
+body.animations-disabled .meat-button::after,
+body.animations-disabled .floating-meat-text,
+body.animations-disabled .meat-particle {
+  display: none !important;
+}
+
+/* Completely suppress hover and press reactions. */
+
+body.animations-disabled .meat-button,
+body.animations-disabled .meat-button:hover,
+body.animations-disabled .meat-button:active {
+  --follow-x: 0px !important;
+  --follow-y: 0px !important;
+  --follow-rotation: 0deg !important;
+  --press-scale: 1 !important;
+
+  transform:
+    translate3d(0, 0, 0)
+    rotate(0deg)
+    scale(1) !important;
+
+  filter: none !important;
+}

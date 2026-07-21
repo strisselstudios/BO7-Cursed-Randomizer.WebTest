@@ -1,0 +1,124 @@
+/* ==========================================================
+   1. MODAL WINDOWS
+   ----------------------------------------------------------
+   Credits and Configure dialogs.
+   These always remain above every other interface element.
+========================================================== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 1rem;
+  box-sizing: border-box;
+
+  z-index: var(--z-modal);
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-box,
+.configure-box {
+  position: relative;
+
+  width: min(92vw, 900px);
+  max-height: 90svh;
+
+  overflow: hidden;
+
+  background: var(--panel-bg);
+  color: var(--panel-text);
+
+  border: 1px solid var(--button-border);
+  border-radius: 8px;
+
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+
+  z-index: calc(var(--z-modal) + 1);
+}
+
+
+/* ==========================================================
+   2. MODAL TITLE BAR
+   ----------------------------------------------------------
+   Shared title bar used by Configure and Credits windows.
+========================================================== */
+
+.modal-title-bar {
+  min-height: 30px;
+
+  display: flex;
+  align-items: center;
+
+  background: #ab51e7;
+
+  padding: 0 10px;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  font-weight: bold;
+}
+
+.modal-icon {
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+}
+
+
+/* ==========================================================
+   3. MODAL CONTENT
+   ----------------------------------------------------------
+   Credits window text, links, and the Contact Me button.
+========================================================== */
+
+.modal-box {
+  max-width: 650px;
+
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.modal-content {
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+}
+
+.modal-content p {
+  margin: 3px 0;
+}
+
+.modal-content a {
+  color: #0078d7;
+
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.modal-content a:hover {
+  text-decoration: underline;
+}
+
+.credits-contact-button {
+  display: block;
+
+  margin: 1rem auto 0;
+  padding: 4px 10px;
+
+  font-size: clamp(0.7rem, 1vw, 0.95rem);
+}

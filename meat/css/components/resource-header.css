@@ -1,0 +1,48 @@
+/* ==========================================================
+   1. GLOBAL RESOURCE HEADER
+   ----------------------------------------------------------
+   Persistent meat total and production rate.
+========================================================== */
+
+.resource-header {
+  min-height: 76px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    calc(0.5rem + var(--safe-top))
+    1rem
+    0.5rem;
+
+  background: rgba(5, 5, 5, 0.88);
+
+  border-bottom: 1px solid var(--border-color);
+
+  text-align: center;
+
+  z-index: 20;
+}
+
+.resource-total {
+  color: var(--primary-text);
+
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-weight: bold;
+
+  line-height: 1;
+
+  text-shadow:
+    0 0 5px black,
+    0 0 12px var(--accent);
+}
+
+.resource-rate {
+  margin-top: 0.25rem;
+
+  color: var(--secondary-text);
+
+  font-size: clamp(0.75rem, 1.5vw, 1rem);
+}

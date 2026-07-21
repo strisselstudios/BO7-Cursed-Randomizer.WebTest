@@ -1,0 +1,102 @@
+/* ==========================================================
+   1. FLOATING CLICK EFFECT LAYER
+   ----------------------------------------------------------
+   Reserved layer for animated click values and particles.
+========================================================== */
+
+.floating-text-layer {
+  position: absolute;
+  inset: 0;
+
+  z-index: 20;
+
+  pointer-events: none;
+
+  overflow: visible;
+}
+
+
+/* ==========================================================
+   2. FLOATING MEAT TEXT
+   ----------------------------------------------------------
+   Displays organic drifting feedback with slight rotation,
+   sideways movement, scale, and a softer fade.
+========================================================== */
+
+.floating-meat-text {
+  position: absolute;
+
+  z-index: 21;
+
+  color: #d9ff71;
+
+  font-size: clamp(1rem, 3vw, 1.6rem);
+  font-weight: bold;
+
+  text-shadow:
+    0 0 4px black,
+    0 0 8px #5d9d16;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--text-start-rotation, 0deg))
+    scale(0.82);
+
+  animation:
+    floatingMeatText
+    var(--text-duration, 900ms)
+    cubic-bezier(0.16, 1, 0.3, 1)
+    forwards;
+
+  pointer-events: none;
+
+  will-change: transform, opacity;
+}
+
+
+/* ==========================================================
+   3. MEAT IMPACT PARTICLES
+   ----------------------------------------------------------
+   Small fragments that burst outward from each manual click.
+========================================================== */
+
+.meat-particle {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  z-index: 20;
+
+  width: var(--particle-size, 10px);
+  height: var(--particle-size, 10px);
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #dbff72 0%,
+      #75b822 38%,
+      #472114 72%,
+      #170908 100%
+    );
+
+  border-radius:
+    58% 42% 64% 36% /
+    45% 62% 38% 55%;
+
+  box-shadow:
+    0 0 4px rgba(190, 255, 55, 0.85),
+    0 0 9px rgba(85, 155, 20, 0.55);
+
+  transform: translate(-50%, -50%);
+
+  animation:
+    meatParticleBurst
+    0.52s
+    ease-out
+    forwards;
+
+  pointer-events: none;
+
+  will-change: transform, opacity;
+}

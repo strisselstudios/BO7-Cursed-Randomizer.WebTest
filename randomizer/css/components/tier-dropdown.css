@@ -1,0 +1,94 @@
+/* ==========================================================
+   1. TIER DROPDOWN
+   ----------------------------------------------------------
+   Custom tier selector menu.
+   It is above normal HUD elements but below modal windows.
+========================================================== */
+
+.tier-dropdown {
+  position: relative;
+  z-index: var(--z-dropdown);
+  width: 100%;
+}
+
+.tier-button {
+  text-align: left;
+}
+
+.tier-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+
+  width: min(90vw, 520px);
+  max-height: min(65svh, 460px);
+  overflow-y: auto;
+
+  background: rgba(0, 0, 0, 0.85);
+  color: var(--button-text);
+  border: 1px solid var(--button-border);
+
+  z-index: var(--z-dropdown);
+}
+
+@supports ((-webkit-backdrop-filter: blur(6px)) or (backdrop-filter: blur(6px))) {
+  .tier-menu {
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+}
+
+body.light-mode .tier-menu {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+@supports ((-webkit-backdrop-filter: blur(6px)) or (backdrop-filter: blur(6px))) {
+  body.light-mode .tier-menu {
+    background: rgba(255, 255, 255, 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+}
+
+
+/* ==========================================================
+   2. TIER DROPDOWN OPTIONS
+   ----------------------------------------------------------
+   Individual selectable tier rows.
+========================================================== */
+
+.tier-option {
+  display: grid;
+  grid-template-columns: minmax(80px, 120px) 1fr;
+  gap: clamp(0.4rem, 1vw, 0.8rem);
+
+  padding: clamp(0.35rem, 1vw, 0.6rem);
+
+  color: var(--button-text);
+  font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+}
+
+.tier-option:hover {
+  background: rgba(128, 128, 128, 0.35);
+}
+
+.tier-option span {
+  font-weight: bold;
+}
+
+.tier-option small {
+  color: var(--button-text);
+  opacity: 0.8;
+}
+
+
+/* ==========================================================
+   3. TIER SELECT FLASH
+   ----------------------------------------------------------
+   Brief selection flash when the user chooses a tier.
+========================================================== */
+
+.tier-option.selected-flash {
+  animation: tierClickFlash 0.18s ease;
+}

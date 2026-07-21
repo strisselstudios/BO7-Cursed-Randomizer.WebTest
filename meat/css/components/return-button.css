@@ -1,0 +1,477 @@
+/* ==========================================================
+   1. SHARED HEADER RETURN CONTROL
+   ----------------------------------------------------------
+   Displays one icon-only return control in the upper-left
+   corner of the resource header in every layout.
+========================================================== */
+
+.resource-header {
+  position: relative;
+}
+
+.header-return-button {
+  position: absolute;
+
+  left:
+    calc(
+      0.5rem +
+      env(safe-area-inset-left)
+    );
+
+  top: 50%;
+
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0.42rem;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--primary-text);
+
+  border:
+    1px solid
+    var(--border-color);
+
+  border-radius: 6px;
+
+  box-sizing: border-box;
+
+  text-decoration: none;
+
+  transform:
+    translateY(-50%);
+
+  z-index: 40;
+
+  touch-action: manipulation;
+}
+
+.header-return-button img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  pointer-events: none;
+
+  /* Convert black arrow to white */
+  filter:
+    brightness(0)
+    invert(1);
+}
+
+.header-return-button:hover {
+  background:
+    var(--button-hover);
+
+  border-color:
+    var(--accent-bright);
+}
+
+.header-return-button:active {
+  transform:
+    translateY(-50%)
+    scale(0.92);
+}
+
+.header-return-button:focus-visible {
+  outline:
+    2px solid
+    var(--accent-bright);
+
+  outline-offset: 2px;
+}
+
+
+/* ==========================================================
+   2. MOBILE PORTRAIT RETURN CONTROL
+   ----------------------------------------------------------
+   Slightly reduces the icon on narrow portrait displays.
+========================================================== */
+
+@media (
+  max-width: 760px
+) and (
+  orientation: portrait
+) {
+  .header-return-button {
+    width: 34px;
+    height: 34px;
+
+    padding: 0.38rem;
+  }
+}
+
+
+/* ==========================================================
+   3. SHORT LANDSCAPE RETURN CONTROL
+   ----------------------------------------------------------
+   Keeps the icon compact inside short landscape headers.
+========================================================== */
+
+@media (
+  orientation: landscape
+) and (
+  max-height: 760px
+) {
+  .header-return-button {
+    width: 30px;
+    height: 30px;
+
+    left:
+      calc(
+        0.4rem +
+        env(safe-area-inset-left)
+      );
+
+    padding: 0.32rem;
+  }
+}
+
+/* ==========================================================
+   4. RANDOMIZER NAVIGATION CONFIRMATION
+   ----------------------------------------------------------
+   Temporary green code-interface confirmation displayed when
+   the player attempts to leave MEAT.exe.
+========================================================== */
+
+.randomizer-navigation-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding:
+    calc(
+      1rem +
+      env(safe-area-inset-top)
+    )
+    calc(
+      1rem +
+      env(safe-area-inset-right)
+    )
+    calc(
+      1rem +
+      env(safe-area-inset-bottom)
+    )
+    calc(
+      1rem +
+      env(safe-area-inset-left)
+    );
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.82
+    );
+
+  box-sizing: border-box;
+
+  z-index: 2000;
+}
+
+.randomizer-navigation-overlay[hidden] {
+  display: none;
+}
+
+body.randomizer-navigation-open {
+  overflow: hidden;
+}
+
+.randomizer-navigation-dialog {
+  position: relative;
+
+  width:
+    min(
+      100%,
+      430px
+    );
+
+  padding:
+    1.1rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      #07120a 0%,
+      #020704 100%
+    );
+
+  color:
+    #b7ffc8;
+
+  border:
+    2px solid
+    #2bd85c;
+
+  border-radius: 4px;
+
+  box-shadow:
+    0 0 0 2px
+    rgba(
+      43,
+      216,
+      92,
+      0.16
+    ),
+    0 0 22px
+    rgba(
+      43,
+      216,
+      92,
+      0.28
+    ),
+    inset 0 0 20px
+    rgba(
+      43,
+      216,
+      92,
+      0.07
+    );
+
+  box-sizing: border-box;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  text-align: left;
+}
+
+.randomizer-navigation-dialog::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 3px,
+      rgba(
+        58,
+        255,
+        105,
+        0.025
+      )
+      4px
+    );
+
+  pointer-events: none;
+}
+
+.randomizer-navigation-status {
+  position: relative;
+
+  margin-bottom: 0.65rem;
+
+  color:
+    #3aff69;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.randomizer-navigation-dialog h2 {
+  position: relative;
+
+  margin:
+    0
+    0
+    0.65rem;
+
+  color:
+    #56ff7c;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size:
+    clamp(
+      1rem,
+      4vw,
+      1.25rem
+    );
+
+  line-height: 1.1;
+
+  text-shadow:
+    0 0 8px
+    rgba(
+      58,
+      255,
+      105,
+      0.42
+    );
+}
+
+.randomizer-navigation-dialog p {
+  position: relative;
+
+  margin:
+    0
+    0
+    1rem;
+
+  color:
+    #c4ffd1;
+
+  font-size:
+    clamp(
+      0.78rem,
+      3vw,
+      0.95rem
+    );
+
+  line-height: 1.4;
+}
+
+.randomizer-navigation-actions {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.7fr)
+    minmax(0, 1.3fr);
+
+  gap: 0.55rem;
+}
+
+.randomizer-navigation-button {
+  min-height: 42px;
+
+  padding:
+    0.55rem
+    0.65rem;
+
+  background:
+    #07120a;
+
+  color:
+    #72ff91;
+
+  border:
+    1px solid
+    #2bd85c;
+
+  border-radius: 3px;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 0.76rem;
+  font-weight: 700;
+
+  line-height: 1.1;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+}
+
+.confirm-randomizer-navigation {
+  background:
+    #17652e;
+
+  color:
+    #effff3;
+
+  border-color:
+    #56ff7c;
+
+  box-shadow:
+    inset 0 0 12px
+    rgba(
+      86,
+      255,
+      124,
+      0.12
+    );
+}
+
+.cancel-randomizer-navigation {
+  background:
+    #07120a;
+
+  color:
+    #72ff91;
+}
+
+.randomizer-navigation-button:hover,
+.randomizer-navigation-button:focus-visible {
+  background:
+    #23853e;
+
+  color:
+    #ffffff;
+
+  border-color:
+    #8dffa6;
+
+  outline: none;
+
+  box-shadow:
+    0 0 10px
+    rgba(
+      58,
+      255,
+      105,
+      0.35
+    );
+}
+
+.randomizer-navigation-button:active {
+  transform:
+    scale(0.96);
+}
+
+
+/* ==========================================================
+   4.1 NARROW CONFIRMATION LAYOUT
+   ----------------------------------------------------------
+   Stacks the confirmation controls on narrow phone displays.
+========================================================== */
+
+@media (max-width: 380px) {
+  .randomizer-navigation-dialog {
+    padding:
+      0.9rem;
+  }
+
+  .randomizer-navigation-actions {
+    grid-template-columns:
+      minmax(0, 1fr);
+  }
+
+  .confirm-randomizer-navigation {
+    order: 2;
+  }
+
+  .cancel-randomizer-navigation {
+    order: 1;
+  }
+}

@@ -1,0 +1,433 @@
+/* ==========================================================
+   1. OFFLINE PRODUCTION DIALOG
+   ----------------------------------------------------------
+   Displays offline production using the same temporary green
+   code-interface style as the Randomizer navigation dialog.
+========================================================== */
+
+.offline-production-dialog {
+  width:
+    min(
+      calc(
+        100vw -
+        2rem
+      ),
+      430px
+    );
+
+  max-height:
+    calc(
+      100dvh -
+      2rem
+    );
+
+  margin: auto;
+
+  padding: 0;
+
+  overflow: auto;
+
+  background:
+    linear-gradient(
+      180deg,
+      #07120a 0%,
+      #020704 100%
+    );
+
+  color:
+    #b7ffc8;
+
+  border:
+    2px solid
+    #2bd85c;
+
+  border-radius: 4px;
+
+  box-shadow:
+    0 0 0 2px
+    rgba(
+      43,
+      216,
+      92,
+      0.16
+    ),
+    0 0 22px
+    rgba(
+      43,
+      216,
+      92,
+      0.28
+    ),
+    inset 0 0 20px
+    rgba(
+      43,
+      216,
+      92,
+      0.07
+    );
+
+  box-sizing: border-box;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+}
+
+.offline-production-dialog::backdrop {
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.82
+    );
+
+  backdrop-filter:
+    blur(3px);
+}
+
+.offline-production-dialog-inner {
+  position: relative;
+
+  padding:
+    1.1rem;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  text-align: left;
+}
+
+/*
+ * Subtle scanlines matching the temporary code-interface
+ * treatment used by the navigation confirmation.
+ */
+.offline-production-dialog-inner::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 3px,
+      rgba(
+        58,
+        255,
+        105,
+        0.025
+      )
+      4px
+    );
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+.offline-production-dialog-inner > * {
+  position: relative;
+
+  z-index: 1;
+}
+
+
+/* ==========================================================
+   2. OFFLINE DIALOG TEXT
+   ----------------------------------------------------------
+   Styles the report heading and supporting message like a
+   terminal status report.
+========================================================== */
+
+.offline-production-kicker {
+  margin:
+    0
+    0
+    0.65rem;
+
+  color:
+    #3aff69;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  line-height: 1.2;
+
+  text-transform: uppercase;
+}
+
+.offline-production-kicker::before {
+  content:
+    "> ";
+}
+
+.offline-production-dialog h2 {
+  margin:
+    0
+    0
+    0.65rem;
+
+  color:
+    #56ff7c;
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size:
+    clamp(
+      1rem,
+      4vw,
+      1.25rem
+    );
+
+  line-height: 1.1;
+
+  letter-spacing: 0.04em;
+
+  text-shadow:
+    0 0 8px
+    rgba(
+      58,
+      255,
+      105,
+      0.42
+    );
+}
+
+.offline-production-message {
+  max-width: 36ch;
+
+  margin:
+    0
+    0
+    1rem;
+
+  color:
+    #c4ffd1;
+
+  font-size:
+    clamp(
+      0.78rem,
+      3vw,
+      0.95rem
+    );
+
+  line-height: 1.4;
+}
+
+
+/* ==========================================================
+   3. OFFLINE HARVEST TOTAL
+   ----------------------------------------------------------
+   Presents the harvested amount as a highlighted terminal
+   readout.
+========================================================== */
+
+.offline-production-total {
+  display: grid;
+
+  gap: 0.35rem;
+
+  margin:
+    1rem
+    0;
+
+  padding:
+    1rem
+    0.8rem;
+
+  background:
+    #050805;
+
+  border:
+    1px solid
+    #2bd85c;
+
+  border-radius: 3px;
+
+  box-shadow:
+    inset 0 0 16px
+    rgba(
+      58,
+      255,
+      105,
+      0.08
+    );
+
+  text-align: center;
+}
+
+.offline-production-total strong {
+  color:
+    #effff3;
+
+  font-size:
+    clamp(
+      1.45rem,
+      8vw,
+      2.2rem
+    );
+
+  line-height: 1;
+
+  letter-spacing: 0.04em;
+
+  text-shadow:
+    0 0 10px
+    rgba(
+      58,
+      255,
+      105,
+      0.34
+    );
+}
+
+.offline-production-total span {
+  color:
+    #72ff91;
+
+  font-size: 0.68rem;
+  font-weight: 700;
+
+  letter-spacing: 0.09em;
+
+  line-height: 1.2;
+
+  text-transform: uppercase;
+}
+
+.offline-production-duration {
+  min-height: 1.4em;
+
+  margin:
+    0.9rem
+    0
+    1.1rem;
+
+  color:
+    #c4ffd1;
+
+  font-size: 0.82rem;
+
+  line-height: 1.4;
+
+  text-align: center;
+}
+
+
+/* ==========================================================
+   4. OFFLINE COLLECTION BUTTON
+   ----------------------------------------------------------
+   Matches the affirmative navigation-confirmation button.
+========================================================== */
+
+.offline-production-close-button {
+  width: 100%;
+  min-height: 42px;
+
+  padding:
+    0.55rem
+    0.65rem;
+
+  background:
+    #17652e;
+
+  color:
+    #effff3;
+
+  border:
+    1px solid
+    #56ff7c;
+
+  border-radius: 3px;
+
+  box-shadow:
+    inset 0 0 12px
+    rgba(
+      86,
+      255,
+      124,
+      0.12
+    );
+
+  font-family:
+    Consolas,
+    "Courier New",
+    monospace;
+
+  font-size: 0.76rem;
+  font-weight: 700;
+
+  letter-spacing: 0.06em;
+
+  line-height: 1.1;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+}
+
+.offline-production-close-button:hover,
+.offline-production-close-button:focus-visible {
+  background:
+    #23853e;
+
+  color:
+    #ffffff;
+
+  border-color:
+    #8dffa6;
+
+  outline: none;
+
+  box-shadow:
+    0 0 10px
+    rgba(
+      58,
+      255,
+      105,
+      0.35
+    );
+}
+
+.offline-production-close-button:active {
+  transform:
+    scale(0.96);
+}
+
+
+/* ==========================================================
+   5. NARROW OFFLINE DIALOG
+   ----------------------------------------------------------
+   Keeps the report clear on small phone displays.
+========================================================== */
+
+@media (max-width: 380px) {
+  .offline-production-dialog {
+    width:
+      calc(
+        100vw -
+        1rem
+      );
+
+    max-height:
+      calc(
+        100dvh -
+        1rem
+      );
+  }
+
+  .offline-production-dialog-inner {
+    padding:
+      0.9rem;
+  }
+}

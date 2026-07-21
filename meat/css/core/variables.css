@@ -1,0 +1,26 @@
+/* ==========================================================
+   1. GLOBAL VARIABLES
+   ----------------------------------------------------------
+   Shared colors, sizes, safe areas, and interface values.
+========================================================== */
+
+:root {
+  --page-background: #070707;
+  --panel-background: rgba(20, 8, 8, 0.96);
+  --panel-background-light: rgba(45, 17, 17, 0.96);
+
+  --primary-text: #f5f5f5;
+  --secondary-text: #b8b8b8;
+
+  --accent: #c52c2c;
+  --accent-bright: #ff5d5d;
+  --border-color: #742020;
+
+  --button-background: #271010;
+  --button-hover: #3c1717;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  --mobile-navigation-height: 78px;
+}

@@ -1,0 +1,22 @@
+/* ==========================================================
+   1. CONFIGURE WINDOW SHAKE
+   ----------------------------------------------------------
+   Applies the warning shake when the user clicks outside the
+   Configure window without saving.
+========================================================== */
+
+.shake {
+  animation: shake 0.2s ease;
+}
+
+
+/* ==========================================================
+   2. SAVE BUTTON GLOW
+   ----------------------------------------------------------
+   Highlights the Save button when the Configure window needs
+   to be closed through its Save control.
+========================================================== */
+
+.save-glow {
+  animation: saveGlow .6s ease;
+}

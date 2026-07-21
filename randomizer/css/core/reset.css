@@ -1,0 +1,31 @@
+/* ==========================================================
+   1. PAGE RESET
+   ----------------------------------------------------------
+   Removes browser defaults, locks the app to the viewport,
+   and prevents page scrolling behind the UI.
+========================================================== */
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  background: black;
+  font-family: Georgia, "Times New Roman", serif;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+
+/* ==========================================================
+   2. GLOBAL INTERACTION
+   ----------------------------------------------------------
+   Removes mobile tap highlight flashes on clickable elements.
+========================================================== */
+
+button,
+a,
+.tier-option {
+  -webkit-tap-highlight-color: transparent;
+}

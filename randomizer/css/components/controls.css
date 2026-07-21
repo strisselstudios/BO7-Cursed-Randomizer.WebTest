@@ -1,0 +1,116 @@
+/* ==========================================================
+   1. LEFT CONTROL COLUMN
+   ----------------------------------------------------------
+   Holds Reset, Tier selector, and Configure.
+   It sits above normal HUD elements, but below modals.
+========================================================== */
+
+.left-controls {
+  position: relative;
+  z-index: var(--z-dropdown);
+
+  align-self: start;
+  justify-self: start;
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 2vh, 1.5rem);
+
+  width: clamp(180px, 24vw, 330px);
+}
+
+
+/* ==========================================================
+   2. GLOBAL BUTTON STYLING
+   ----------------------------------------------------------
+   Shared visual styling for all buttons and button-like links.
+   Positioning and layout are handled elsewhere.
+========================================================== */
+
+#resetButton,
+#configureButton,
+#spinButton,
+#themeToggleButton,
+.theme-toggle,
+.credits,
+.contact-button,
+.zomdle-button,
+.tier-button,
+.configure-footer button {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: 1px solid var(--button-border);
+  border-radius: 5px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: bold;
+  text-shadow: 0 0 5px var(--shadow-color);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.08s ease,
+    filter 0.08s ease,
+    box-shadow 0.08s ease;
+}
+
+#resetButton:hover,
+#configureButton:hover,
+#spinButton:hover,
+.theme-toggle:hover,
+.credits:hover,
+.contact-button:hover,
+.zomdle-button:hover,
+.tier-button:hover,
+.configure-footer button:hover {
+  filter: brightness(110%);
+}
+
+#resetButton:active,
+#configureButton:active,
+#spinButton:active,
+.theme-toggle:active,
+.credits:active,
+.contact-button:active,
+.zomdle-button:active,
+.tier-button:active,
+.configure-footer button:active {
+  transform: translateY(2px) scale(0.98);
+  filter: brightness(85%);
+}
+
+
+/* ==========================================================
+   3. BUTTON SIZING
+   ----------------------------------------------------------
+   Shared button dimensions and text sizes.
+========================================================== */
+
+#resetButton,
+#configureButton,
+.tier-button {
+  width: 100%;
+  padding: clamp(0.35rem, 1vh, 0.8rem) clamp(0.5rem, 1vw, 1rem);
+  font-size: clamp(1rem, 2.2vw, 2rem);
+}
+
+#resetButton {
+  width: auto;
+}
+
+#spinButton {
+  justify-self: center;
+
+  width: clamp(220px, 35vw, 430px);
+  padding: clamp(0.5rem, 1.4vh, 1rem) 0;
+
+  font-size: clamp(1.2rem, 2.5vw, 2.2rem);
+}
+
+.theme-toggle,
+.credits,
+.contact-button {
+  padding: 4px 10px;
+  font-size: clamp(0.7rem, 1vw, 0.95rem);
+  text-decoration: none;
+}

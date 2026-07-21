@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="shared/images/PeeksIcon.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Cursed Relic Randomizer for Black Ops 7 Zombies. Randomly select Grim, Sinister, and Wicked relic combinations by tier, including Tier 3 Hard mode.">
+  <title>Cursed Relic Randomizer</title>
+  <link rel="canonical" href="https://relicrandomizer.com/">
+  <link rel="sitemap" type="text/html" href="sitemap.html">
+    <!-- ==========================================================
+       1.1 STYLESHEETS
+       ----------------------------------------------------------
+       Loads the organized Randomizer stylesheets in cascade
+       order. Responsive overrides load last.
+  ========================================================== -->
+
+  <!-- Core styles -->
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/core/variables.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/core/reset.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/core/layout.css"
+  >
+
+
+  <!-- Interface components -->
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/components/title.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/components/controls.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/components/tier-dropdown.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/components/output.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/components/mr-peeks.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/components/bottom-links.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/components/modals.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/components/configuration.css"
+  >
+
+
+  <!-- Visual effects -->
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/effects/button-effects.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/effects/animations.css"
+  >
+
+
+  <!-- Responsive layout overrides -->
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/responsive/desktop.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/responsive/tablet.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/responsive/mobile-portrait.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="randomizer/css/responsive/short-landscape.css"
+  >
+<body>
+
+<!-- ==========================================================
+     1. BACKGROUND VIDEO
+     ----------------------------------------------------------
+     Fullscreen looping background animation.
+========================================================== -->
+<video id="bgVideo" muted playsinline preload="auto">
+  <source
+  src="randomizer/videos/WebsiteBackgroundVid.mp4"
+  type="video/mp4"
+  >
+</video>
+  <!-- ==========================================================
+     2. MAIN USER INTERFACE
+     ----------------------------------------------------------
+     Primary application interface and HUD.
+========================================================== -->
+
+  <div class="ui">
+
+    <!-- ==========================================================
+     2.1 TITLE HEADER
+     ----------------------------------------------------------
+     Application title and Mr. Peeks icons.
+========================================================== -->
+    <h1 class="title">
+      <img src="randomizer/images/MrPeeks.png" class="title-icon" alt="">
+      <span>Cursed Relic Randomizer</span>
+      <img src="randomizer/images/MrPeeks.png" class="title-icon" alt="">
+    </h1>
+
+
+    <!-- ==========================================================
+     2.2 LEFT CONTROL PANEL
+     ----------------------------------------------------------
+     Reset button, tier selector, and Configure button.
+========================================================== -->
+    <div class="left-controls">
+
+      <button id="resetButton">RESET</button>
+
+      <!-- ==========================================================
+     2.2.1 TIER DROPDOWN
+     ----------------------------------------------------------
+     Custom tier selection menu.
+========================================================== -->
+      <div id="tierDropdown" class="tier-dropdown">
+        <button id="tierButton" class="tier-button" data-value="tier1">
+          Tier 1
+        </button>
+
+        <div id="tierMenu" class="tier-menu hidden">
+          <div class="tier-option" data-value="tier1">
+            <span>Tier 1</span>
+            <small>Unlocks Golden Armor</small>
+          </div>
+
+          <div class="tier-option" data-value="tier2">
+            <span>Tier 2</span>
+            <small>Unlocks Ultra weapon rarity</small>
+          </div>
+
+          <div class="tier-option" data-value="tier3">
+            <span>Tier 3</span>
+            <small>Unlocks Tier 4 Pack-A-Punch</small>
+          </div>
+
+          <div class="tier-option" data-value="tier3hard">
+            <span>Tier 3 HARD</span>
+            <small>It's a masochist's dream. Go on, we dare you!</small>
+          </div>
+        </div>
+      </div>
+
+      <button id="configureButton">CONFIGURE</button>
+
+    </div>
+
+
+    <!-- ==========================================================
+     2.3 MAIN SPIN BUTTON
+     ----------------------------------------------------------
+     Starts the mystery box animation and relic generation.
+========================================================== -->
+<button id="spinButton">SPIN MYSTERY BOX</button>
+
+    <!-- ==========================================================
+     2.4 ACTIVISION DISCLAIMER
+     ----------------------------------------------------------
+     Legal disclaimer displayed beneath the interface.
+========================================================== -->
+<p id="activisionDisclaimer" class="disclaimer">
+  Not affiliated with or endorsed by Activision.
+</p>
+    
+    <!-- ==========================================================
+     2.5 OUTPUT AREA
+     ----------------------------------------------------------
+     Displays the selected map and relic results.
+========================================================== -->
+    <div id="output"></div>
+
+
+    <!-- ==========================================================
+     2.6 MR. PEEKS RESULT
+     ----------------------------------------------------------
+     Displayed when no valid relic combination exists.
+========================================================== -->
+    <img
+       id="mrPeeksImage"
+       src="randomizer/images/MrPeeks.png"
+       alt="Mr. Peeks"
+    >
+
+    <div id="mrPeeksNoseZone"></div>
+
+
+<!-- ==========================================================
+     2.7 BOTTOM UTILITY BAR
+     ----------------------------------------------------------
+     Theme toggle, Credits, external links, and navigation.
+========================================================== -->
+  <div class="bottom-links">
+  <div class="bottom-left">
+    <button id="themeToggleButton" class="theme-toggle">
+      LIGHT MODE
+    </button>
+
+    <button id="creditsButton" class="credits">
+      CREDITS
+    </button>
+  </div>
+
+  <a
+    id="zomdleButton"
+    class="zomdle-button"
+    href="https://zomdle.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Visit Zomdle"
+  >
+    <video
+      id="zomdleVideo"
+      src="randomizer/videos/zomdle.mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+    ></video>
+  </a>
+<a
+  id="meatExeButton"
+  class="meat-exe-button"
+  href="meat.html"
+  aria-label="Play MEAT.exe"
+>
+  <img
+    src="shared/images/meatlogo.png"
+    class="meat-main-logo"
+    alt="MEAT.exe"
+  >
+
+  <img
+    src="shared/images/stulogo.png"
+    class="meat-stu-logo"
+    alt=""
+  >
+</a>
+</div>
+
+<!-- ==========================================================
+     3. CREDITS MODAL
+     ----------------------------------------------------------
+     Credits window and Contact Me button.
+========================================================== -->
+
+<div id="creditsModal" class="modal hidden">
+  <div class="modal-box">
+
+    <div class="modal-title-bar">
+      <span class="modal-title">
+        <img
+          src="shared/images/PeeksIcon.png"
+          class="modal-icon"
+          alt=""
+        >
+        Credits
+      </span>
+    </div>
+
+    <div class="modal-content">
+      <p>
+        Background AOTD static art: Grillmaster Harry
+        (<a href="https://x.com/Vermontious" target="_blank" rel="noopener noreferrer">@Vermontious</a> on X)
+      </p>
+
+      <p>
+        COD Zombies Mystery Box Model by
+        <a href="https://sketchfab.com/3d-models/rigged-cod-zombies-mystery-box-ba7c191d4e88431db5ffc15c47540947"
+           target="_blank"
+           rel="noopener noreferrer">
+          P3p33
+        </a>
+      </p>
+
+      <p>
+        Animations and Web Application designed by
+        <a href="https://x.com/StrisselStudios" target="_blank" rel="noopener noreferrer">
+          Strissel
+        </a>
+        (Me!)
+      </p>
+
+      <button id="creditsContactButton" class="contact-button credits-contact-button">
+        CONTACT ME!
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- ==========================================================
+     4. CONFIGURATION MODAL
+     ----------------------------------------------------------
+     Configure available maps and relics.
+========================================================== -->
+
+  <div id="configureModal" class="modal hidden">
+    <div id="configureBox" class="configure-box">
+
+      <!-- ==========================================================
+     4.1 CONFIGURE TITLE BAR
+     ----------------------------------------------------------
+     Shared title bar for the configuration window.
+========================================================== -->
+      <div class="modal-title-bar">
+        <span class="modal-title">
+          <img
+            src="shared/images/PeeksIcon.png"
+            class="modal-icon"
+            alt=""
+          >
+          Configuration Panel
+        </span>
+      </div>
+
+
+      <!-- ==========================================================
+     4.2 CONFIGURE CONTENT
+     ----------------------------------------------------------
+     Map and relic selection checkboxes.
+========================================================== -->
+      <div class="configure-content">
+
+        <!-- ==========================================================
+     4.2.1 STANDARD MAPS
+     ----------------------------------------------------------
+     Standard Zombies map selection and future content.
+========================================================== -->
+        <div class="config-column">
+          <h3>Standard</h3>
+          <label><input type="checkbox" class="map-checkbox" checked> Ashes of the Damned</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Astra Malorum</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Paradox Junction</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Totenreich</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Kowakujo</label>
+
+          <div class="coming-soon-map">
+            <label class="disabled-map"><input type="checkbox" disabled> <span>Rex Infernus</span></label>
+            <div class="coming-soon-text">Coming Soon</div>
+          </div>
+        </div>
+
+
+        <!-- ==========================================================
+     4.2.2 SURVIVAL MAPS
+     ----------------------------------------------------------
+     Survival map selection and future content.
+========================================================== -->
+        <div class="config-column">
+          <h3>Survival</h3>
+          <label><input type="checkbox" class="map-checkbox" checked> Farm Survival</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Exit 115 Survival</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Cosmodrome Survival</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Mars Survival</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Ashwood Survival</label>
+          <label><input type="checkbox" class="map-checkbox" checked> Nuked Survival</label>
+
+          <div class="coming-soon-map">
+            <label class="disabled-map"><input type="checkbox" disabled> <span>Eidskallen Lighthouse Survival</span></label>
+            <div class="coming-soon-text">Coming Soon</div>
+          </div>
+
+          <div class="coming-soon-map">
+            <label class="disabled-map"><input type="checkbox" disabled> <span>Kowakujō Castle Survival</span></label>
+            <div class="coming-soon-text">Coming Soon</div>
+          </div>
+        </div>
+
+        <!-- ==========================================================
+     4.2.3 GRIM RELICS
+     ----------------------------------------------------------
+     Grim relic enable/disable options.
+========================================================== -->
+        <div class="config-column">
+          <h3>Grim</h3>
+          <label><input type="checkbox" class="relic-checkbox" checked> Lawyer's Pen</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Dragon Wings</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Teddy Bear</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Gong</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Seed</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Rocket</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Power Switch</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Wrestler's Belt</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Gramophone</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Druid Stone</label>
+        </div>
+
+
+        <!-- ==========================================================
+     4.2.4 SINISTER RELICS
+     ----------------------------------------------------------
+     Sinister relic enable/disable options.
+========================================================== -->
+        <div class="config-column">
+          <h3>Sinister</h3>
+          <label><input type="checkbox" class="relic-checkbox" checked> Vrill Sphere</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Sam's Drawing</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Focusing Stone</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Fang</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Matryoshka Dolls</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Summoning Key</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Stuffed Elephant</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Dancing Arnie</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Valkyrie Helmet</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Film Reel</label>
+        </div>
+
+
+        <!-- ==========================================================
+     4.2.5 WICKED RELICS
+     ----------------------------------------------------------
+     Wicked relic enable/disable options.
+========================================================== -->
+        <div class="config-column">
+          <h3>Wicked</h3>
+          <label><input type="checkbox" class="relic-checkbox" checked> Bus</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Dragon Head</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Blood Vials</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Golden Spork</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Civil Protector</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Mangler Helmet</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Agarthan Device</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Music Box</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Dragon Egg</label>
+          <label><input type="checkbox" class="relic-checkbox" checked> Mannequin Turret</label>
+        </div>
+
+      </div>
+
+
+      <!-- ==========================================================
+     4.3 CONFIGURE FOOTER
+     ----------------------------------------------------------
+     Save, Reset, and Deselect All controls.
+========================================================== -->
+      <div class="configure-footer">
+        <button id="saveConfigButton">Save</button>
+        <button id="deselectRelicsButton">Deselect All Relics</button>
+        <button id="resetConfigButton">Reset</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <!-- ==========================================================
+       5. JAVASCRIPT
+       ----------------------------------------------------------
+       Loads the organized Randomizer JavaScript files in the
+       same execution order as the original combined script.
+  ========================================================== -->
+
+  <!-- Core references and state -->
+
+  <script src="randomizer/js/core/dom-elements.js"></script>
+
+  <script src="randomizer/js/systems/audio.js"></script>
+
+  <script src="randomizer/js/core/state.js"></script>
+
+
+  <!-- Primary interface controls -->
+
+  <script src="randomizer/js/ui/controls.js"></script>
+
+  <script src="randomizer/js/ui/modals.js"></script>
+
+  <script src="randomizer/js/systems/configuration.js"></script>
+
+  <script src="randomizer/js/ui/tier-dropdown.js"></script>
+
+
+  <!-- Relic data and generation systems -->
+
+  <script src="randomizer/js/data/relic-data.js"></script>
+
+  <script src="randomizer/js/systems/relic-generation.js"></script>
+
+  <script src="randomizer/js/ui/results.js"></script>
+
+</body>
+
+</html>

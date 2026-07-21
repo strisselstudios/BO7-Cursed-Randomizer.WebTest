@@ -1,0 +1,44 @@
+/* ==========================================================
+   1. BACKGROUND VIDEO
+   ----------------------------------------------------------
+   Fullscreen background layer. It never receives clicks.
+========================================================== */
+
+#bgVideo {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  object-fit: cover;
+  object-position: center;
+  z-index: var(--z-background);
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+   2. MAIN UI CONTAINER
+   ----------------------------------------------------------
+   Primary app grid. Holds the title, controls, output,
+   spin button, Mr. Peeks, and bottom utility area.
+========================================================== */
+
+.ui {
+  position: relative;
+  z-index: var(--z-ui);
+
+  height: 100dvh;
+  min-height: 100dvh;
+
+  overflow: hidden;
+  box-sizing: border-box;
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(0.5rem, 2vh, 2rem);
+
+  padding:
+    clamp(0.5rem, 2vh, 1.5rem)
+    clamp(0.5rem, 2vw, 2rem)
+    calc(clamp(0.75rem, 2vh, 1.5rem) + var(--safe-bottom));
+}

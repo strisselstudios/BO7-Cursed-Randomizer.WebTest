@@ -1,0 +1,34 @@
+/* ==========================================================
+   1. PAGE RESET
+   ----------------------------------------------------------
+   Removes browser defaults, locks the application to the
+   viewport, and prevents the document itself from scrolling.
+========================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+
+  overflow: hidden;
+  overscroll-behavior: none;
+
+  background: var(--page-background);
+
+  color: var(--primary-text);
+
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}

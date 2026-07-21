@@ -1,0 +1,31 @@
+/* ==========================================================
+   1. STATS VIEW
+   ----------------------------------------------------------
+   Player progression statistics.
+========================================================== */
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding-bottom: 0.65rem;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.stat-row span {
+  color: var(--secondary-text);
+}
+
+.stat-row strong {
+  text-align: right;
+}
