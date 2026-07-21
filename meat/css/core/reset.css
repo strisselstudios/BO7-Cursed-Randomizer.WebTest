@@ -2,11 +2,19 @@
    1. PAGE RESET
    ----------------------------------------------------------
    Removes browser defaults, locks the application to the
-   viewport, and prevents the document itself from scrolling.
+   viewport, prevents document scrolling, and disables page
+   scaling gestures.
 ========================================================== */
 
 * {
   box-sizing: border-box;
+
+  /*
+   * Normal one-finger panning remains available inside
+   * scrollable menus and dialogs. Pinch zoom is excluded.
+   */
+  touch-action:
+    pan-x pan-y;
 }
 
 html,
@@ -18,17 +26,27 @@ body {
   min-height: 0;
 
   overflow: hidden;
+
   overscroll-behavior: none;
 
-  background: var(--page-background);
+  background:
+    var(--page-background);
 
-  color: var(--primary-text);
+  color:
+    var(--primary-text);
 
-  font-family: Georgia, "Times New Roman", serif;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 button,
 a,
 input {
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color:
+    transparent;
 }
