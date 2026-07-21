@@ -555,8 +555,6 @@ disabled:not(
   cursor: not-allowed;
 }
 .producer-card.producer-transaction-unavailable {
-  opacity: 0.55;
-
   cursor: not-allowed;
 }
 
@@ -569,8 +567,34 @@ disabled:not(
   transform: none;
 }
 
+/*
+ * Dim only the parts related to the unavailable transaction.
+ *
+ * Do not put opacity on the complete card. Parent opacity
+ * also dims the independently usable INFO control.
+ */
+.producer-card.producer-transaction-unavailable
+.producer-icon-slot,
+
+.producer-card.producer-transaction-unavailable
+.producer-information,
+
+.producer-card.producer-transaction-unavailable
+.producer-purchase > strong,
+
+.producer-card.producer-transaction-unavailable
+.producer-purchase > small {
+  opacity: 0.55;
+}
+
+/*
+ * INFO remains fully visible and interactive for every
+ * revealed producer, regardless of whether another building
+ * can currently be purchased.
+ */
 .producer-card.producer-transaction-unavailable
 .producer-info-button {
+  opacity: 1;
   cursor: pointer;
 }
 /* ==========================================================
