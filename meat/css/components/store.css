@@ -410,9 +410,31 @@
 
   line-height: 1;
 
-  cursor: default;
+  cursor: pointer;
+
+touch-action:
+  manipulation;
 
   user-select: none;
+}
+
+.producer-info-button:hover,
+.producer-info-button:focus-visible {
+  background:
+    var(--button-hover);
+
+  color:
+    var(--primary-text);
+
+  outline: none;
+}
+
+.producer-info-button:focus-visible {
+  outline:
+    2px solid
+    var(--accent-bright);
+
+  outline-offset: 2px;
 }
 
 @media (
@@ -532,7 +554,25 @@ disabled:not(
 
   cursor: not-allowed;
 }
+.producer-card.producer-transaction-unavailable {
+  opacity: 0.55;
 
+  cursor: not-allowed;
+}
+
+.producer-card.producer-transaction-unavailable:hover {
+  background:
+    var(--button-background);
+}
+
+.producer-card.producer-transaction-unavailable:active {
+  transform: none;
+}
+
+.producer-card.producer-transaction-unavailable
+.producer-info-button {
+  cursor: pointer;
+}
 /* ==========================================================
    5. MARLTON'S SCHEMATICS PLACEHOLDER
    ----------------------------------------------------------
