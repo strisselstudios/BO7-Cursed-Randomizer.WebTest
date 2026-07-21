@@ -93,7 +93,11 @@
     rel="stylesheet"
     href="meat/css/components/store.css"
   >
-
+  
+  <link
+    rel="stylesheet"
+    href="meat/css/components/producer-info.css"
+  >
   <link
     rel="stylesheet"
     href="meat/css/components/stats.css"
@@ -316,6 +320,120 @@
 
 ========================================================== -->
 
+<!-- ==========================================================
+  2.2.2.2.1 PRODUCER HARVEST DOSSIER
+  ----------------------------------------------------------
+  Displays current and cumulative production information for
+  one revealed producer.
+========================================================== -->
+
+<dialog
+  id="producerInfoDialog"
+  class="producer-info-dialog"
+  aria-labelledby="producerInfoHeading"
+>
+  <article class="producer-info-panel">
+
+    <header class="producer-info-header">
+      <h2 id="producerInfoHeading">
+        HARVEST DOSSIER
+      </h2>
+
+      <div class="producer-info-banner">
+        <div
+          id="producerInfoIconSlot"
+          aria-hidden="true"
+        ></div>
+
+        <div class="producer-info-identity">
+          <strong id="producerInfoName">
+            UNKNOWN PRODUCER
+          </strong>
+
+          <div class="producer-info-meta">
+            <span id="producerInfoTier">
+              TIER I
+            </span>
+
+            <span id="producerInfoOwned">
+              0 OWNED
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section
+      class="producer-info-statistics"
+      aria-labelledby="producerInfoStatisticsHeading"
+    >
+      <h3 id="producerInfoStatisticsHeading">
+        CURRENT OUTPUT
+      </h3>
+
+      <div class="producer-info-stat">
+        <span
+          id="producerInfoUnitLabel"
+          class="producer-info-stat-label"
+        >
+          EACH PRODUCER
+        </span>
+
+        <strong id="producerInfoUnitOutput">
+          0 MEAT / SECOND
+        </strong>
+      </div>
+
+      <div class="producer-info-stat">
+        <span
+          id="producerInfoCombinedLabel"
+          class="producer-info-stat-label"
+        >
+          ALL 0 OWNED
+        </span>
+
+        <strong id="producerInfoCombinedOutput">
+          0 MEAT / SECOND
+        </strong>
+      </div>
+
+      <div class="producer-info-stat">
+        <span class="producer-info-stat-label">
+          SHARE OF TOTAL HARVEST
+        </span>
+
+        <strong id="producerInfoShare">
+          0%
+        </strong>
+      </div>
+
+      <div class="producer-info-stat">
+        <span class="producer-info-stat-label">
+          LIFETIME YIELD
+        </span>
+
+        <strong id="producerInfoLifetime">
+          0 MEAT
+        </strong>
+      </div>
+    </section>
+
+    <blockquote id="producerInfoDescription"></blockquote>
+
+    <button
+      id="producerInfoCloseButton"
+      type="button"
+    >
+      CLOSE
+    </button>
+
+  </article>
+</dialog>
+
+
+
+        
+        
 <section
   id="storeView"
   class="panel-view active-panel"
