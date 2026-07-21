@@ -6,14 +6,19 @@
 ========================================================== */
 
 .producer-info-dialog {
-  position: relative;
+  position: fixed;
+  inset: 0;
 
   width: min(
     calc(100vw - 2rem),
     720px
   );
 
-  max-height: none;
+  height: fit-content;
+
+  max-height: calc(
+    100dvh - 1rem
+  );
 
   margin: auto;
   padding: 0;
