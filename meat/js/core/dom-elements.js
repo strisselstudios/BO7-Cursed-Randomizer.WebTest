@@ -293,6 +293,11 @@ const producerInfoCloseButton =
     "producerInfoCloseButton"
   );
 
+const menuBackButton =
+  document.getElementById(
+    "menuBackButton"
+  );
+
 const randomizerReturnButton =
   document.getElementById(
     "randomizerReturnButton"
