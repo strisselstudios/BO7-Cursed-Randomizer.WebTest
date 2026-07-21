@@ -11,6 +11,54 @@ function isPortraitMobileLayout() {
   ).matches;
 }
 
+/* ==========================================================
+   1.1 HEADER CORNER CONTROLS
+   ----------------------------------------------------------
+   Displays the Randomizer link on the MEAT view.
+
+   Displays the menu back arrow only when a Store, Stats, or
+   Settings view is open in portrait mode.
+========================================================== */
+
+function updateHeaderCornerControls(
+  viewName = "meat"
+) {
+  const portraitMenuIsOpen =
+    isPortraitMobileLayout() &&
+    viewName !== "meat";
+
+  if (menuBackButton) {
+    menuBackButton.hidden =
+      !portraitMenuIsOpen;
+  }
+
+  if (randomizerReturnButton) {
+    randomizerReturnButton.hidden =
+      portraitMenuIsOpen;
+  }
+}
+
+/* ==========================================================
+   1.2 MOBILE NAVIGATION SELECTION
+   ----------------------------------------------------------
+   Keeps the bottom navigation highlight synchronized with
+   the currently displayed portrait view.
+========================================================== */
+
+function setActiveMobileNavigationButton(
+  viewName
+) {
+  mobileNavigationButtons.forEach(
+    (button) => {
+      button.classList.toggle(
+        "active-nav-button",
+        button.dataset.mobileTarget ===
+          viewName
+      );
+    }
+  );
+}
+
 function showSidePanelView(viewName) {
   sidePanel.classList.add(
     "mobile-side-panel-active"
@@ -41,11 +89,13 @@ function showSidePanelView(viewName) {
   desktopTabs.forEach((tab) => {
     tab.classList.toggle(
       "active-tab",
-      tab.dataset.panelTarget === viewName
+      tab.dataset.panelTarget ===
+        viewName
     );
   });
-}
 
+  updateHeaderCornerControls(viewName);
+}
 
 /* ==========================================================
    2. MOBILE MEAT VIEW CONTROLLER
@@ -61,6 +111,8 @@ function showMobileMeatView() {
     sidePanel.classList.add(
       "mobile-side-panel-active"
     );
+
+    updateHeaderCornerControls("meat");
 
     return;
   }
@@ -86,37 +138,63 @@ function showMobileMeatView() {
   desktopTabs.forEach((tab) => {
     tab.classList.toggle(
       "active-tab",
-      tab.dataset.panelTarget === "store"
+      tab.dataset.panelTarget ===
+        "store"
     );
   });
-}
 
+  updateHeaderCornerControls("meat");
+}
 
 /* ==========================================================
    3. MOBILE NAVIGATION
    ----------------------------------------------------------
-   Switches between the Meat, Store, Stats, and Settings views.
+   Switches between the Meat, Store, Stats, and Settings
+   views.
 ========================================================== */
 
-mobileNavigationButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const targetView = button.dataset.mobileTarget;
+mobileNavigationButtons.forEach(
+  (button) => {
+    button.addEventListener(
+      "click",
+      () => {
+        const targetView =
+          button.dataset.mobileTarget;
 
-    mobileNavigationButtons.forEach((navButton) => {
-      navButton.classList.remove("active-nav-button");
-    });
+        setActiveMobileNavigationButton(
+          targetView
+        );
 
-    button.classList.add("active-nav-button");
+        if (targetView === "meat") {
+          showMobileMeatView();
+          return;
+        }
 
-    if (targetView === "meat") {
+        showSidePanelView(targetView);
+      }
+    );
+  }
+);
+
+/* ==========================================================
+   3.1 PORTRAIT MENU BACK BUTTON
+   ----------------------------------------------------------
+   Returns Store, Stats, or Settings to the MEAT screen
+   without leaving MEAT.exe or opening another page.
+========================================================== */
+
+if (menuBackButton) {
+  menuBackButton.addEventListener(
+    "click",
+    () => {
+      setActiveMobileNavigationButton(
+        "meat"
+      );
+
       showMobileMeatView();
-      return;
     }
-
-    showSidePanelView(targetView);
-  });
-});
-
+  );
+}
 
 /* ==========================================================
    4. DESKTOP PANEL NAVIGATION
@@ -125,19 +203,26 @@ mobileNavigationButtons.forEach((button) => {
 ========================================================== */
 
 desktopTabs.forEach((tab) => {
-  tab.addEventListener("pointerdown", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  });
+  tab.addEventListener(
+    "pointerdown",
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  );
 
-  tab.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+  tab.addEventListener(
+    "click",
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    showSidePanelView(tab.dataset.panelTarget);
-  });
+      showSidePanelView(
+        tab.dataset.panelTarget
+      );
+    }
+  );
 });
-
 
 /* ==========================================================
    5. RESPONSIVE VIEW RESTORATION
@@ -160,9 +245,10 @@ function restoreResponsiveLayout() {
       );
 
     if (!activePanel) {
-      activePanel = document.querySelector(
-        '.panel-view[data-view="store"]'
-      );
+      activePanel =
+        document.querySelector(
+          '.panel-view[data-view="store"]'
+        );
 
       if (activePanel) {
         activePanel.hidden = false;
@@ -183,6 +269,13 @@ function restoreResponsiveLayout() {
       });
     }
 
+    /*
+     * Landscape and desktop never display the menu arrow.
+     * The Randomizer text control remains available because
+     * the MEAT view is still visible in the split layout.
+     */
+    updateHeaderCornerControls("meat");
+
     return;
   }
 
@@ -192,7 +285,9 @@ function restoreResponsiveLayout() {
     );
 
   const activeView =
-    activeMobileButton?.dataset.mobileTarget ||
+    activeMobileButton
+      ?.dataset
+      .mobileTarget ||
     "meat";
 
   if (activeView === "meat") {
