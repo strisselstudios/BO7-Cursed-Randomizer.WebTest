@@ -86,3 +86,155 @@
 
   z-index: var(--z-ui);
 }
+
+/* ==========================================================
+   3. COMPACT DESKTOP INTERFACE
+   ----------------------------------------------------------
+   Prevents viewport-based sizing from making the Randomizer
+   title, controls, and utility buttons excessive on desktop.
+========================================================== */
+
+@media
+  (min-width: 1001px)
+  and
+  (any-pointer: fine) {
+
+  .title {
+    gap: 0.55rem;
+
+    font-size:
+      clamp(
+        1.7rem,
+        2.3vw,
+        2.7rem
+      );
+  }
+
+  .title-icon {
+    width:
+      clamp(
+        26px,
+        2.4vw,
+        38px
+      );
+  }
+
+  .left-controls {
+    width:
+      clamp(
+        170px,
+        16vw,
+        230px
+      );
+
+    gap:
+      clamp(
+        0.4rem,
+        1vh,
+        0.75rem
+      );
+  }
+
+  #resetButton,
+  #configureButton,
+  .tier-button {
+    width: 100%;
+
+    padding:
+      0.4rem
+      0.65rem;
+
+    font-size:
+      clamp(
+        0.85rem,
+        0.95vw,
+        1.05rem
+      );
+  }
+
+  #spinButton {
+    width:
+      clamp(
+        210px,
+        22vw,
+        300px
+      );
+
+    padding:
+      0.5rem
+      0;
+
+    font-size:
+      clamp(
+        1rem,
+        1.1vw,
+        1.25rem
+      );
+  }
+
+  .tier-menu {
+    width:
+      min(
+        30vw,
+        300px
+      );
+
+    max-height:
+      min(
+        60svh,
+        420px
+      );
+  }
+
+  .tier-option {
+    grid-template-columns:
+      minmax(72px, 100px)
+      1fr;
+
+    gap: 0.45rem;
+
+    padding:
+      0.4rem
+      0.5rem;
+
+    font-size:
+      clamp(
+        0.72rem,
+        0.8vw,
+        0.9rem
+      );
+  }
+
+  .theme-toggle,
+  .credits,
+  .contact-button {
+    padding:
+      3px
+      8px;
+
+    font-size:
+      clamp(
+        0.64rem,
+        0.7vw,
+        0.78rem
+      );
+  }
+
+  .zomdle-button {
+    width:
+      clamp(
+        150px,
+        14vw,
+        210px
+      );
+  }
+
+  .meat-exe-button {
+    width:
+      clamp(
+        85px,
+        7.5vw,
+        115px
+      );
+  }
+}
