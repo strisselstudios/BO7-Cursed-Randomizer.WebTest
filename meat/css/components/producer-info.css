@@ -1048,7 +1048,331 @@ button:focus-visible {
 @media
   (prefers-reduced-motion: reduce) {
 
+     .producer-info-navigation-button {
+       transition: none;
+     }
+  }
+
+/* ==========================================================
+   11. DESKTOP COMPACT PRODUCER INFO
+   ----------------------------------------------------------
+   Reduces the Harvest Dossier on desktop displays, removes
+   internal scrolling, and keeps every section visible within
+   the browser viewport.
+========================================================== */
+
+@media
+  (min-width: 901px)
+  and
+  (any-pointer: fine) {
+
+  .producer-info-dialog {
+    width:
+      min(
+        calc(100vw - 5rem),
+        620px
+      );
+
+    height: auto;
+
+    max-height:
+      calc(100dvh - 1rem);
+  }
+
+  .producer-info-panel {
+    min-height: 0;
+    height: auto;
+    max-height: none;
+
+    padding: 0.72rem;
+
+    /*
+     * The desktop layout is compact enough to fit without
+     * turning the dossier into a scrolling container.
+     */
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .producer-info-header {
+    margin-bottom: 0.55rem;
+  }
+
+  .producer-info-header h2 {
+    margin-bottom: 0.55rem;
+
+    font-size:
+      clamp(
+        1rem,
+        1.7dvh,
+        1.2rem
+      );
+  }
+
+  .producer-info-banner {
+    grid-template-columns:
+      76px
+      minmax(0, 1fr);
+
+    gap: 0.7rem;
+
+    padding: 0.55rem;
+  }
+
+  #producerInfoIconSlot {
+    width: 68px;
+    height: 68px;
+  }
+
+  .producer-info-identity {
+    gap: 0.35rem;
+  }
+
+  #producerInfoName {
+    font-size:
+      clamp(
+        1rem,
+        2dvh,
+        1.3rem
+      );
+  }
+
+  .producer-info-meta {
+    gap: 0.3rem;
+  }
+
+  #producerInfoTier,
+  #producerInfoOwned {
+    min-height: 22px;
+
+    padding:
+      0.2rem
+      0.4rem;
+
+    font-size: 0.63rem;
+  }
+
+  .producer-info-statistics {
+    gap: 0.45rem;
+
+    margin-top: 0.55rem;
+  }
+
+  .producer-info-statistics h3 {
+    font-size: 0.7rem;
+  }
+
+  .producer-info-stat {
+    min-height: 68px;
+
+    gap: 0.3rem;
+
+    padding: 0.52rem;
+
+    border-left-width: 3px;
+  }
+
+  .producer-info-stat-label {
+    font-size: 0.63rem;
+
+    line-height: 1.18;
+  }
+
+  .producer-info-stat strong {
+    font-size:
+      clamp(
+        0.82rem,
+        1.7dvh,
+        1rem
+      );
+
+    line-height: 1.05;
+  }
+
+  #producerInfoDescription {
+    margin-top: 0.55rem;
+
+    padding:
+      0.55rem
+      0.7rem
+      0.55rem
+      0.85rem;
+
+    font-size: 0.76rem;
+
+    line-height: 1.3;
+  }
+
+  #producerInfoDescription::before {
+    margin-bottom: 0.25rem;
+
+    font-size: 0.59rem;
+  }
+
+  #producerInfoCloseButton {
+    min-height: 34px;
+
+    margin-top: 0.55rem;
+
+    padding:
+      0.38rem
+      0.7rem;
+
+    font-size: 0.76rem;
+  }
+
   .producer-info-navigation-button {
-    transition: none;
+    width: 42px;
+    height: 62px;
   }
+
+  .producer-info-navigation-previous {
+    left: -22px;
   }
+
+  .producer-info-navigation-next {
+    right: -22px;
+  }
+
+  .producer-info-navigation-arrow {
+    width: 12px;
+    height: 12px;
+
+    border-width:
+      0 3px 3px 0;
+  }
+}
+
+/* ==========================================================
+   11.1 SHORT DESKTOP HEIGHT
+   ----------------------------------------------------------
+   Compresses the same interface further when browser chrome,
+   taskbars, or smaller monitors leave little vertical room.
+========================================================== */
+
+@media
+  (min-width: 901px)
+  and
+  (any-pointer: fine)
+  and
+  (max-height: 650px) {
+
+  .producer-info-dialog {
+    width:
+      min(
+        calc(100vw - 5rem),
+        590px
+      );
+  }
+
+  .producer-info-panel {
+    padding: 0.55rem;
+  }
+
+  .producer-info-header {
+    margin-bottom: 0.4rem;
+  }
+
+  .producer-info-header h2 {
+    margin-bottom: 0.4rem;
+
+    font-size: 1rem;
+  }
+
+  .producer-info-banner {
+    grid-template-columns:
+      62px
+      minmax(0, 1fr);
+
+    gap: 0.55rem;
+
+    padding: 0.42rem;
+  }
+
+  #producerInfoIconSlot {
+    width: 56px;
+    height: 56px;
+  }
+
+  #producerInfoName {
+    font-size: 1rem;
+  }
+
+  #producerInfoTier,
+  #producerInfoOwned {
+    min-height: 20px;
+
+    padding:
+      0.17rem
+      0.35rem;
+
+    font-size: 0.58rem;
+  }
+
+  .producer-info-statistics {
+    gap: 0.35rem;
+
+    margin-top: 0.4rem;
+  }
+
+  .producer-info-stat {
+    min-height: 60px;
+
+    gap: 0.22rem;
+
+    padding: 0.42rem;
+  }
+
+  .producer-info-stat-label {
+    font-size: 0.57rem;
+  }
+
+  .producer-info-stat strong {
+    font-size: 0.82rem;
+  }
+
+  #producerInfoDescription {
+    margin-top: 0.4rem;
+
+    padding:
+      0.42rem
+      0.55rem
+      0.42rem
+      0.7rem;
+
+    font-size: 0.69rem;
+
+    line-height: 1.2;
+  }
+
+  #producerInfoDescription::before {
+    margin-bottom: 0.18rem;
+
+    font-size: 0.54rem;
+  }
+
+  #producerInfoCloseButton {
+    min-height: 30px;
+
+    margin-top: 0.4rem;
+
+    padding: 0.3rem;
+
+    font-size: 0.7rem;
+  }
+
+  .producer-info-navigation-button {
+    width: 38px;
+    height: 54px;
+  }
+
+  .producer-info-navigation-previous {
+    left: -19px;
+  }
+
+  .producer-info-navigation-next {
+    right: -19px;
+  }
+}
+
+
