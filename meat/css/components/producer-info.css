@@ -1,29 +1,81 @@
 /* ==========================================================
    1. PRODUCER INFO DIALOG
    ----------------------------------------------------------
-   Full-screen modal containing detailed information for the
-   currently selected producer.
+   Transparent stationary container holding the sliding
+   dossier panel and its fixed navigation controls.
 ========================================================== */
 
 .producer-info-dialog {
-  width:
-    min(
-      calc(100vw - 2rem),
-      720px
-    );
+  position: relative;
 
-  max-height:
-    calc(
-      100dvh - 2rem
-    );
+  width: min(
+    calc(100vw - 2rem),
+    720px
+  );
+
+  max-height: none;
 
   margin: auto;
   padding: 0;
 
-  overflow: auto;
-  overscroll-behavior: contain;
+  overflow: visible;
+
+  background: transparent;
+  color: var(--primary-text);
+
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+.producer-info-dialog::backdrop {
+  background:
+    rgba(0, 0, 0, 0.88);
+
+  backdrop-filter:
+    blur(3px);
+}
+
+/* ==========================================================
+   1.1 SLIDING DOSSIER PANEL
+   ----------------------------------------------------------
+   Contains the visible Harvest Dossier. This is the element
+   moved during producer navigation.
+========================================================== */
+
+.producer-info-panel {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  min-height: 100%;
+  max-height: calc(
+    100dvh - 2rem
+  );
+
+  padding: 1.25rem;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  overscroll-behavior:
+    contain;
 
   background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(116, 32, 32, 0.3) 0%,
+      transparent 48%
+    ),
+    repeating-linear-gradient(
+      135deg,
+      transparent 0,
+      transparent 8px,
+      rgba(255, 255, 255, 0.012) 9px
+    ),
     linear-gradient(
       180deg,
       #160707 0%,
@@ -48,39 +100,9 @@
       rgba(197, 44, 44, 0.08);
 
   box-sizing: border-box;
-}
 
-.producer-info-dialog::backdrop {
-  background:
-    rgba(0, 0, 0, 0.88);
-
-  backdrop-filter:
-    blur(3px);
-}
-
-.producer-info-panel {
-  position: relative;
-
-  min-height: 100%;
-
-  padding: 1.25rem;
-
-  overflow: hidden;
-
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      rgba(116, 32, 32, 0.3) 0%,
-      transparent 48%
-    ),
-    repeating-linear-gradient(
-      135deg,
-      transparent 0,
-      transparent 8px,
-      rgba(255, 255, 255, 0.012) 9px
-    );
-
-  box-sizing: border-box;
+  will-change:
+    transform;
 }
 
 .producer-info-panel::before {
@@ -93,12 +115,159 @@
     1px solid
     rgba(255, 93, 93, 0.14);
 
+  border-radius: 8px;
+
   pointer-events: none;
 }
 
 .producer-info-panel > * {
   position: relative;
   z-index: 1;
+}
+
+/* ==========================================================
+   1.2 PRODUCER NAVIGATION CONTROLS
+   ----------------------------------------------------------
+   Fixed side controls for moving between known producers.
+========================================================== */
+
+.producer-info-navigation-button {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+
+  width: 54px;
+  height: 84px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(67, 18, 18, 0.98) 0%,
+      rgba(22, 7, 7, 0.98) 100%
+    );
+
+  color:
+    var(--primary-text);
+
+  border:
+    2px solid
+    var(--accent-bright);
+
+  box-shadow:
+    0 0 16px
+      rgba(197, 44, 44, 0.42),
+    inset 0 0 12px
+      rgba(255, 93, 93, 0.1);
+
+  font: inherit;
+
+  transform:
+    translateY(-50%);
+
+  transform-origin:
+    center;
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition:
+    transform 110ms ease,
+    background 110ms ease,
+    box-shadow 110ms ease,
+    opacity 110ms ease;
+}
+
+.producer-info-navigation-previous {
+  left: -28px;
+
+  border-radius:
+    12px 0 0 12px;
+}
+
+.producer-info-navigation-next {
+  right: -28px;
+
+  border-radius:
+    0 12px 12px 0;
+}
+
+.producer-info-navigation-button:hover:not(
+  :disabled
+),
+.producer-info-navigation-button:focus-visible:not(
+  :disabled
+) {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(102, 28, 28, 0.99) 0%,
+      rgba(35, 9, 9, 0.99) 100%
+    );
+
+  box-shadow:
+    0 0 22px
+      rgba(255, 93, 93, 0.54),
+    inset 0 0 14px
+      rgba(255, 93, 93, 0.15);
+}
+
+.producer-info-navigation-button:active:not(
+  :disabled
+) {
+  transform:
+    translateY(-50%)
+    scale(0.9);
+
+  background:
+    var(--accent);
+}
+
+.producer-info-navigation-button:disabled {
+  opacity: 0.22;
+
+  cursor: default;
+
+  box-shadow: none;
+}
+
+.producer-info-navigation-arrow {
+  width: 16px;
+  height: 16px;
+
+  display: block;
+
+  border:
+    solid currentColor;
+
+  border-width:
+    0 4px 4px 0;
+
+  filter:
+    drop-shadow(
+      0 0 4px
+      rgba(255, 255, 255, 0.25)
+    );
+
+  pointer-events: none;
+}
+
+.producer-info-navigation-previous
+.producer-info-navigation-arrow {
+  transform:
+    translateX(-5px)
+    rotate(135deg);
+}
+
+.producer-info-navigation-next
+.producer-info-navigation-arrow {
+  transform:
+    translateX(5px)
+    rotate(-45deg);
 }
 
 
@@ -780,3 +949,101 @@ button:focus-visible {
     font-size: 0.72rem;
   }
 }
+
+/* ==========================================================
+   10. RESPONSIVE PRODUCER NAVIGATION
+   ----------------------------------------------------------
+   Keeps both side controls reachable without consuming
+   excessive space on narrow and short displays.
+========================================================== */
+
+@media (max-width: 600px) {
+
+  .producer-info-panel {
+    max-height:
+      calc(100dvh - 1rem);
+  }
+
+  .producer-info-navigation-button {
+    width: 46px;
+    height: 76px;
+  }
+
+  .producer-info-navigation-previous {
+    left: -18px;
+  }
+
+  .producer-info-navigation-next {
+    right: -18px;
+  }
+
+  .producer-info-navigation-arrow {
+    width: 13px;
+    height: 13px;
+
+    border-width:
+      0 3px 3px 0;
+  }
+
+  .producer-info-navigation-previous
+  .producer-info-navigation-arrow {
+    transform:
+      translateX(-4px)
+      rotate(135deg);
+  }
+
+  .producer-info-navigation-next
+  .producer-info-navigation-arrow {
+    transform:
+      translateX(4px)
+      rotate(-45deg);
+  }
+}
+
+@media (max-width: 380px) {
+
+  .producer-info-navigation-button {
+    width: 42px;
+    height: 68px;
+  }
+
+  .producer-info-navigation-previous {
+    left: -15px;
+  }
+
+  .producer-info-navigation-next {
+    right: -15px;
+  }
+}
+
+@media
+  (orientation: landscape)
+  and
+  (max-height: 520px) {
+
+  .producer-info-panel {
+    max-height:
+      calc(100dvh - 0.5rem);
+  }
+
+  .producer-info-navigation-button {
+    width: 44px;
+    height: 62px;
+  }
+
+  .producer-info-navigation-previous {
+    left: -18px;
+  }
+
+  .producer-info-navigation-next {
+    right: -18px;
+  }
+}
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+  .producer-info-navigation-button {
+    transition: none;
+  }
+  }
