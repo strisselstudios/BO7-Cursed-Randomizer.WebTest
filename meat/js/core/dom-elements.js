@@ -228,6 +228,71 @@ const offlineProductionCloseButton =
     "offlineProductionCloseButton"
   );
 
+const producerInfoDialog =
+  document.getElementById(
+    "producerInfoDialog"
+  );
+
+const producerInfoIconSlot =
+  document.getElementById(
+    "producerInfoIconSlot"
+  );
+
+const producerInfoName =
+  document.getElementById(
+    "producerInfoName"
+  );
+
+const producerInfoTier =
+  document.getElementById(
+    "producerInfoTier"
+  );
+
+const producerInfoOwned =
+  document.getElementById(
+    "producerInfoOwned"
+  );
+
+const producerInfoUnitLabel =
+  document.getElementById(
+    "producerInfoUnitLabel"
+  );
+
+const producerInfoUnitOutput =
+  document.getElementById(
+    "producerInfoUnitOutput"
+  );
+
+const producerInfoCombinedLabel =
+  document.getElementById(
+    "producerInfoCombinedLabel"
+  );
+
+const producerInfoCombinedOutput =
+  document.getElementById(
+    "producerInfoCombinedOutput"
+  );
+
+const producerInfoShare =
+  document.getElementById(
+    "producerInfoShare"
+  );
+
+const producerInfoLifetime =
+  document.getElementById(
+    "producerInfoLifetime"
+  );
+
+const producerInfoDescription =
+  document.getElementById(
+    "producerInfoDescription"
+  );
+
+const producerInfoCloseButton =
+  document.getElementById(
+    "producerInfoCloseButton"
+  );
+
 const randomizerReturnButton =
   document.getElementById(
     "randomizerReturnButton"
