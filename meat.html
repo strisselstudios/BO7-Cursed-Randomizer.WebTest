@@ -91,12 +91,12 @@
 
   <link
     rel="stylesheet"
-    href="meat/css/components/store.css"
+    href="meat/css/components/store.css?v=2"
   >
   
   <link
     rel="stylesheet"
-    href="meat/css/components/producer-info.css"
+    href="meat/css/components/producer-info.css?v=2"
   >
   <link
     rel="stylesheet"
@@ -110,7 +110,7 @@
 
   <link
   rel="stylesheet"
-  href="meat/css/components/return-button.css?v=2"
+  href="meat/css/components/return-button.css?v=3"
 >
 
 
@@ -151,7 +151,7 @@
 
 <link
   rel="stylesheet"
-  href="meat/css/responsive/store-layout.css?v=4"
+  href="meat/css/responsive/store-layout.css?v=5"
 >
 
 </head>
@@ -176,18 +176,36 @@
 <header class="resource-header">
 
   <a
-  id="randomizerReturnButton"
-  class="header-return-button"
-  href="index.html"
-  aria-label="Return to the Cursed Relic Randomizer"
-  title="Return to the Cursed Relic Randomizer"
->
+    id="randomizerReturnButton"
+    class="
+      header-corner-control
+      header-randomizer-button
+    "
+    href="index.html"
+    aria-label="Back to the Cursed Relic Randomizer"
+    title="Back to the Cursed Relic Randomizer"
+  >
+    <span>BACK TO</span>
+    <span>RANDOMIZER</span>
+  </a>
+
+  <button
+    id="menuBackButton"
+    class="
+      header-corner-control
+      header-menu-back-button
+    "
+    type="button"
+    aria-label="Return to the MEAT screen"
+    title="Return to the MEAT screen"
+    hidden
+  >
     <img
       src="meat/images/ui/back-arrow.png"
       alt=""
       aria-hidden="true"
     >
-  </a>
+  </button>
 
   <div
     id="meatCount"
@@ -1584,7 +1602,7 @@
 
 <script src="meat/js/core/game-state.js"></script>
 
-<script src="meat/js/core/dom-elements.js"></script>
+<script src="meat/js/core/dom-elements.js?v=2"></script>
 
 
 <!-- ==========================================================
@@ -1641,7 +1659,7 @@
 
 <script src="meat/js/ui/store-controls.js"></script>
 
-<script src="meat/js/ui/navigation.js"></script>
+<script src="meat/js/ui/navigation.js?v=2"></script>
 
 <script src="meat/js/ui/meat-feedback.js"></script>
 
