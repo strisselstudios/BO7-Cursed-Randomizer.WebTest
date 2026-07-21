@@ -350,6 +350,45 @@
   class="producer-info-dialog"
   aria-labelledby="producerInfoHeading"
 >
+
+  <button
+    id="producerInfoPreviousButton"
+    class="
+      producer-info-navigation-button
+      producer-info-navigation-previous
+    "
+    type="button"
+    aria-label="View previous known building"
+    aria-controls="producerInfoPanel"
+    disabled
+  >
+    <span
+      class="producer-info-navigation-arrow"
+      aria-hidden="true"
+    ></span>
+  </button>
+
+  <button
+    id="producerInfoNextButton"
+    class="
+      producer-info-navigation-button
+      producer-info-navigation-next
+    "
+    type="button"
+    aria-label="View next known building"
+    aria-controls="producerInfoPanel"
+    disabled
+  >
+    <span
+      class="producer-info-navigation-arrow"
+      aria-hidden="true"
+    ></span>
+  </button>
+
+  <article
+    id="producerInfoPanel"
+    class="producer-info-panel"
+  >
   <article class="producer-info-panel">
 
     <header class="producer-info-header">
@@ -1602,7 +1641,7 @@
 
 <script src="meat/js/core/game-state.js"></script>
 
-<script src="meat/js/core/dom-elements.js?v=2"></script>
+<script src="meat/js/core/dom-elements.js?v=3"></script>
 
 
 <!-- ==========================================================
@@ -1653,7 +1692,7 @@
 
 <script src="meat/js/ui/game-display.js"></script>
   
-<script src="meat/js/ui/producer-info.js"></script>
+<script src="meat/js/ui/producer-info.js?v=2"></script>
   
 <script src="meat/js/ui/store-controls.js"></script>
 
