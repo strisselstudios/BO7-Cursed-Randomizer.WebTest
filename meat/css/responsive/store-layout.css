@@ -886,37 +886,34 @@
 }
 
 /* ==========================================================
-   7. HEADER RETURN CONTROL SPACING
+   7. HEADER CORNER CONTROL SPACING
    ----------------------------------------------------------
    Reserves equal space on both sides of the resource header
-   so the MEAT total remains centered while the return arrow
-   occupies the upper-left corner.
+   so the MEAT total remains centered while the wider
+   Randomizer text control occupies the upper-left corner.
 ========================================================== */
 
 .resource-header {
-  padding-left:
-    calc(
-      3.25rem +
-      env(safe-area-inset-left)
-    );
+  padding-left: calc(
+    4.75rem +
+    env(safe-area-inset-left)
+  );
 
-  padding-right:
-    calc(
-      3.25rem +
-      env(safe-area-inset-right)
-    );
+  padding-right: calc(
+    4.75rem +
+    env(safe-area-inset-right)
+  );
 }
 
-
 /*
- * The Randomizer item was moved from the mobile navigation
- * into the shared resource header, leaving four bottom tabs.
+ * The Randomizer item remains outside the mobile navigation,
+ * leaving four bottom navigation tabs.
  */
-@media (
-  max-width: 760px
-) and (
-  orientation: portrait
-) {
+@media
+  (max-width: 760px)
+  and
+  (orientation: portrait) {
+
   .mobile-bottom-navigation {
     grid-template-columns:
       repeat(
@@ -924,30 +921,38 @@
         minmax(0, 1fr)
       );
   }
+
+  .resource-header {
+    padding-left: calc(
+      4.5rem +
+      env(safe-area-inset-left)
+    );
+
+    padding-right: calc(
+      4.5rem +
+      env(safe-area-inset-right)
+    );
+  }
 }
 
-
 /*
- * Short landscape uses a smaller return icon, so it needs
- * slightly less reserved header space.
+ * Short landscape uses the smallest text control.
  */
-@media (
-  orientation: landscape
-) and (
-  max-height: 760px
-) {
-  .resource-header {
-    padding-left:
-      calc(
-        2.75rem +
-        env(safe-area-inset-left)
-      );
+@media
+  (orientation: landscape)
+  and
+  (max-height: 760px) {
 
-    padding-right:
-      calc(
-        2.75rem +
-        env(safe-area-inset-right)
-      );
+  .resource-header {
+    padding-left: calc(
+      4.25rem +
+      env(safe-area-inset-left)
+    );
+
+    padding-right: calc(
+      4.25rem +
+      env(safe-area-inset-right)
+    );
   }
 }
 
