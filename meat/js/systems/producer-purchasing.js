@@ -317,9 +317,8 @@ function transactProducer(
 /* ==========================================================
    6. PRODUCER CARD CONTROLS
    ----------------------------------------------------------
-   Uses the producer card as the transaction button. Pressing
-   the visual INFO area is ignored until the future producer
-   information interface is implemented.
+   Uses the producer card as the transaction button. INFO input
+   is handled separately and never triggers a transaction.
 ========================================================== */
 
 producerCards.forEach(
