@@ -233,6 +233,21 @@ const producerInfoDialog =
     "producerInfoDialog"
   );
 
+const producerInfoPanel =
+  document.getElementById(
+    "producerInfoPanel"
+  );
+
+const producerInfoPreviousButton =
+  document.getElementById(
+    "producerInfoPreviousButton"
+  );
+
+const producerInfoNextButton =
+  document.getElementById(
+    "producerInfoNextButton"
+  );
+
 const producerInfoIconSlot =
   document.getElementById(
     "producerInfoIconSlot"
