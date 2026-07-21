@@ -241,6 +241,11 @@ function updateProducerDisplay() {
           ".producer-production"
         );
 
+       const producerInfoControl =
+         card.querySelector(
+          ".producer-info-button"
+       );
+  
       if (
         !producerName ||
         !producerProduction
@@ -256,8 +261,22 @@ function updateProducerDisplay() {
         !shouldBeVisible;
 
       if (!shouldBeVisible) {
-        return;
-      }
+  if (producerInfoControl) {
+    producerInfoControl
+      .setAttribute(
+        "tabindex",
+        "-1"
+      );
+
+    producerInfoControl
+      .setAttribute(
+        "aria-hidden",
+        "true"
+      );
+  }
+
+  return;
+}
 
       const producerIsRevealed =
         isProducerRevealed(
@@ -269,9 +288,32 @@ function updateProducerDisplay() {
         !producerIsRevealed
       );
 
-      if (!producerIsRevealed) {
-        producerName.textContent =
-          "?";
+if (!producerIsRevealed) {
+  card.classList.remove(
+    "producer-transaction-unavailable"
+  );
+
+  if (producerInfoControl) {
+    producerInfoControl
+      .setAttribute(
+        "tabindex",
+        "-1"
+      );
+
+    producerInfoControl
+      .setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+    producerInfoControl
+      .removeAttribute(
+        "aria-label"
+      );
+  }
+
+  producerName.textContent =
+    "?";
 
         if (producerDescription) {
           producerDescription.textContent =
@@ -309,7 +351,26 @@ function updateProducerDisplay() {
           : producer.name;
 
       producerName.textContent =
-        displayedProducerName;
+  displayedProducerName;
+
+if (producerInfoControl) {
+  producerInfoControl
+    .setAttribute(
+      "tabindex",
+      "0"
+    );
+
+  producerInfoControl
+    .removeAttribute(
+      "aria-hidden"
+    );
+
+  producerInfoControl
+    .setAttribute(
+      "aria-label",
+      `View ${displayedProducerName} harvest dossier`
+    );
+}
 
       if (producerDescription) {
         producerDescription.textContent =
@@ -350,7 +411,12 @@ function updateProducerDisplay() {
         )} MEAT`;
 
       card.disabled =
-        !transaction.canTransact;
+  false;
+
+card.classList.toggle(
+  "producer-transaction-unavailable",
+  !transaction.canTransact
+);
 
       card.dataset.transactionMode =
         transaction.mode;
