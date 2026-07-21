@@ -1,58 +1,124 @@
 /* ==========================================================
-   1. SHARED HEADER RETURN CONTROL
+   1. SHARED HEADER CORNER CONTROLS
    ----------------------------------------------------------
-   Displays one icon-only return control in the upper-left
-   corner of the resource header in every layout.
+   Positions the Randomizer text control and portrait menu
+   back arrow in the upper-left resource-header corner.
 ========================================================== */
 
 .resource-header {
   position: relative;
 }
 
-.header-return-button {
+.header-corner-control {
   position: absolute;
-
-  left:
-    calc(
-      0.5rem +
-      env(safe-area-inset-left)
-    );
-
+  left: calc(
+    0.5rem +
+    env(safe-area-inset-left)
+  );
   top: 50%;
+  z-index: 40;
 
-  width: 38px;
-  height: 38px;
+  box-sizing: border-box;
 
-  display: grid;
-  place-items: center;
-
-  padding: 0.42rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   background:
     var(--button-background);
-
   color:
     var(--primary-text);
 
   border:
     1px solid
     var(--border-color);
-
   border-radius: 6px;
 
-  box-sizing: border-box;
-
+  font-family: inherit;
   text-decoration: none;
 
   transform:
     translateY(-50%);
 
-  z-index: 40;
-
+  cursor: pointer;
   touch-action: manipulation;
 }
 
-.header-return-button img {
+.header-corner-control[hidden] {
+  display: none;
+}
+
+.header-corner-control:hover {
+  background:
+    var(--button-hover);
+
+  border-color:
+    var(--accent-bright);
+}
+
+.header-corner-control:active {
+  transform:
+    translateY(-50%)
+    scale(0.92);
+}
+
+.header-corner-control:focus-visible {
+  outline:
+    2px solid
+    var(--accent-bright);
+
+  outline-offset: 2px;
+}
+
+/* ==========================================================
+   1.1 RANDOMIZER TEXT CONTROL
+   ----------------------------------------------------------
+   Replaces the former Randomizer arrow with a compact
+   two-line text control.
+========================================================== */
+
+.header-randomizer-button {
+  width: 68px;
+  min-height: 42px;
+
+  flex-direction: column;
+  gap: 0.08rem;
+
+  padding:
+    0.34rem
+    0.3rem;
+
+  color:
+    var(--primary-text);
+
+  font-size: 0.52rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.025em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.header-randomizer-button span {
+  display: block;
+}
+
+/* ==========================================================
+   1.2 PORTRAIT MENU BACK CONTROL
+   ----------------------------------------------------------
+   Uses the existing arrow artwork only for returning from a
+   portrait menu to the MEAT screen.
+========================================================== */
+
+.header-menu-back-button {
+  width: 38px;
+  height: 38px;
+
+  padding: 0.42rem;
+}
+
+.header-menu-back-button img {
   display: block;
 
   width: 100%;
@@ -62,47 +128,38 @@
 
   pointer-events: none;
 
-  /* Convert black arrow to white */
+  /*
+   * Convert the source arrow from black to white.
+   */
   filter:
     brightness(0)
     invert(1);
 }
 
-.header-return-button:hover {
-  background:
-    var(--button-hover);
-
-  border-color:
-    var(--accent-bright);
-}
-
-.header-return-button:active {
-  transform:
-    translateY(-50%)
-    scale(0.92);
-}
-
-.header-return-button:focus-visible {
-  outline:
-    2px solid
-    var(--accent-bright);
-
-  outline-offset: 2px;
-}
-
-
 /* ==========================================================
-   2. MOBILE PORTRAIT RETURN CONTROL
+   2. MOBILE PORTRAIT CONTROLS
    ----------------------------------------------------------
-   Slightly reduces the icon on narrow portrait displays.
+   Keeps both possible controls compact inside the portrait
+   resource header.
 ========================================================== */
 
-@media (
-  max-width: 760px
-) and (
-  orientation: portrait
-) {
-  .header-return-button {
+@media
+  (max-width: 760px)
+  and
+  (orientation: portrait) {
+
+  .header-randomizer-button {
+    width: 62px;
+    min-height: 40px;
+
+    padding:
+      0.3rem
+      0.24rem;
+
+    font-size: 0.49rem;
+  }
+
+  .header-menu-back-button {
     width: 34px;
     height: 34px;
 
@@ -110,31 +167,51 @@
   }
 }
 
-
 /* ==========================================================
-   3. SHORT LANDSCAPE RETURN CONTROL
+   3. NON-PORTRAIT CONTROLS
    ----------------------------------------------------------
-   Keeps the icon compact inside short landscape headers.
+   The menu back arrow must never appear in landscape,
+   tablet split-view, or desktop layouts.
 ========================================================== */
 
-@media (
-  orientation: landscape
-) and (
-  max-height: 760px
-) {
-  .header-return-button {
-    width: 30px;
-    height: 30px;
+@media
+  (min-width: 761px),
+  (orientation: landscape) {
 
-    left:
-      calc(
-        0.4rem +
-        env(safe-area-inset-left)
-      );
-
-    padding: 0.32rem;
+  .header-menu-back-button {
+    display: none !important;
   }
 }
+
+/* ==========================================================
+   3.1 SHORT LANDSCAPE RANDOMIZER CONTROL
+   ----------------------------------------------------------
+   Fits the text control inside the reduced landscape header.
+========================================================== */
+
+@media
+  (orientation: landscape)
+  and
+  (max-height: 760px) {
+
+  .header-corner-control {
+    left: calc(
+      0.4rem +
+      env(safe-area-inset-left)
+    );
+  }
+
+  .header-randomizer-button {
+    width: 60px;
+    min-height: 34px;
+
+    padding:
+      0.22rem
+      0.2rem;
+
+    font-size: 0.46rem;
+  }
+  }
 
 /* ==========================================================
    4. RANDOMIZER NAVIGATION CONFIRMATION
