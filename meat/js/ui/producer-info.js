@@ -5,11 +5,18 @@
    temporary interface state and is not saved.
 ========================================================== */
 
-let openProducerInfoKey =
-  null;
+let openProducerInfoKey = null;
 
-const PRODUCER_INFO_REFRESH_RATE =
-  250;
+const PRODUCER_INFO_REFRESH_RATE = 250;
+
+const PRODUCER_INFO_SLIDE_OUT_DURATION =
+  180;
+
+const PRODUCER_INFO_SLIDE_IN_DURATION =
+  220;
+
+const PRODUCER_INFO_SLIDE_DISTANCE =
+  "110%";
 
 const PRODUCER_INFO_TIER_LABELS = {
   1: "TIER I",
@@ -17,13 +24,19 @@ const PRODUCER_INFO_TIER_LABELS = {
   3: "TIER III"
 };
 
+let producerInfoTransitionInProgress =
+  false;
+
+let producerInfoTransitionToken = 0;
+
+let producerInfoActiveAnimation = null;
 
 /* ==========================================================
    2. PRODUCER INFO PRESENTATION
    ----------------------------------------------------------
    Reads the name and icon already displayed by the producer
-   card so temporary and future tier systems remain the source
-   of truth.
+   card so temporary and future tier systems remain the
+   source of truth.
 ========================================================== */
 
 function getProducerInfoCard(
@@ -38,13 +51,12 @@ function getProducerInfoDisplayName(
   producerKey,
   card
 ) {
-  const displayedName =
-    card
-      ?.querySelector(
-        ".producer-information strong"
-      )
-      ?.textContent
-      ?.trim();
+  const displayedName = card
+    ?.querySelector(
+      ".producer-information strong"
+    )
+    ?.textContent
+    ?.trim();
 
   if (
     displayedName &&
@@ -83,9 +95,8 @@ function synchronizeProducerInfoIcon(
   }
 
   const sourcePath =
-    sourceImage?.getAttribute(
-      "src"
-    ) ?? "";
+    sourceImage?.getAttribute("src") ??
+    "";
 
   if (
     !sourceImage ||
@@ -93,23 +104,23 @@ function synchronizeProducerInfoIcon(
   ) {
     if (
       producerInfoIconSlot
-        .dataset.iconSource !==
-      "missing"
+        .dataset
+        .iconSource !== "missing"
     ) {
       producerInfoIconSlot
         .replaceChildren();
 
-      producerInfoIconSlot
-        .textContent =
+      producerInfoIconSlot.textContent =
         "?";
 
       producerInfoIconSlot
-        .dataset.iconSource =
-        "missing";
+        .dataset
+        .iconSource = "missing";
     }
 
     producerInfoIconSlot
-      .classList.add(
+      .classList
+      .add(
         "producer-info-icon-missing"
       );
 
@@ -117,14 +128,15 @@ function synchronizeProducerInfoIcon(
   }
 
   producerInfoIconSlot
-    .classList.remove(
+    .classList
+    .remove(
       "producer-info-icon-missing"
     );
 
   if (
     producerInfoIconSlot
-      .dataset.iconSource ===
-    sourcePath
+      .dataset
+      .iconSource === sourcePath
   ) {
     return;
   }
@@ -134,14 +146,11 @@ function synchronizeProducerInfoIcon(
 
   /*
    * Remove the original image ID. Keeping it would create
-   * duplicate IDs when the card icon is cloned into the dialog.
+   * duplicate IDs when the card icon is cloned into the
+   * dialog.
    */
-  clonedImage.removeAttribute(
-    "id"
-  );
-
-  clonedImage.alt =
-    "";
+  clonedImage.removeAttribute("id");
+  clonedImage.alt = "";
 
   clonedImage.setAttribute(
     "aria-hidden",
@@ -149,21 +158,18 @@ function synchronizeProducerInfoIcon(
   );
 
   producerInfoIconSlot
-    .replaceChildren(
-      clonedImage
-    );
+    .replaceChildren(clonedImage);
 
   producerInfoIconSlot
-    .dataset.iconSource =
-    sourcePath;
+    .dataset
+    .iconSource = sourcePath;
 }
-
 
 /* ==========================================================
    3. PRODUCER INFO STATISTICS
    ----------------------------------------------------------
-   Calculates the selected producer's effective unit output,
-   combined output, share of total output, and lifetime yield.
+   Calculates effective unit output, combined output, share
+   of total producer output, and lifetime yield.
 ========================================================== */
 
 function getTotalEffectiveProducerOutput() {
@@ -186,14 +192,13 @@ function getTotalEffectiveProducerOutput() {
 function formatProducerInfoPercentage(
   percentage
 ) {
-  const normalizedPercentage =
-    Math.min(
-      100,
-      Math.max(
-        0,
-        Number(percentage) || 0
-      )
-    );
+  const normalizedPercentage = Math.min(
+    100,
+    Math.max(
+      0,
+      Number(percentage) || 0
+    )
+  );
 
   if (
     normalizedPercentage === 0 ||
@@ -211,10 +216,7 @@ function formatProducerInfoPercentage(
 
   return normalizedPercentage
     .toFixed(decimalPlaces)
-    .replace(
-      /\.?0+$/,
-      ""
-    );
+    .replace(/\.?0+$/, "");
 }
 
 function updateProducerInfoStatistics(
@@ -282,9 +284,340 @@ function updateProducerInfoStatistics(
     )} MEAT`;
 }
 
+/* ==========================================================
+   4. PRODUCER INFO NAVIGATION
+   ----------------------------------------------------------
+   Moves only through producers whose normal INFO button is
+   available. Locked unknown producers are excluded.
+========================================================== */
+
+function getNavigableProducerInfoKeys() {
+  return producerOrder.filter(
+    (producerKey) => {
+      return (
+        Boolean(
+          producerData[producerKey]
+        ) &&
+        isProducerRevealed(
+          producerKey
+        )
+      );
+    }
+  );
+}
+
+function getAdjacentProducerInfoKey(
+  direction
+) {
+  if (!openProducerInfoKey) {
+    return null;
+  }
+
+  const navigableProducerKeys =
+    getNavigableProducerInfoKeys();
+
+  const currentIndex =
+    navigableProducerKeys.indexOf(
+      openProducerInfoKey
+    );
+
+  if (currentIndex === -1) {
+    return null;
+  }
+
+  const targetIndex =
+    currentIndex + direction;
+
+  if (
+    targetIndex < 0 ||
+    targetIndex >=
+      navigableProducerKeys.length
+  ) {
+    return null;
+  }
+
+  return navigableProducerKeys[
+    targetIndex
+  ];
+}
+
+function getProducerInfoNavigationName(
+  producerKey
+) {
+  if (!producerKey) {
+    return "";
+  }
+
+  const card = getProducerInfoCard(
+    producerKey
+  );
+
+  return getProducerInfoDisplayName(
+    producerKey,
+    card
+  );
+}
+
+function updateProducerInfoNavigationButtons() {
+  const previousProducerKey =
+    getAdjacentProducerInfoKey(-1);
+
+  const nextProducerKey =
+    getAdjacentProducerInfoKey(1);
+
+  const controlsLocked =
+    producerInfoTransitionInProgress ||
+    !openProducerInfoKey;
+
+  if (producerInfoPreviousButton) {
+    const previousProducerName =
+      getProducerInfoNavigationName(
+        previousProducerKey
+      );
+
+    const previousLabel =
+      previousProducerKey
+        ? `View previous known building: ${previousProducerName}`
+        : "No previous known building";
+
+    producerInfoPreviousButton.disabled =
+      controlsLocked ||
+      !previousProducerKey;
+
+    producerInfoPreviousButton
+      .setAttribute(
+        "aria-label",
+        previousLabel
+      );
+
+    producerInfoPreviousButton.title =
+      previousLabel;
+  }
+
+  if (producerInfoNextButton) {
+    const nextProducerName =
+      getProducerInfoNavigationName(
+        nextProducerKey
+      );
+
+    const nextLabel =
+      nextProducerKey
+        ? `View next known building: ${nextProducerName}`
+        : "No next known building";
+
+    producerInfoNextButton.disabled =
+      controlsLocked ||
+      !nextProducerKey;
+
+    producerInfoNextButton
+      .setAttribute(
+        "aria-label",
+        nextLabel
+      );
+
+    producerInfoNextButton.title =
+      nextLabel;
+  }
+}
+
+function producerInfoAnimationsAreEnabled() {
+  const animationSettingIsEnabled =
+    !document.body.classList.contains(
+      "animations-disabled"
+    );
+
+  const reducedMotionIsRequested =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+  return (
+    animationSettingIsEnabled &&
+    !reducedMotionIsRequested &&
+    Boolean(
+      producerInfoPanel?.animate
+    )
+  );
+}
+
+function cancelProducerInfoTransition() {
+  producerInfoTransitionToken += 1;
+
+  producerInfoActiveAnimation
+    ?.cancel();
+
+  producerInfoActiveAnimation = null;
+
+  producerInfoTransitionInProgress =
+    false;
+
+  producerInfoPanel
+    ?.getAnimations?.()
+    .forEach((animation) => {
+      animation.cancel();
+    });
+}
+
+async function showAdjacentProducerInfo(
+  direction
+) {
+  if (
+    producerInfoTransitionInProgress ||
+    !producerInfoDialog?.open ||
+    !producerInfoPanel ||
+    !openProducerInfoKey
+  ) {
+    return;
+  }
+
+  const normalizedDirection =
+    direction < 0 ? -1 : 1;
+
+  const targetProducerKey =
+    getAdjacentProducerInfoKey(
+      normalizedDirection
+    );
+
+  if (!targetProducerKey) {
+    updateProducerInfoNavigationButtons();
+    return;
+  }
+
+  producerInfoTransitionInProgress =
+    true;
+
+  const transitionToken =
+    ++producerInfoTransitionToken;
+
+  updateProducerInfoNavigationButtons();
+
+  const exitPosition =
+    normalizedDirection > 0
+      ? `-${PRODUCER_INFO_SLIDE_DISTANCE}`
+      : PRODUCER_INFO_SLIDE_DISTANCE;
+
+  const entryPosition =
+    normalizedDirection > 0
+      ? PRODUCER_INFO_SLIDE_DISTANCE
+      : `-${PRODUCER_INFO_SLIDE_DISTANCE}`;
+
+  try {
+    if (
+      !producerInfoAnimationsAreEnabled()
+    ) {
+      openProducerInfoKey =
+        targetProducerKey;
+
+      producerInfoPanel.scrollTop = 0;
+
+      updateProducerInfoDialog();
+
+      return;
+    }
+
+    const exitAnimation =
+      producerInfoPanel.animate(
+        [
+          {
+            transform:
+              "translateX(0)"
+          },
+          {
+            transform:
+              `translateX(${exitPosition})`
+          }
+        ],
+        {
+          duration:
+            PRODUCER_INFO_SLIDE_OUT_DURATION,
+
+          easing:
+            "cubic-bezier(0.4, 0, 1, 1)",
+
+          fill:
+            "forwards"
+        }
+      );
+
+    producerInfoActiveAnimation =
+      exitAnimation;
+
+    await exitAnimation.finished.catch(
+      () => {}
+    );
+
+    if (
+      transitionToken !==
+        producerInfoTransitionToken ||
+      !producerInfoDialog.open
+    ) {
+      return;
+    }
+
+    openProducerInfoKey =
+      targetProducerKey;
+
+    producerInfoPanel.scrollTop = 0;
+
+    updateProducerInfoDialog();
+
+    const entryAnimation =
+      producerInfoPanel.animate(
+        [
+          {
+            transform:
+              `translateX(${entryPosition})`
+          },
+          {
+            transform:
+              "translateX(0)"
+          }
+        ],
+        {
+          duration:
+            PRODUCER_INFO_SLIDE_IN_DURATION,
+
+          easing:
+            "cubic-bezier(0, 0, 0.2, 1)",
+
+          fill:
+            "both"
+        }
+      );
+
+    producerInfoActiveAnimation =
+      entryAnimation;
+
+    /*
+     * The entering animation is already active before the
+     * completed exit animation is removed. This prevents a
+     * one-frame flash in the center.
+     */
+    exitAnimation.cancel();
+
+    await entryAnimation.finished.catch(
+      () => {}
+    );
+  } finally {
+    if (
+      transitionToken ===
+      producerInfoTransitionToken
+    ) {
+      producerInfoActiveAnimation
+        ?.cancel();
+
+      producerInfoActiveAnimation = null;
+
+      producerInfoTransitionInProgress =
+        false;
+
+      updateProducerInfoNavigationButtons();
+    }
+  }
+}
 
 /* ==========================================================
-   4. PRODUCER INFO OPEN AND CLOSE
+   5. PRODUCER INFO OPEN AND CLOSE
    ----------------------------------------------------------
    Populates, opens, updates, and closes the shared producer
    dossier.
@@ -327,10 +660,9 @@ function updateProducerInfoDialog() {
     return;
   }
 
-  const card =
-    getProducerInfoCard(
-      openProducerInfoKey
-    );
+  const card = getProducerInfoCard(
+    openProducerInfoKey
+  );
 
   const displayName =
     getProducerInfoDisplayName(
@@ -343,8 +675,8 @@ function updateProducerInfoDialog() {
       openProducerInfoKey
     ] ?? 0;
 
-  const sourceImage =
-    card?.querySelector(
+  const sourceImage = card
+    ?.querySelector(
       ".producer-icon-slot img"
     );
 
@@ -377,6 +709,8 @@ function updateProducerInfoDialog() {
     openProducerInfoKey,
     displayName
   );
+
+  updateProducerInfoNavigationButtons();
 }
 
 function openProducerInfo(
@@ -392,8 +726,14 @@ function openProducerInfo(
     return;
   }
 
+  cancelProducerInfoTransition();
+
   openProducerInfoKey =
     producerKey;
+
+  if (producerInfoPanel) {
+    producerInfoPanel.scrollTop = 0;
+  }
 
   updateProducerInfoDialog();
 
@@ -402,16 +742,16 @@ function openProducerInfo(
       typeof producerInfoDialog
         .showModal === "function"
     ) {
-      producerInfoDialog
-        .showModal();
+      producerInfoDialog.showModal();
     } else {
-      producerInfoDialog
-        .setAttribute(
-          "open",
-          ""
-        );
+      producerInfoDialog.setAttribute(
+        "open",
+        ""
+      );
     }
   }
+
+  updateProducerInfoNavigationButtons();
 
   producerInfoCloseButton
     ?.focus({
@@ -420,9 +760,12 @@ function openProducerInfo(
 }
 
 function closeProducerInfo() {
+  cancelProducerInfoTransition();
+
   if (!producerInfoDialog) {
-    openProducerInfoKey =
-      null;
+    openProducerInfoKey = null;
+
+    updateProducerInfoNavigationButtons();
 
     return;
   }
@@ -434,23 +777,38 @@ function closeProducerInfo() {
   ) {
     producerInfoDialog.close();
   } else {
-    producerInfoDialog
-      .removeAttribute(
-        "open"
-      );
+    producerInfoDialog.removeAttribute(
+      "open"
+    );
   }
 
-  openProducerInfoKey =
-    null;
+  openProducerInfoKey = null;
+
+  updateProducerInfoNavigationButtons();
 }
 
-
 /* ==========================================================
-   5. PRODUCER INFO DIALOG INPUT
+   6. PRODUCER INFO DIALOG INPUT
    ----------------------------------------------------------
-   Closes the dossier through its button, the backdrop, or the
-   Escape key.
+   Closes the dossier through its button, backdrop, or Escape.
+   Side controls move through known producers.
 ========================================================== */
+
+producerInfoPreviousButton
+  ?.addEventListener(
+    "click",
+    () => {
+      showAdjacentProducerInfo(-1);
+    }
+  );
+
+producerInfoNextButton
+  ?.addEventListener(
+    "click",
+    () => {
+      showAdjacentProducerInfo(1);
+    }
+  );
 
 producerInfoCloseButton
   ?.addEventListener(
@@ -472,8 +830,11 @@ producerInfoDialog
   ?.addEventListener(
     "close",
     () => {
-      openProducerInfoKey =
-        null;
+      cancelProducerInfoTransition();
+
+      openProducerInfoKey = null;
+
+      updateProducerInfoNavigationButtons();
     }
   );
 
@@ -508,19 +869,19 @@ producerInfoDialog
     }
   );
 
-
 /* ==========================================================
-   6. PRODUCER INFO LIVE REFRESH
+   7. PRODUCER INFO LIVE REFRESH
    ----------------------------------------------------------
-   Keeps ownership, production, tier, output share, and
-   lifetime yield current while the dossier remains open.
+   Keeps ownership, production, tier, output share, lifetime
+   yield, and navigation availability current while open.
 ========================================================== */
 
 window.setInterval(
   () => {
     if (
       producerInfoDialog?.open &&
-      openProducerInfoKey
+      openProducerInfoKey &&
+      !producerInfoTransitionInProgress
     ) {
       updateProducerInfoDialog();
     }
