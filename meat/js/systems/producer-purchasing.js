@@ -52,9 +52,16 @@ function getFixedStoreQuantity() {
   }
 }
 
-function getProducerTransactionPreview(
-  producerKey
+function getProducerTransactionPreviewForMode(
+  producerKey,
+  requestedMode =
+    selectedStoreTransactionMode
 ) {
+  const normalizedMode =
+    requestedMode === STORE_MODE_SELL
+      ? STORE_MODE_SELL
+      : STORE_MODE_BUY;
+
   const producer =
     producerData[producerKey];
 
@@ -65,14 +72,87 @@ function getProducerTransactionPreview(
 
   if (!producer) {
     return {
-      mode:
-        selectedStoreTransactionMode,
-
+      mode: normalizedMode,
       amount: 0,
       total: 0,
       canTransact: false
     };
   }
+
+  if (
+    normalizedMode ===
+    STORE_MODE_SELL
+  ) {
+    const amount =
+      selectedStoreTransactionQuantity ===
+      STORE_QUANTITY_MAX
+        ? currentlyOwned
+        : getFixedStoreQuantity();
+
+    const hasSelectedAmount =
+      amount > 0 &&
+      currentlyOwned >= amount;
+
+    return {
+      mode: STORE_MODE_SELL,
+      amount,
+
+      total:
+        hasSelectedAmount
+          ? getProducerBulkSellRefund(
+              producerKey,
+              amount
+            )
+          : 0,
+
+      canTransact:
+        hasSelectedAmount
+    };
+  }
+
+  const amount =
+    selectedStoreTransactionQuantity ===
+    STORE_QUANTITY_MAX
+      ? getMaximumAffordableProducerAmount(
+          producerKey
+        )
+      : getFixedStoreQuantity();
+
+  const total =
+    getProducerBulkBuyCost(
+      producerKey,
+      amount
+    );
+
+  return {
+    mode: STORE_MODE_BUY,
+    amount,
+    total,
+
+    canTransact:
+      amount > 0 &&
+      Number.isFinite(total) &&
+      gameState.meat >= total
+  };
+}
+
+function getProducerTransactionPreview(
+  producerKey
+) {
+  return getProducerTransactionPreviewForMode(
+    producerKey,
+    selectedStoreTransactionMode
+  );
+}
+
+function getProducerBuyTransactionPreview(
+  producerKey
+) {
+  return getProducerTransactionPreviewForMode(
+    producerKey,
+    STORE_MODE_BUY
+  );
+}
 
   if (
     selectedStoreTransactionMode ===
@@ -264,6 +344,103 @@ function sellProducerAmount(
 }
 
 /* ==========================================================
+   4.1 PRODUCER TRANSACTION FEEDBACK
+   ----------------------------------------------------------
+   Restarts successful and failed transaction feedback on the
+   exact producer control that was pressed.
+========================================================== */
+
+const PRODUCER_TRANSACTION_SUCCESS_CLASS =
+  "producer-transaction-feedback-success";
+
+const PRODUCER_TRANSACTION_FAILURE_CLASS =
+  "producer-transaction-feedback-failure";
+
+const producerTransactionFeedbackTimers =
+  new WeakMap();
+
+function getDefaultProducerFeedbackTarget(
+  producerKey
+) {
+  return document.querySelector(
+    `.producer-card[data-producer="${producerKey}"]`
+  );
+}
+
+function restartProducerTransactionFeedback(
+  target,
+  className,
+  duration
+) {
+  if (!target?.classList) {
+    return;
+  }
+
+  const existingTimer =
+    producerTransactionFeedbackTimers.get(
+      target
+    );
+
+  if (existingTimer) {
+    window.clearTimeout(
+      existingTimer
+    );
+  }
+
+  target.classList.remove(
+    PRODUCER_TRANSACTION_SUCCESS_CLASS,
+    PRODUCER_TRANSACTION_FAILURE_CLASS
+  );
+
+  /*
+   * Force the browser to commit the removed class so rapidly
+   * repeated purchases restart the animation from frame one.
+   */
+  void target.offsetWidth;
+
+  target.classList.add(
+    className
+  );
+
+  const removalTimer =
+    window.setTimeout(
+      () => {
+        target.classList.remove(
+          className
+        );
+
+        producerTransactionFeedbackTimers
+          .delete(target);
+      },
+      duration
+    );
+
+  producerTransactionFeedbackTimers.set(
+    target,
+    removalTimer
+  );
+}
+
+function showProducerTransactionSuccess(
+  target
+) {
+  restartProducerTransactionFeedback(
+    target,
+    PRODUCER_TRANSACTION_SUCCESS_CLASS,
+    460
+  );
+}
+
+function showProducerTransactionFailure(
+  target
+) {
+  restartProducerTransactionFeedback(
+    target,
+    PRODUCER_TRANSACTION_FAILURE_CLASS,
+    380
+  );
+}
+/* ==========================================================
    5. SELECTED STORE TRANSACTION
    ----------------------------------------------------------
    Performs the currently selected Buy or Sell transaction and
@@ -271,15 +448,76 @@ function sellProducerAmount(
 ========================================================== */
 
 function transactProducer(
-  producerKey
+  producerKey,
+  options = {}
 ) {
+  const requestedMode =
+    options.mode === STORE_MODE_BUY ||
+    options.mode === STORE_MODE_SELL
+      ? options.mode
+      : selectedStoreTransactionMode;
+
+  const feedbackTarget =
+    options.feedbackTarget ??
+    getDefaultProducerFeedbackTarget(
+      producerKey
+    );
+
   if (
     !isProducerRevealed(
       producerKey
     )
   ) {
-    return;
+    return false;
   }
+
+  const transaction =
+    getProducerTransactionPreviewForMode(
+      producerKey,
+      requestedMode
+    );
+
+  if (
+    !transaction.canTransact ||
+    transaction.amount <= 0
+  ) {
+    showProducerTransactionFailure(
+      feedbackTarget
+    );
+
+    return false;
+  }
+
+  const transactionSucceeded =
+    transaction.mode ===
+    STORE_MODE_SELL
+      ? sellProducerAmount(
+          producerKey,
+          transaction.amount
+        )
+      : purchaseProducerAmount(
+          producerKey,
+          transaction.amount
+        );
+
+  if (!transactionSucceeded) {
+    showProducerTransactionFailure(
+      feedbackTarget
+    );
+
+    return false;
+  }
+
+  calculateMeatPerSecond();
+  updateGameDisplay();
+  saveGame();
+
+  showProducerTransactionSuccess(
+    feedbackTarget
+  );
+
+  return true;
+}
 
   const transaction =
     getProducerTransactionPreview(
@@ -337,8 +575,11 @@ producerCards.forEach(
         }
 
         transactProducer(
-          card.dataset.producer
-        );
+  card.dataset.producer,
+  {
+    feedbackTarget: card
+  }
+);
       }
     );
   }
