@@ -96,8 +96,14 @@
   
   <link
     rel="stylesheet"
-    href="meat/css/components/producer-info.css?v=4"
+    href="meat/css/components/producer-info.css?v=5"
   >
+
+  <link
+  rel="stylesheet"
+  href="meat/css/components/transaction-feedback.css?v=1"
+>
+  
   <link
     rel="stylesheet"
     href="meat/css/components/stats.css"
@@ -396,26 +402,47 @@
         HARVEST DOSSIER
       </h2>
 
-      <div class="producer-info-banner">
-        <div
-          id="producerInfoIconSlot"
-          aria-hidden="true"
-        ></div>
+<button
+  id="producerInfoPurchaseButton"
+  class="producer-info-banner"
+  type="button"
+  aria-label="Buy current producer"
+  aria-disabled="false"
+>
 
-        <div class="producer-info-identity">
-          <strong id="producerInfoName">
-            UNKNOWN PRODUCER
-          </strong>
+  <span
+    id="producerInfoIconSlot"
+    aria-hidden="true"
+  ></span>
 
-          <div class="producer-info-meta">
-            <span id="producerInfoTier">
-              TIER I
-            </span>
+  <span class="producer-info-identity">
 
-            <span id="producerInfoOwned">
-              0 OWNED
-            </span>
-          </div>
+    <strong id="producerInfoName">
+      UNKNOWN PRODUCER
+    </strong>
+
+    <span class="producer-info-meta">
+
+      <span id="producerInfoTier">
+        TIER I
+      </span>
+
+      <span id="producerInfoOwned">
+        0 OWNED
+      </span>
+
+      <span
+        id="producerInfoPurchaseLabel"
+        class="producer-info-purchase-label"
+      >
+        BUY ×1 · 0 MEAT
+      </span>
+
+    </span>
+
+  </span>
+
+</button>
         </div>
       </div>
     </header>
