@@ -354,6 +354,36 @@ const harvesterStoreActionButton =
     "harvesterStoreActionButton"
   );
 
+const harvesterPlacementLayer =
+  document.getElementById(
+    "harvesterPlacementLayer"
+  );
+
+const harvesterCursorPreview =
+  document.getElementById(
+    "harvesterCursorPreview"
+  );
+
+const placedHarvester =
+  document.getElementById(
+    "placedHarvester"
+  );
+
+const harvesterPlacementBanner =
+  document.getElementById(
+    "harvesterPlacementBanner"
+  );
+
+const harvesterPlacementCancelButton =
+  document.getElementById(
+    "harvesterPlacementCancelButton"
+  );
+
+const silverSpoonIcon =
+  document.getElementById(
+    "silverSpoonIcon"
+  );
+
 const silverSpoonIcon =
   document.getElementById(
     "silverSpoonIcon"
