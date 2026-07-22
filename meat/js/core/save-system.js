@@ -944,6 +944,41 @@ if (
 }
   }
 
+[
+  "activeStartedAt",
+  "lastProcessedAt",
+  "cooldownStartedAt",
+  "cooldownEndsAt",
+  "storedMeat",
+  "lifetimeMeat"
+].forEach(
+  (propertyName) => {
+    const propertyValue =
+      importedHarvesterState?.[
+        propertyName
+      ];
+
+    if (
+      propertyValue === undefined
+    ) {
+      return;
+    }
+
+    if (
+      typeof propertyValue !==
+        "number" ||
+      !Number.isFinite(
+        propertyValue
+      ) ||
+      propertyValue < 0
+    ) {
+      throw new Error(
+        `Invalid Harvester value: ${propertyName}`
+      );
+    }
+  }
+);
+
   if (
     importedState.settings !==
       undefined &&
