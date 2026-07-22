@@ -5,7 +5,7 @@
 ========================================================== */
 
 const MEAT_SAVE_KEY = "meatExeSave";
-const CURRENT_SAVE_VERSION = 6;
+const CURRENT_SAVE_VERSION = 7;
 
 /* ==========================================================
    2. DEFAULT GAME STATE
@@ -75,11 +75,18 @@ function createDefaultGameState() {
     },
 
     features: {
-      harvester: {
-        unlocked: false,
-        legacyGrandfathered: false
-      }
-    },
+  harvester: {
+    unlocked: false,
+    legacyGrandfathered: false,
+
+    deployed: false,
+
+    position: {
+      x: 0.5,
+      y: 0.5
+    }
+  }
+},
 
     settings: {
       sound: true,
