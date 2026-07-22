@@ -7,7 +7,6 @@
 const MEAT_SAVE_KEY = "meatExeSave";
 const CURRENT_SAVE_VERSION = 6;
 
-
 /* ==========================================================
    2. DEFAULT GAME STATE
    ----------------------------------------------------------
@@ -24,49 +23,65 @@ function createDefaultGameState() {
 
     meatPerClick: 1,
     meatPerSecond: 0,
-     
+
     highestRevealedProducerIndex: -1,
 
-producers: {
-  silverSpoon: 0,
-  aetherRepairmen: 0,
-  vandornCrops: 0,
-  sunkenMiningTown: 0,
-  giantFactory: 0,
-  libertySavingsBonds: 0,
-  marsShrine: 0,
-  ominousLighthouse: 0,
-  cccpMissile: 0,
-  newIndustriesLaboratory: 0,
-  darkAetherRift: 0,
-  mpd: 0,
-  shemsSpacetimeMacGuffin: 0
-},
+    producers: {
+      silverSpoon: 0,
+      aetherRepairmen: 0,
+      vandornCrops: 0,
+      sunkenMiningTown: 0,
+      giantFactory: 0,
+      libertySavingsBonds: 0,
+      marsShrine: 0,
+      ominousLighthouse: 0,
+      cccpMissile: 0,
+      newIndustriesLaboratory: 0,
+      darkAetherRift: 0,
+      mpd: 0,
+      shemsSpacetimeMacGuffin: 0
+    },
 
-  producerLifetimeMeat: {
-    silverSpoon: 0,
-    aetherRepairmen: 0,
-    vandornCrops: 0,
-    sunkenMiningTown: 0,
-    giantFactory: 0,
-    libertySavingsBonds: 0,
-    marsShrine: 0,
-    ominousLighthouse: 0,
-    cccpMissile: 0,
-    newIndustriesLaboratory: 0,
-    darkAetherRift: 0,
-    mpd: 0,
-    shemsSpacetimeMacGuffin: 0
-  },
+    producerHighestTier: {
+      silverSpoon: 0,
+      aetherRepairmen: 0,
+      vandornCrops: 0,
+      sunkenMiningTown: 0,
+      giantFactory: 0,
+      libertySavingsBonds: 0,
+      marsShrine: 0,
+      ominousLighthouse: 0,
+      cccpMissile: 0,
+      newIndustriesLaboratory: 0,
+      darkAetherRift: 0,
+      mpd: 0,
+      shemsSpacetimeMacGuffin: 0
+    },
 
-  features: {
-    harvester: {
-      unlocked: false
-      legacyGrandfathered: false
-    }
-  },
+    producerLifetimeMeat: {
+      silverSpoon: 0,
+      aetherRepairmen: 0,
+      vandornCrops: 0,
+      sunkenMiningTown: 0,
+      giantFactory: 0,
+      libertySavingsBonds: 0,
+      marsShrine: 0,
+      ominousLighthouse: 0,
+      cccpMissile: 0,
+      newIndustriesLaboratory: 0,
+      darkAetherRift: 0,
+      mpd: 0,
+      shemsSpacetimeMacGuffin: 0
+    },
 
-  settings: {
+    features: {
+      harvester: {
+        unlocked: false,
+        legacyGrandfathered: false
+      }
+    },
+
+    settings: {
       sound: true,
       animations: true
     },
@@ -77,26 +92,23 @@ producers: {
 }
 
 let gameState = createDefaultGameState();
+
 /* ==========================================================
-   3 PRODUCER DATABASE
+   3. PRODUCER DATABASE
    ----------------------------------------------------------
    Defines every producer's base production and cost.
 ========================================================== */
 
 const producerData = {
-    silverSpoon: {
+  silverSpoon: {
     name: "Silver Spoon",
     baseCost: 15,
     meatPerSecond: 0.1,
 
     descriptions: {
       1: "Simple. Classic. Perfect for eating stew.",
-
-      2:
-        "Solid gold. Ineffective at digging through concrete.",
-
-      3:
-        "The real deal. Reanimates cower in the face of this kitchen utensil."
+      2: "Solid gold. Ineffective at digging through concrete.",
+      3: "The real deal. Reanimates cower in the face of this kitchen utensil."
     }
   },
 
@@ -106,14 +118,9 @@ const producerData = {
     meatPerSecond: 1,
 
     descriptions: {
-      1:
-        "What’d you think? T.E.D.D changes his own tires? Someone's gotta die to do it.",
-
-      2:
-        "Life expectancy slightly higher than the last. Comes with experience.",
-
-      3:
-        "These unspoken heroes have seen horrors beyond comprehension. They fear NOTHING."
+      1: "What’d you think? T.E.D.D changes his own tires? Someone's gotta die to do it.",
+      2: "Life expectancy slightly higher than the last. Comes with experience.",
+      3: "These unspoken heroes have seen horrors beyond comprehension. They fear NOTHING."
     }
   },
 
@@ -185,7 +192,6 @@ const producerData = {
 };
 
 const PRODUCER_COST_MULTIPLIER = 1.15;
-
 const LOCKED_PRODUCER_PREVIEW_COUNT = 2;
 
 const producerOrder =
