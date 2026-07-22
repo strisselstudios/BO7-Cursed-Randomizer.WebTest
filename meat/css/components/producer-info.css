@@ -44,6 +44,19 @@
     blur(3px);
 }
 
+/*
+ * Native dialogs must remain completely absent from layout
+ * and hit testing unless explicitly opened.
+ */
+.producer-info-dialog:not([open]) {
+  display: none;
+}
+
+.producer-info-dialog:not([open])
+.producer-info-navigation-button {
+  display: none;
+}
+
 /* ==========================================================
    1.1 SLIDING DOSSIER PANEL
    ----------------------------------------------------------
