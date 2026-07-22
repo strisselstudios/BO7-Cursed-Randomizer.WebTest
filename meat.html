@@ -322,19 +322,49 @@
 
   ========================================================= -->
 
-  <div
+<div
   id="placedHarvester"
   class="placed-harvester"
   aria-label="Golden Spork Harvester. Drag to reposition."
   title="Drag to reposition"
   hidden
 >
-    <img
-      src="meat/images/buildings/silver-spoon/spork-tier3.gif"
-      alt=""
-      draggable="false"
+
+  <img
+    src="meat/images/buildings/silver-spoon/spork-tier3.gif"
+    alt=""
+    draggable="false"
+  >
+
+  <div
+    id="harvesterChargeGauge"
+    class="harvester-charge-gauge"
+    aria-hidden="true"
+    hidden
+  >
+
+    <div class="harvester-charge-track">
+
+      <span
+        id="harvesterChargeGaugeFill"
+        class="
+          harvester-charge-fill
+          harvester-charge-fill-green
+        "
+      ></span>
+
+    </div>
+
+    <span
+      id="harvesterChargeTime"
+      class="harvester-charge-time"
     >
+      1:00
+    </span>
+
   </div>
+
+</div>
 
   <!-- ========================================================
 
@@ -351,7 +381,7 @@
   >
 
     <span>
-      TAP/CLICK TO PLACE HARVESTER
+      TAP/CLICK TO PLACE HARVESTER (Drag to reposition)
     </span>
 
     <button
