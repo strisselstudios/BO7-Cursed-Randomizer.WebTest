@@ -89,11 +89,18 @@ function updateGameDisplay() {
   }
 
   if (
-    typeof updateHarvesterStoreControl ===
-    "function"
-  ) {
-    updateHarvesterStoreControl();
-  }
+  typeof updateHarvesterStoreControl ===
+  "function"
+) {
+  updateHarvesterStoreControl();
+}
+
+if (
+  typeof updateHarvesterDeploymentDisplay ===
+  "function"
+) {
+  updateHarvesterDeploymentDisplay();
+}
 
   updateProducerDisplay();
 }
