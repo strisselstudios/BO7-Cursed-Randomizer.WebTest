@@ -89,7 +89,10 @@
 }
 
 /* ==========================================================
-   4. TEMPORARILY PLACED HARVESTER
+   4. DEPLOYED HARVESTER
+   ----------------------------------------------------------
+   Displays the deployed Harvester and allows it to receive
+   pointer input without passing that input to the meat.
 ========================================================== */
 
 .placed-harvester {
@@ -110,9 +113,27 @@
   transform:
     translate(-50%, -50%);
 
-  pointer-events: none;
+  pointer-events: auto;
+
+  cursor: grab;
+
+  touch-action: none;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 
   image-rendering: pixelated;
+
+  will-change:
+    left,
+    top,
+    transform,
+    filter;
+
+  transition:
+    transform 110ms ease,
+    filter 110ms ease;
 }
 
 .placed-harvester[hidden] {
@@ -127,9 +148,71 @@
 
   object-fit: contain;
 
+  pointer-events: none;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+
   image-rendering: pixelated;
 }
 
+/* ==========================================================
+   4.1 ACTIVE DRAG FEEDBACK
+   ----------------------------------------------------------
+   Slightly compresses and highlights the Harvester while it
+   is being repositioned.
+========================================================== */
+
+.placed-harvester.harvester-dragging {
+  z-index: 75;
+
+  cursor: grabbing;
+
+  transform:
+    translate(-50%, -50%)
+    scale(0.94);
+
+  filter:
+    brightness(1.18)
+    drop-shadow(
+      0 0 9px
+      rgba(255, 93, 93, 0.72)
+    );
+}
+
+body.harvester-drag-mode,
+body.harvester-drag-mode * {
+  cursor: grabbing !important;
+}
+
+/* ==========================================================
+   4.2 REDUCED DRAG MOTION
+========================================================== */
+
+body.animations-disabled
+.placed-harvester {
+  transition: none;
+}
+
+body.animations-disabled
+.placed-harvester.harvester-dragging {
+  transform:
+    translate(-50%, -50%);
+}
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+  .placed-harvester {
+    transition: none;
+  }
+
+  .placed-harvester.harvester-dragging {
+    transform:
+      translate(-50%, -50%);
+  }
+}
 /* ==========================================================
    5. PLACEMENT INSTRUCTION BANNER
 ========================================================== */
