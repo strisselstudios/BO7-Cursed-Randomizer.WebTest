@@ -17,10 +17,26 @@ const HARVESTER_DEFAULT_POSITION = {
 };
 
 /* ==========================================================
-   2. HARVESTER POSITION NORMALIZATION
-   ----------------------------------------------------------
-   Keeps saved Harvester coordinates inside the complete MEAT
-   side.
+   1.1 HARVESTER DUTY STATES
+========================================================== */
+
+const HARVESTER_DUTY_STATE_LOCKED =
+  "locked";
+
+const HARVESTER_DUTY_STATE_READY =
+  "ready";
+
+const HARVESTER_DUTY_STATE_ACTIVE =
+  "active";
+
+const HARVESTER_DUTY_STATE_DEPLETED =
+  "depleted";
+
+const HARVESTER_DUTY_STATE_COOLDOWN =
+  "cooldown";
+
+/* ==========================================================
+   2. HARVESTER VALUE NORMALIZATION
 ========================================================== */
 
 function normalizeHarvesterPosition(
@@ -61,6 +77,22 @@ function normalizeHarvesterPosition(
   };
 }
 
+function normalizeHarvesterNumber(
+  value
+) {
+  const normalizedValue =
+    Number(value);
+
+  return (
+    Number.isFinite(
+      normalizedValue
+    ) &&
+    normalizedValue >= 0
+  )
+    ? normalizedValue
+    : 0;
+}
+
 /* ==========================================================
    3. HARVESTER STATE SAFETY
 ========================================================== */
@@ -88,11 +120,21 @@ function ensureHarvesterState() {
     gameState.features.harvester = {
       unlocked: false,
       legacyGrandfathered: false,
+
       deployed: false,
 
       position: {
         ...HARVESTER_DEFAULT_POSITION
-      }
+      },
+
+      activeStartedAt: 0,
+      lastProcessedAt: 0,
+
+      cooldownStartedAt: 0,
+      cooldownEndsAt: 0,
+
+      storedMeat: 0,
+      lifetimeMeat: 0
     };
   }
 
@@ -130,13 +172,59 @@ function ensureHarvesterState() {
       harvesterState.position
     );
 
-  /*
-   * A locked Harvester can never remain deployed, even if a
-   * malformed save attempts to force that state.
-   */
+  harvesterState.activeStartedAt =
+    normalizeHarvesterNumber(
+      harvesterState.activeStartedAt
+    );
+
+  harvesterState.lastProcessedAt =
+    normalizeHarvesterNumber(
+      harvesterState.lastProcessedAt
+    );
+
+  harvesterState.cooldownStartedAt =
+    normalizeHarvesterNumber(
+      harvesterState.cooldownStartedAt
+    );
+
+  harvesterState.cooldownEndsAt =
+    normalizeHarvesterNumber(
+      harvesterState.cooldownEndsAt
+    );
+
+  harvesterState.storedMeat =
+    normalizeHarvesterNumber(
+      harvesterState.storedMeat
+    );
+
+  harvesterState.lifetimeMeat =
+    normalizeHarvesterNumber(
+      harvesterState.lifetimeMeat
+    );
+
   if (!harvesterState.unlocked) {
     harvesterState.deployed =
       false;
+
+    harvesterState.activeStartedAt =
+      0;
+
+    harvesterState.lastProcessedAt =
+      0;
+
+    harvesterState.cooldownStartedAt =
+      0;
+
+    harvesterState.cooldownEndsAt =
+      0;
+  }
+
+  if (harvesterState.deployed) {
+    harvesterState.cooldownStartedAt =
+      0;
+
+    harvesterState.cooldownEndsAt =
+      0;
   }
 
   return harvesterState;
@@ -144,9 +232,6 @@ function ensureHarvesterState() {
 
 /* ==========================================================
    4. HARVESTER UNLOCK REQUIREMENT
-   ----------------------------------------------------------
-   Accepts either the current producer tier or the permanently
-   recorded highest historical tier.
 ========================================================== */
 
 function hasReachedHarvesterUnlockTier() {
@@ -202,7 +287,8 @@ function updateHarvesterUnlockState() {
     return false;
   }
 
-  harvesterState.unlocked = true;
+  harvesterState.unlocked =
+    true;
 
   saveGame();
 
@@ -210,12 +296,164 @@ function updateHarvesterUnlockState() {
 }
 
 /* ==========================================================
-   7. HARVESTER DEPLOYMENT ACCESS
+   7. HARVESTER DUTY-CYCLE ACCESS
+========================================================== */
+
+function getHarvesterDutyState(
+  currentTime = Date.now()
+) {
+  const harvesterState =
+    ensureHarvesterState();
+
+  if (!harvesterState.unlocked) {
+    return HARVESTER_DUTY_STATE_LOCKED;
+  }
+
+  if (harvesterState.deployed) {
+    const activeEndsAt =
+      harvesterState.activeStartedAt +
+      HARVESTER_ACTIVE_DURATION_MS;
+
+    return currentTime >= activeEndsAt
+      ? HARVESTER_DUTY_STATE_DEPLETED
+      : HARVESTER_DUTY_STATE_ACTIVE;
+  }
+
+  if (
+    harvesterState.cooldownEndsAt >
+    currentTime
+  ) {
+    return HARVESTER_DUTY_STATE_COOLDOWN;
+  }
+
+  return HARVESTER_DUTY_STATE_READY;
+}
+
+function getHarvesterActiveRemainingMs(
+  currentTime = Date.now()
+) {
+  if (
+    getHarvesterDutyState(
+      currentTime
+    ) !==
+    HARVESTER_DUTY_STATE_ACTIVE
+  ) {
+    return 0;
+  }
+
+  const harvesterState =
+    ensureHarvesterState();
+
+  return Math.max(
+    0,
+    (
+      harvesterState.activeStartedAt +
+      HARVESTER_ACTIVE_DURATION_MS
+    ) -
+    currentTime
+  );
+}
+
+function getHarvesterChargeRatio(
+  currentTime = Date.now()
+) {
+  return Math.min(
+    1,
+    Math.max(
+      0,
+      getHarvesterActiveRemainingMs(
+        currentTime
+      ) /
+      HARVESTER_ACTIVE_DURATION_MS
+    )
+  );
+}
+
+function getHarvesterCooldownRemainingMs(
+  currentTime = Date.now()
+) {
+  const harvesterState =
+    ensureHarvesterState();
+
+  return Math.max(
+    0,
+    harvesterState.cooldownEndsAt -
+      currentTime
+  );
+}
+
+function getHarvesterCooldownRatio(
+  currentTime = Date.now()
+) {
+  const harvesterState =
+    ensureHarvesterState();
+
+  const cooldownLength =
+    harvesterState.cooldownEndsAt -
+    harvesterState.cooldownStartedAt;
+
+  if (cooldownLength <= 0) {
+    return 1;
+  }
+
+  const elapsedCooldown =
+    currentTime -
+    harvesterState.cooldownStartedAt;
+
+  return Math.min(
+    1,
+    Math.max(
+      0,
+      elapsedCooldown /
+      cooldownLength
+    )
+  );
+}
+
+function clearCompletedHarvesterCooldown(
+  currentTime = Date.now()
+) {
+  const harvesterState =
+    ensureHarvesterState();
+
+  if (
+    harvesterState.deployed ||
+    harvesterState.cooldownEndsAt <= 0 ||
+    harvesterState.cooldownEndsAt >
+      currentTime
+  ) {
+    return false;
+  }
+
+  harvesterState.cooldownStartedAt =
+    0;
+
+  harvesterState.cooldownEndsAt =
+    0;
+
+  saveGame();
+
+  return true;
+}
+
+/* ==========================================================
+   8. HARVESTER DEPLOYMENT ACCESS
 ========================================================== */
 
 function isHarvesterDeployed() {
   return ensureHarvesterState()
     .deployed;
+}
+
+function canDeployHarvester(
+  currentTime = Date.now()
+) {
+  return (
+    getHarvesterDutyState(
+      currentTime
+    ) ===
+    HARVESTER_DUTY_STATE_READY
+  );
 }
 
 function getHarvesterSavedPosition() {
@@ -229,26 +467,33 @@ function getHarvesterSavedPosition() {
   };
 }
 
+function getHarvesterStoredMeat() {
+  return ensureHarvesterState()
+    .storedMeat;
+}
 
 /* ==========================================================
-   8. HARVESTER DEPLOYMENT MUTATION
+   9. HARVESTER DEPLOYMENT MUTATION
    ----------------------------------------------------------
-   Deploys, repositions, and retracts the Harvester.
+   Every deployment begins with a full active-time charge.
 
-   Position changes are stored only after placement or after
-   a completed drag. Pointer movement does not repeatedly
-   write to localStorage.
+   Retracting at any point starts the complete cooldown. This
+   prevents repeated short deployments from bypassing the
+   recharge requirement.
 ========================================================== */
 
 function deployHarvesterAtPosition(
   position
 ) {
+  if (!canDeployHarvester()) {
+    return false;
+  }
+
   const harvesterState =
     ensureHarvesterState();
 
-  if (!harvesterState.unlocked) {
-    return false;
-  }
+  const deploymentTime =
+    Date.now();
 
   harvesterState.position =
     normalizeHarvesterPosition(
@@ -257,6 +502,18 @@ function deployHarvesterAtPosition(
 
   harvesterState.deployed =
     true;
+
+  harvesterState.activeStartedAt =
+    deploymentTime;
+
+  harvesterState.lastProcessedAt =
+    deploymentTime;
+
+  harvesterState.cooldownStartedAt =
+    0;
+
+  harvesterState.cooldownEndsAt =
+    0;
 
   saveGame();
 
@@ -307,8 +564,24 @@ function setHarvesterRetracted() {
     return false;
   }
 
+  const retractionTime =
+    Date.now();
+
   harvesterState.deployed =
     false;
+
+  harvesterState.activeStartedAt =
+    0;
+
+  harvesterState.lastProcessedAt =
+    0;
+
+  harvesterState.cooldownStartedAt =
+    retractionTime;
+
+  harvesterState.cooldownEndsAt =
+    retractionTime +
+    HARVESTER_COOLDOWN_DURATION_MS;
 
   saveGame();
 
