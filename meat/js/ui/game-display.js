@@ -757,27 +757,31 @@ function updateTemporaryAetherRepairmenIcon() {
    returns the producer to its earlier name, icon, and text.
 ========================================================== */
 
-function getTemporaryProducerTier(
-  producerKey
+function getTemporaryProducerTierForOwnedAmount(
+  producerKey,
+  ownedAmount
 ) {
-  const amountOwned =
-    gameState.producers[
-      producerKey
-    ] ?? 0;
+  const normalizedOwnedAmount =
+    Math.max(
+      0,
+      Math.floor(
+        Number(ownedAmount) || 0
+      )
+    );
 
   if (
     producerKey ===
     "silverSpoon"
   ) {
     if (
-      amountOwned >=
+      normalizedOwnedAmount >=
       TEST_GOLDEN_SPORK_KNIFE_LEVEL
     ) {
       return 3;
     }
 
     if (
-      amountOwned >=
+      normalizedOwnedAmount >=
       TEST_GOLDEN_SPORK_LEVEL
     ) {
       return 2;
@@ -791,14 +795,14 @@ function getTemporaryProducerTier(
     "aetherRepairmen"
   ) {
     if (
-      amountOwned >=
+      normalizedOwnedAmount >=
       TEST_AETHER_REPAIRMEN_TIER_3_LEVEL
     ) {
       return 3;
     }
 
     if (
-      amountOwned >=
+      normalizedOwnedAmount >=
       TEST_AETHER_REPAIRMEN_TIER_2_LEVEL
     ) {
       return 2;
@@ -808,6 +812,17 @@ function getTemporaryProducerTier(
   }
 
   return 1;
+}
+
+function getTemporaryProducerTier(
+  producerKey
+) {
+  return getTemporaryProducerTierForOwnedAmount(
+    producerKey,
+    gameState.producers[
+      producerKey
+    ] ?? 0
+  );
 }
 
 function getProducerDescriptionForCurrentTier(
