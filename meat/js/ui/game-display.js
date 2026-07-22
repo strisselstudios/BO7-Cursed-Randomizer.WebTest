@@ -72,11 +72,18 @@ function updateGameDisplay() {
    * or temporarily broken during development.
    */
   if (
-    typeof updateHarvesterUnlockState ===
-    "function"
-  ) {
-    updateHarvesterUnlockState();
-  }
+  typeof recordAllProducerHighestTiers ===
+  "function"
+) {
+  recordAllProducerHighestTiers();
+}
+
+if (
+  typeof updateHarvesterUnlockState ===
+  "function"
+) {
+  updateHarvesterUnlockState();
+}
 
   updateProducerDisplay();
 }
