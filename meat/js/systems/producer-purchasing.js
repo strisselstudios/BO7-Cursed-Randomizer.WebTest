@@ -154,63 +154,6 @@ function getProducerBuyTransactionPreview(
   );
 }
 
-  if (
-    selectedStoreTransactionMode ===
-    STORE_MODE_SELL
-  ) {
-    const amount =
-      selectedStoreTransactionQuantity ===
-      STORE_QUANTITY_MAX
-        ? currentlyOwned
-        : getFixedStoreQuantity();
-
-    const hasSelectedAmount =
-      amount > 0 &&
-      currentlyOwned >= amount;
-
-    return {
-      mode: STORE_MODE_SELL,
-      amount,
-
-      total:
-        hasSelectedAmount
-          ? getProducerBulkSellRefund(
-              producerKey,
-              amount
-            )
-          : 0,
-
-      canTransact:
-        hasSelectedAmount
-    };
-  }
-
-  const amount =
-    selectedStoreTransactionQuantity ===
-    STORE_QUANTITY_MAX
-      ? getMaximumAffordableProducerAmount(
-          producerKey
-        )
-      : getFixedStoreQuantity();
-
-  const total =
-    getProducerBulkBuyCost(
-      producerKey,
-      amount
-    );
-
-  return {
-    mode: STORE_MODE_BUY,
-    amount,
-    total,
-
-    canTransact:
-      amount > 0 &&
-      Number.isFinite(total) &&
-      gameState.meat >= total
-  };
-}
-
 /* ==========================================================
    3. PRODUCER BUYING
    ----------------------------------------------------------
@@ -517,39 +460,6 @@ function transactProducer(
   );
 
   return true;
-}
-
-  const transaction =
-    getProducerTransactionPreview(
-      producerKey
-    );
-
-  if (
-    !transaction.canTransact ||
-    transaction.amount <= 0
-  ) {
-    return;
-  }
-
-  const transactionSucceeded =
-    transaction.mode ===
-    STORE_MODE_SELL
-      ? sellProducerAmount(
-          producerKey,
-          transaction.amount
-        )
-      : purchaseProducerAmount(
-          producerKey,
-          transaction.amount
-        );
-
-  if (!transactionSucceeded) {
-    return;
-  }
-
-  calculateMeatPerSecond();
-  updateGameDisplay();
-  saveGame();
 }
 
 /* ==========================================================
