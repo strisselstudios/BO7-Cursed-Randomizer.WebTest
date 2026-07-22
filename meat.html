@@ -93,6 +93,10 @@
     rel="stylesheet"
     href="meat/css/components/store.css"
   >
+  <link
+  rel="stylesheet"
+  href="meat/features/harvester/css/harvester-controls.css"
+  >
   
   <link
     rel="stylesheet"
@@ -628,48 +632,73 @@
     class="producer-list"
   >
 
-    <button
-      class="producer-card"
-      type="button"
-      data-producer="silverSpoon"
+<div
+  id="silverSpoonCardGroup"
+  class="producer-card-group"
+>
+
+  <button
+    class="producer-card"
+    type="button"
+    data-producer="silverSpoon"
+  >
+
+    <span
+      class="
+        producer-icon-slot
+        producer-icon-slot-filled
+      "
+      aria-hidden="true"
     >
-
-      <span
-        class="producer-icon-slot producer-icon-slot-filled"
-        aria-hidden="true"
+      <img
+        id="silverSpoonIcon"
+        src="meat/images/buildings/silver-spoon/spork-locked.png"
+        alt=""
       >
+    </span>
 
-        <img
-          id="silverSpoonIcon"
-          src="meat/images/buildings/silver-spoon/spork-locked.png"
-          alt=""
-        >
+    <span class="producer-information">
 
-      </span>
+      <strong>
+        Silver Spoon
+      </strong>
 
-      <span class="producer-information">
+      <small>
+        Produces 0.1 meat per second
+      </small>
 
-        <strong>Silver Spoon</strong>
+    </span>
 
-        <small>
-          Produces 0.1 meat per second
-        </small>
+    <span class="producer-purchase">
 
-      </span>
+      <strong id="silverSpoonCost">
+        15 MEAT
+      </strong>
 
-      <span class="producer-purchase">
+      <small id="silverSpoonOwned">
+        Owned: 0
+      </small>
 
-        <strong id="silverSpoonCost">
-          15 MEAT
-        </strong>
+    </span>
 
-        <small id="silverSpoonOwned">
-          Owned: 0
-        </small>
+  </button>
 
-      </span>
+  <button
+    id="harvesterStoreActionButton"
+    class="harvester-store-action-button"
+    type="button"
+    aria-label="Deploy Golden Spork Harvester"
+    data-harvester-action="deploy"
+    hidden
+  >
+    <span
+      class="harvester-store-action-label"
+    >
+      DEPLOY HARVESTER
+    </span>
+  </button>
 
-    </button>
+</div>
 
     <button
   class="producer-card"
