@@ -97,8 +97,6 @@ function updateGameDisplay() {
 
   updateProducerDisplay();
 }
-
-
 /* ==========================================================
    2. STORE DISPLAY AND PRODUCER REVEALS
    ----------------------------------------------------------
