@@ -248,6 +248,16 @@ const producerInfoNextButton =
     "producerInfoNextButton"
   );
 
+const producerInfoPurchaseButton =
+  document.getElementById(
+    "producerInfoPurchaseButton"
+  );
+
+const producerInfoPurchaseLabel =
+  document.getElementById(
+    "producerInfoPurchaseLabel"
+  );
+
 const producerInfoIconSlot =
   document.getElementById(
     "producerInfoIconSlot"
