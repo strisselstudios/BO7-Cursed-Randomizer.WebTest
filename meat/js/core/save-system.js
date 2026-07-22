@@ -828,7 +828,7 @@ function validateImportedGameState(
 
   if (
     importedState.features !==
-      undefined
+    undefined
   ) {
     if (
       !importedState.features ||
@@ -866,119 +866,130 @@ function validateImportedGameState(
     }
 
     if (
-      importedHarvesterState
-        ?.unlocked !== undefined &&
-      typeof importedHarvesterState
-        .unlocked !== "boolean"
+      importedHarvesterState !==
+      undefined
     ) {
-      throw new Error(
-        "The imported Harvester unlock state is invalid."
-      );
-    }
-
-    if (
-      importedHarvesterState
-        ?.legacyGrandfathered !==
-        undefined &&
-      typeof importedHarvesterState
-        .legacyGrandfathered !==
-        "boolean"
-    ) {
-      throw new Error(
-        "The imported Harvester legacy state is invalid."
-      );
-    }
-     if (
-  importedHarvesterState
-    ?.deployed !== undefined &&
-  typeof importedHarvesterState
-    .deployed !== "boolean"
-) {
-  throw new Error(
-    "The imported Harvester deployment state is invalid."
-  );
-}
-
-if (
-  importedHarvesterState
-    ?.position !== undefined
-) {
-  const importedPosition =
-    importedHarvesterState.position;
-
-  if (
-    !importedPosition ||
-    typeof importedPosition !==
-      "object" ||
-    Array.isArray(
-      importedPosition
-    )
-  ) {
-    throw new Error(
-      "The imported Harvester position is invalid."
-    );
-  }
-
-  [
-    "x",
-    "y"
-  ].forEach(
-    (axis) => {
-      const coordinate =
-        importedPosition[axis];
-
       if (
-        typeof coordinate !==
-          "number" ||
-        !Number.isFinite(
-          coordinate
-        ) ||
-        coordinate < 0 ||
-        coordinate > 1
+        importedHarvesterState
+          .unlocked !== undefined &&
+        typeof importedHarvesterState
+          .unlocked !== "boolean"
       ) {
         throw new Error(
-          `Invalid Harvester position: ${axis}`
+          "The imported Harvester unlock state is invalid."
         );
       }
-    }
-  );
-}
-  }
 
-[
-  "activeStartedAt",
-  "lastProcessedAt",
-  "cooldownStartedAt",
-  "cooldownEndsAt",
-  "storedMeat",
-  "lifetimeMeat"
-].forEach(
-  (propertyName) => {
-    const propertyValue =
-      importedHarvesterState?.[
-        propertyName
-      ];
+      if (
+        importedHarvesterState
+          .legacyGrandfathered !==
+            undefined &&
+        typeof importedHarvesterState
+          .legacyGrandfathered !==
+            "boolean"
+      ) {
+        throw new Error(
+          "The imported Harvester legacy state is invalid."
+        );
+      }
 
-    if (
-      propertyValue === undefined
-    ) {
-      return;
-    }
+      if (
+        importedHarvesterState
+          .deployed !== undefined &&
+        typeof importedHarvesterState
+          .deployed !== "boolean"
+      ) {
+        throw new Error(
+          "The imported Harvester deployment state is invalid."
+        );
+      }
 
-    if (
-      typeof propertyValue !==
-        "number" ||
-      !Number.isFinite(
-        propertyValue
-      ) ||
-      propertyValue < 0
-    ) {
-      throw new Error(
-        `Invalid Harvester value: ${propertyName}`
+      if (
+        importedHarvesterState
+          .position !== undefined
+      ) {
+        const importedPosition =
+          importedHarvesterState
+            .position;
+
+        if (
+          !importedPosition ||
+          typeof importedPosition !==
+            "object" ||
+          Array.isArray(
+            importedPosition
+          )
+        ) {
+          throw new Error(
+            "The imported Harvester position is invalid."
+          );
+        }
+
+        [
+          "x",
+          "y"
+        ].forEach(
+          (axis) => {
+            const coordinate =
+              importedPosition[
+                axis
+              ];
+
+            if (
+              typeof coordinate !==
+                "number" ||
+              !Number.isFinite(
+                coordinate
+              ) ||
+              coordinate < 0 ||
+              coordinate > 1
+            ) {
+              throw new Error(
+                `Invalid Harvester position: ${axis}`
+              );
+            }
+          }
+        );
+      }
+
+      [
+        "activeStartedAt",
+        "lastProcessedAt",
+        "cooldownStartedAt",
+        "cooldownEndsAt",
+        "storedMeat",
+        "lifetimeMeat"
+      ].forEach(
+        (propertyName) => {
+          const propertyValue =
+            importedHarvesterState[
+              propertyName
+            ];
+
+          if (
+            propertyValue ===
+            undefined
+          ) {
+            return;
+          }
+
+          if (
+            typeof propertyValue !==
+              "number" ||
+            !Number.isFinite(
+              propertyValue
+            ) ||
+            propertyValue < 0
+          ) {
+            throw new Error(
+              `Invalid Harvester value: ${propertyName}`
+            );
+          }
+        }
       );
     }
   }
-);
+
 
   if (
     importedState.settings !==
