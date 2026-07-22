@@ -1,8 +1,5 @@
 /* ==========================================================
    1. HARVESTER STORE CONTROL STATE
-   ----------------------------------------------------------
-   Controls the Tier III action attached to the Silver Spoon
-   producer entry.
 ========================================================== */
 
 const HARVESTER_STORE_ACTION_DEPLOY =
@@ -10,6 +7,9 @@ const HARVESTER_STORE_ACTION_DEPLOY =
 
 const HARVESTER_STORE_ACTION_RETRACT =
   "retract";
+
+const HARVESTER_STORE_ACTION_COOLDOWN =
+  "cooldown";
 
 const HARVESTER_STORE_ACTION_PRESS_DURATION =
   160;
@@ -44,22 +44,40 @@ function shouldShowHarvesterStoreControl() {
    3. HARVESTER STORE CONTROL ACTION
 ========================================================== */
 
-function getHarvesterStoreAction() {
-  const harvesterIsDeployed =
-    typeof isHarvesterDeployed ===
-      "function" &&
-    isHarvesterDeployed();
+function getHarvesterStoreAction(
+  currentTime = Date.now()
+) {
+  const dutyState =
+    getHarvesterDutyState(
+      currentTime
+    );
 
-  return harvesterIsDeployed
-    ? HARVESTER_STORE_ACTION_RETRACT
-    : HARVESTER_STORE_ACTION_DEPLOY;
+  if (
+    dutyState ===
+      HARVESTER_DUTY_STATE_ACTIVE ||
+    dutyState ===
+      HARVESTER_DUTY_STATE_DEPLETED
+  ) {
+    return HARVESTER_STORE_ACTION_RETRACT;
+  }
+
+  if (
+    dutyState ===
+    HARVESTER_DUTY_STATE_COOLDOWN
+  ) {
+    return HARVESTER_STORE_ACTION_COOLDOWN;
+  }
+
+  return HARVESTER_STORE_ACTION_DEPLOY;
 }
 
 /* ==========================================================
    4. HARVESTER STORE CONTROL DISPLAY
 ========================================================== */
 
-function updateHarvesterStoreControl() {
+function updateHarvesterStoreControl(
+  currentTime = Date.now()
+) {
   if (
     !silverSpoonCardGroup ||
     !harvesterStoreActionButton
@@ -82,26 +100,15 @@ function updateHarvesterStoreControl() {
     return;
   }
 
+  const dutyState =
+    getHarvesterDutyState(
+      currentTime
+    );
+
   const selectedAction =
-    getHarvesterStoreAction();
-
-  const actionIsRetract =
-    selectedAction ===
-    HARVESTER_STORE_ACTION_RETRACT;
-
-  const actionText =
-    actionIsRetract
-      ? "RETRACT HARVESTER"
-      : "DEPLOY HARVESTER";
-
-  const accessibleText =
-    actionIsRetract
-      ? "Retract Golden Spork Harvester"
-      : "Deploy Golden Spork Harvester";
-
-  harvesterStoreActionButton.dataset
-    .harvesterAction =
-      selectedAction;
+    getHarvesterStoreAction(
+      currentTime
+    );
 
   const actionLabel =
     harvesterStoreActionButton
@@ -109,19 +116,120 @@ function updateHarvesterStoreControl() {
         ".harvester-store-action-label"
       );
 
+  harvesterStoreActionButton.classList
+    .remove(
+      "harvester-store-action-ready",
+      "harvester-store-action-active",
+      "harvester-store-action-depleted",
+      "harvester-store-action-cooldown"
+    );
+
+  harvesterStoreActionButton.classList
+    .add(
+      `harvester-store-action-${dutyState}`
+    );
+
+  harvesterStoreActionButton.dataset
+    .harvesterAction =
+      selectedAction;
+
+  if (
+    selectedAction ===
+    HARVESTER_STORE_ACTION_COOLDOWN
+  ) {
+    const cooldownRemaining =
+      getHarvesterCooldownRemainingMs(
+        currentTime
+      );
+
+    const cooldownProgress =
+      getHarvesterCooldownRatio(
+        currentTime
+      );
+
+    const formattedCooldown =
+      typeof formatHarvesterDuration ===
+        "function"
+        ? formatHarvesterDuration(
+            cooldownRemaining
+          )
+        : "";
+
+    if (actionLabel) {
+      actionLabel.textContent =
+        `RECHARGING ${formattedCooldown}`;
+    }
+
+    harvesterStoreActionButton.disabled =
+      true;
+
+    harvesterStoreActionButton
+      .setAttribute(
+        "aria-label",
+        `Harvester recharging. ${formattedCooldown} remaining.`
+      );
+
+    harvesterStoreActionButton.title =
+      "Harvester recharging";
+
+    harvesterStoreActionButton.style
+      .setProperty(
+        "--harvester-cooldown-progress",
+        `${cooldownProgress * 100}%`
+      );
+
+    return;
+  }
+
+  harvesterStoreActionButton.disabled =
+    false;
+
+  harvesterStoreActionButton.style
+    .setProperty(
+      "--harvester-cooldown-progress",
+      "0%"
+    );
+
+  if (
+    selectedAction ===
+    HARVESTER_STORE_ACTION_RETRACT
+  ) {
+    if (actionLabel) {
+      actionLabel.textContent =
+        "RETRACT HARVESTER";
+    }
+
+    const accessibleText =
+      dutyState ===
+      HARVESTER_DUTY_STATE_DEPLETED
+        ? "Retract depleted Golden Spork Harvester"
+        : "Retract Golden Spork Harvester";
+
+    harvesterStoreActionButton
+      .setAttribute(
+        "aria-label",
+        accessibleText
+      );
+
+    harvesterStoreActionButton.title =
+      accessibleText;
+
+    return;
+  }
+
   if (actionLabel) {
     actionLabel.textContent =
-      actionText;
+      "DEPLOY HARVESTER";
   }
 
   harvesterStoreActionButton
     .setAttribute(
       "aria-label",
-      accessibleText
+      "Deploy Golden Spork Harvester"
     );
 
   harvesterStoreActionButton.title =
-    accessibleText;
+    "Deploy Golden Spork Harvester";
 }
 
 /* ==========================================================
@@ -176,10 +284,17 @@ function requestHarvesterStoreAction() {
     return;
   }
 
-  showHarvesterStoreActionFeedback();
-
   const requestedAction =
     getHarvesterStoreAction();
+
+  if (
+    requestedAction ===
+    HARVESTER_STORE_ACTION_COOLDOWN
+  ) {
+    return;
+  }
+
+  showHarvesterStoreActionFeedback();
 
   if (
     requestedAction ===
