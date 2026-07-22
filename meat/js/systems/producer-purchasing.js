@@ -204,16 +204,25 @@ function purchaseProducerAmount(
   gameState.meat -= totalCost;
 
   gameState.producers[
-    producerKey
-  ] =
-    (
-      gameState.producers[
-        producerKey
-      ] ?? 0
-    ) +
-    normalizedAmount;
+  producerKey
+] =
+  (
+    gameState.producers[
+      producerKey
+    ] ?? 0
+  ) +
+  normalizedAmount;
 
-  return true;
+if (
+  typeof recordProducerHighestTier ===
+  "function"
+) {
+  recordProducerHighestTier(
+    producerKey
+  );
+}
+
+return true;
 }
 
 /*
