@@ -5,20 +5,58 @@
    restores permanent producer reveal progress.
 ========================================================== */
 
-function migrateGameState(savedState) {
-  const defaultState = createDefaultGameState();
+function migrateGameState(
+  savedState
+) {
+  const defaultState =
+    createDefaultGameState();
+
+  const savedVersion =
+    Number.isInteger(
+      savedState.saveVersion
+    )
+      ? savedState.saveVersion
+      : 0;
 
   const savedProducers =
-    savedState.producers || {};
+    savedState.producers &&
+    typeof savedState.producers ===
+      "object" &&
+    !Array.isArray(
+      savedState.producers
+    )
+      ? savedState.producers
+      : {};
 
-    const savedProducerLifetimeMeat =
-    savedState.producerLifetimeMeat || {};
+  const savedProducerLifetimeMeat =
+    savedState.producerLifetimeMeat &&
+    typeof savedState
+      .producerLifetimeMeat ===
+      "object" &&
+    !Array.isArray(
+      savedState.producerLifetimeMeat
+    )
+      ? savedState.producerLifetimeMeat
+      : {};
+
+  const savedProducerHighestTier =
+    savedState.producerHighestTier &&
+    typeof savedState
+      .producerHighestTier ===
+      "object" &&
+    !Array.isArray(
+      savedState.producerHighestTier
+    )
+      ? savedState.producerHighestTier
+      : {};
 
   const savedFeatures =
     savedState.features &&
     typeof savedState.features ===
       "object" &&
-    !Array.isArray(savedState.features)
+    !Array.isArray(
+      savedState.features
+    )
       ? savedState.features
       : {};
 
@@ -34,28 +72,218 @@ function migrateGameState(savedState) {
 
   const migratedProducers = {};
 
-  const migratedProducerLifetimeMeat = {};
+  const migratedProducerLifetimeMeat =
+    {};
 
-  producerOrder.forEach((producerKey) => {
-    const savedOwnedAmount =
-      savedProducers[producerKey];
+  const migratedProducerHighestTier =
+    {};
 
-    migratedProducers[producerKey] =
-      Number.isInteger(savedOwnedAmount) &&
-      savedOwnedAmount >= 0
-        ? savedOwnedAmount
-        : 0;
+  producerOrder.forEach(
+    (producerKey) => {
+      const savedOwnedAmount =
+        savedProducers[
+          producerKey
+        ];
 
-    const savedLifetimeAmount = Number(
-      savedProducerLifetimeMeat[producerKey]
+      const migratedOwnedAmount =
+        Number.isInteger(
+          savedOwnedAmount
+        ) &&
+        savedOwnedAmount >= 0
+          ? savedOwnedAmount
+          : 0;
+
+      migratedProducers[
+        producerKey
+      ] = migratedOwnedAmount;
+
+      const savedLifetimeAmount =
+        Number(
+          savedProducerLifetimeMeat[
+            producerKey
+          ]
+        );
+
+      migratedProducerLifetimeMeat[
+        producerKey
+      ] =
+        Number.isFinite(
+          savedLifetimeAmount
+        ) &&
+        savedLifetimeAmount >= 0
+          ? savedLifetimeAmount
+          : 0;
+
+      const inferredCurrentTier =
+        migratedOwnedAmount > 0 &&
+        typeof
+          getTemporaryProducerTierForOwnedAmount ===
+          "function"
+          ? getTemporaryProducerTierForOwnedAmount(
+              producerKey,
+              migratedOwnedAmount
+            )
+          : (
+              migratedOwnedAmount > 0
+                ? 1
+                : 0
+            );
+
+      const savedHighestTier =
+        Number(
+          savedProducerHighestTier[
+            producerKey
+          ]
+        );
+
+      const validatedSavedHighestTier =
+        Number.isInteger(
+          savedHighestTier
+        ) &&
+        savedHighestTier >= 0 &&
+        savedHighestTier <= 3
+          ? savedHighestTier
+          : 0;
+
+      migratedProducerHighestTier[
+        producerKey
+      ] = Math.max(
+        inferredCurrentTier,
+        validatedSavedHighestTier
+      );
+    }
+  );
+
+  const legacySaveHasProgress =
+    Number(savedState.totalMeat) > 0 ||
+    Number(savedState.totalClicks) > 0 ||
+    Object.values(
+      migratedProducers
+    ).some(
+      (ownedAmount) =>
+        ownedAmount > 0
+    ) ||
+    Object.values(
+      migratedProducerLifetimeMeat
+    ).some(
+      (lifetimeAmount) =>
+        lifetimeAmount > 0
     );
 
-    migratedProducerLifetimeMeat[producerKey] =
-      Number.isFinite(savedLifetimeAmount) &&
-      savedLifetimeAmount >= 0
-        ? savedLifetimeAmount
-        : 0;
-  });
+  /*
+   * Save version 6 introduces permanent producer-tier
+   * history. Older progressed saves cannot prove or disprove
+   * whether Tier III was reached and later sold away.
+   *
+   * Grandfathering guarantees that no legitimate old Tier III
+   * player loses access to the new feature.
+   */
+  const shouldGrandfatherHarvester =
+    savedVersion < 6 &&
+    legacySaveHasProgress;
+
+  const harvesterTierWasRecorded =
+    migratedProducerHighestTier
+      .silverSpoon >= 3;
+
+  const harvesterWasAlreadyUnlocked =
+    savedHarvesterState.unlocked ===
+    true;
+
+  const harvesterWasAlreadyGrandfathered =
+    savedHarvesterState
+      .legacyGrandfathered === true;
+
+  const migratedState = {
+    ...defaultState,
+    ...savedState,
+
+    producers:
+      migratedProducers,
+
+    producerHighestTier:
+      migratedProducerHighestTier,
+
+    producerLifetimeMeat:
+      migratedProducerLifetimeMeat,
+
+    features: {
+      ...defaultState.features,
+      ...savedFeatures,
+
+      harvester: {
+        ...defaultState
+          .features
+          .harvester,
+        ...savedHarvesterState,
+
+        unlocked:
+          harvesterWasAlreadyUnlocked ||
+          harvesterTierWasRecorded ||
+          shouldGrandfatherHarvester,
+
+        legacyGrandfathered:
+          harvesterWasAlreadyGrandfathered ||
+          shouldGrandfatherHarvester
+      }
+    },
+
+    settings: {
+      ...defaultState.settings,
+      ...(savedState.settings || {})
+    }
+  };
+
+  const savedRevealIndex =
+    Number.isInteger(
+      savedState
+        .highestRevealedProducerIndex
+    )
+      ? savedState
+          .highestRevealedProducerIndex
+      : -1;
+
+  let highestOwnedProducerIndex =
+    -1;
+
+  producerOrder.forEach(
+    (
+      producerKey,
+      producerIndex
+    ) => {
+      const amountOwned =
+        migratedProducers[
+          producerKey
+        ] ?? 0;
+
+      if (amountOwned > 0) {
+        highestOwnedProducerIndex =
+          producerIndex;
+      }
+    }
+  );
+
+  const boundedSavedRevealIndex =
+    Math.min(
+      producerOrder.length - 1,
+      Math.max(
+        -1,
+        savedRevealIndex
+      )
+    );
+
+  migratedState
+    .highestRevealedProducerIndex =
+      Math.max(
+        boundedSavedRevealIndex,
+        highestOwnedProducerIndex
+      );
+
+  migratedState.saveVersion =
+    CURRENT_SAVE_VERSION;
+
+  return migratedState;
+}
 
     const migratedState = {
     ...defaultState,
@@ -384,6 +612,114 @@ function validateImportedGameState(
       "The imported producer lifetime data is invalid."
     );
   }
+
+  if (
+  importedState
+    .producerHighestTier !==
+    undefined
+) {
+  if (
+    !importedState
+      .producerHighestTier ||
+    typeof importedState
+      .producerHighestTier !==
+      "object" ||
+    Array.isArray(
+      importedState
+        .producerHighestTier
+    )
+  ) {
+    throw new Error(
+      "The imported producer tier history is invalid."
+    );
+  }
+
+  producerOrder.forEach(
+    (producerKey) => {
+      const highestTier =
+        importedState
+          .producerHighestTier[
+            producerKey
+          ] ?? 0;
+
+      if (
+        !Number.isInteger(
+          highestTier
+        ) ||
+        highestTier < 0 ||
+        highestTier > 3
+      ) {
+        throw new Error(
+          `Invalid highest producer tier: ${producerKey}`
+        );
+      }
+    }
+  );
+}
+
+if (
+  importedState.features !==
+  undefined
+) {
+  if (
+    !importedState.features ||
+    typeof importedState.features !==
+      "object" ||
+    Array.isArray(
+      importedState.features
+    )
+  ) {
+    throw new Error(
+      "The imported feature data is invalid."
+    );
+  }
+
+  const importedHarvesterState =
+    importedState
+      .features
+      .harvester;
+
+  if (
+    importedHarvesterState !==
+      undefined &&
+    (
+      !importedHarvesterState ||
+      typeof importedHarvesterState !==
+        "object" ||
+      Array.isArray(
+        importedHarvesterState
+      )
+    )
+  ) {
+    throw new Error(
+      "The imported Harvester data is invalid."
+    );
+  }
+
+  if (
+    importedHarvesterState
+      ?.unlocked !== undefined &&
+    typeof importedHarvesterState
+      .unlocked !== "boolean"
+  ) {
+    throw new Error(
+      "The imported Harvester unlock state is invalid."
+    );
+  }
+
+  if (
+    importedHarvesterState
+      ?.legacyGrandfathered !==
+        undefined &&
+    typeof importedHarvesterState
+      .legacyGrandfathered !==
+        "boolean"
+  ) {
+    throw new Error(
+      "The imported Harvester legacy state is invalid."
+    );
+  }
+}
 
   producerOrder.forEach((producerKey) => {
     const lifetimeAmount =
