@@ -2,11 +2,7 @@
    1. HARVESTER FEATURE CONFIGURATION
    ----------------------------------------------------------
    Connects the Harvester feature to the Silver Spoon producer
-   family and unlocks it when that producer reaches Tier III.
-
-   The ownership requirement is intentionally not stored here.
-   Changing the Tier III requirement later will not require a
-   Harvester-specific code change.
+   family and its Tier III progression milestone.
 ========================================================== */
 
 const HARVESTER_SOURCE_PRODUCER_KEY =
@@ -17,62 +13,88 @@ const HARVESTER_REQUIRED_PRODUCER_TIER =
 
 /* ==========================================================
    2. HARVESTER STATE SAFETY
-   ----------------------------------------------------------
-   Ensures the Harvester feature always has a valid state
-   object, including during development and save migration.
 ========================================================== */
 
 function ensureHarvesterState() {
   if (
     !gameState.features ||
-    typeof gameState.features !== "object" ||
-    Array.isArray(gameState.features)
+    typeof gameState.features !==
+      "object" ||
+    Array.isArray(
+      gameState.features
+    )
   ) {
     gameState.features = {};
   }
 
   if (
     !gameState.features.harvester ||
-    typeof gameState.features.harvester !==
-      "object" ||
+    typeof gameState.features
+      .harvester !== "object" ||
     Array.isArray(
       gameState.features.harvester
     )
   ) {
     gameState.features.harvester = {
-      unlocked: false
+      unlocked: false,
+      legacyGrandfathered: false
     };
   }
 
   if (
-    typeof gameState.features.harvester
+    typeof gameState.features
+      .harvester
       .unlocked !== "boolean"
   ) {
-    gameState.features.harvester.unlocked =
-      false;
+    gameState.features
+      .harvester
+      .unlocked = false;
   }
 
-  return gameState.features.harvester;
+  if (
+    typeof gameState.features
+      .harvester
+      .legacyGrandfathered !==
+      "boolean"
+  ) {
+    gameState.features
+      .harvester
+      .legacyGrandfathered = false;
+  }
+
+  return gameState
+    .features
+    .harvester;
 }
 
 /* ==========================================================
    3. HARVESTER UNLOCK REQUIREMENT
    ----------------------------------------------------------
-   Reads the producer's calculated tier instead of checking a
-   hardcoded ownership amount.
+   Accepts either the currently visible producer tier or the
+   permanently recorded highest historical tier.
 ========================================================== */
 
 function hasReachedHarvesterUnlockTier() {
-  if (
-    typeof getTemporaryProducerTier !==
-    "function"
-  ) {
-    return false;
-  }
+  const currentProducerTier =
+    typeof getTemporaryProducerTier ===
+      "function"
+      ? getTemporaryProducerTier(
+          HARVESTER_SOURCE_PRODUCER_KEY
+        )
+      : 0;
+
+  const highestRecordedTier =
+    typeof getProducerHighestTier ===
+      "function"
+      ? getProducerHighestTier(
+          HARVESTER_SOURCE_PRODUCER_KEY
+        )
+      : 0;
 
   return (
-    getTemporaryProducerTier(
-      HARVESTER_SOURCE_PRODUCER_KEY
+    Math.max(
+      currentProducerTier,
+      highestRecordedTier
     ) >=
     HARVESTER_REQUIRED_PRODUCER_TIER
   );
@@ -80,24 +102,15 @@ function hasReachedHarvesterUnlockTier() {
 
 /* ==========================================================
    4. HARVESTER UNLOCK ACCESS
-   ----------------------------------------------------------
-   Returns whether the feature has ever been unlocked.
 ========================================================== */
 
 function isHarvesterUnlocked() {
-  const harvesterState =
-    ensureHarvesterState();
-
-  return harvesterState.unlocked;
+  return ensureHarvesterState()
+    .unlocked;
 }
 
 /* ==========================================================
    5. PERMANENT HARVESTER UNLOCK
-   ----------------------------------------------------------
-   Permanently unlocks the Harvester the first time the Silver
-   Spoon producer family reaches Tier III.
-
-   Selling buildings later does not remove the unlock.
 ========================================================== */
 
 function updateHarvesterUnlockState() {
@@ -108,7 +121,9 @@ function updateHarvesterUnlockState() {
     return false;
   }
 
-  if (!hasReachedHarvesterUnlockTier()) {
+  if (
+    !hasReachedHarvesterUnlockTier()
+  ) {
     return false;
   }
 
