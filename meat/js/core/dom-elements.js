@@ -372,6 +372,21 @@ const placedHarvester =
     "placedHarvester"
   );
 
+const harvesterChargeGauge =
+  document.getElementById(
+    "harvesterChargeGauge"
+  );
+
+const harvesterChargeGaugeFill =
+  document.getElementById(
+    "harvesterChargeGaugeFill"
+  );
+
+const harvesterChargeTime =
+  document.getElementById(
+    "harvesterChargeTime"
+  );
+
 const harvesterPlacementBanner =
   document.getElementById(
     "harvesterPlacementBanner"
