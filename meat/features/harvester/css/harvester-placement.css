@@ -1,0 +1,337 @@
+/* ==========================================================
+   1. MEAT VIEW PLACEMENT CONTEXT
+========================================================== */
+
+.meat-view {
+  position: relative;
+}
+
+/* ==========================================================
+   2. PLACEMENT LAYER
+   ----------------------------------------------------------
+   Covers the complete MEAT side, not only the clickable meat
+   image.
+========================================================== */
+
+.harvester-placement-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+
+  overflow: hidden;
+
+  background:
+    rgba(0, 0, 0, 0.08);
+
+  cursor: crosshair;
+
+  touch-action: none;
+}
+
+.harvester-placement-layer[hidden] {
+  display: none;
+}
+
+.meat-view.harvester-placement-active {
+  cursor: crosshair;
+}
+
+/* ==========================================================
+   3. CURSOR PREVIEW
+   ----------------------------------------------------------
+   Desktop and fine-pointer preview that follows the mouse.
+========================================================== */
+
+.harvester-cursor-preview {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+
+  width:
+    clamp(
+      64px,
+      10vmin,
+      112px
+    );
+
+  aspect-ratio: 1;
+
+  pointer-events: none;
+
+  opacity: 0.58;
+
+  transform:
+    translate(-50%, -50%);
+
+  filter:
+    drop-shadow(
+      0 0 7px
+      rgba(255, 93, 93, 0.65)
+    );
+
+  image-rendering: pixelated;
+}
+
+.harvester-cursor-preview[hidden] {
+  display: none;
+}
+
+.harvester-cursor-preview img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: contain;
+
+  image-rendering: pixelated;
+}
+
+/* ==========================================================
+   4. TEMPORARILY PLACED HARVESTER
+========================================================== */
+
+.placed-harvester {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 45;
+
+  width:
+    clamp(
+      64px,
+      10vmin,
+      112px
+    );
+
+  aspect-ratio: 1;
+
+  transform:
+    translate(-50%, -50%);
+
+  pointer-events: none;
+
+  image-rendering: pixelated;
+}
+
+.placed-harvester[hidden] {
+  display: none;
+}
+
+.placed-harvester img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: contain;
+
+  image-rendering: pixelated;
+}
+
+/* ==========================================================
+   5. PLACEMENT INSTRUCTION BANNER
+========================================================== */
+
+.harvester-placement-banner {
+  position: absolute;
+  left: 50%;
+  bottom:
+    max(
+      0.6rem,
+      env(safe-area-inset-bottom)
+    );
+  z-index: 80;
+
+  width:
+    min(
+      calc(100% - 1rem),
+      620px
+    );
+
+  min-height: 44px;
+
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 0.6rem;
+
+  padding:
+    0.45rem
+    0.55rem
+    0.45rem
+    0.75rem;
+
+  background:
+    rgba(7, 7, 7, 0.82);
+
+  color:
+    var(--primary-text);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-radius: 5px;
+
+  box-shadow:
+    0 0 15px
+      rgba(197, 44, 44, 0.38);
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  font-size:
+    clamp(
+      0.67rem,
+      1.8vw,
+      0.82rem
+    );
+
+  font-weight: 700;
+
+  line-height: 1.15;
+  letter-spacing: 0.035em;
+
+  text-align: center;
+
+  transform:
+    translateX(-50%);
+
+  pointer-events: auto;
+}
+
+.harvester-placement-banner[hidden] {
+  display: none;
+}
+
+.harvester-placement-cancel-button {
+  min-height: 32px;
+
+  padding:
+    0.35rem
+    0.55rem;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-radius: 4px;
+
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+
+  transition:
+    background 100ms ease,
+    color 100ms ease,
+    transform 100ms ease;
+}
+
+.harvester-placement-cancel-button:hover,
+.harvester-placement-cancel-button:focus-visible {
+  background:
+    var(--accent);
+
+  color:
+    var(--primary-text);
+}
+
+.harvester-placement-cancel-button:active {
+  transform:
+    scale(0.92);
+}
+
+/* ==========================================================
+   6. TOUCH DEVICES
+   ----------------------------------------------------------
+   Touch users place directly and do not need a cursor image.
+========================================================== */
+
+@media
+  (hover: none),
+  (pointer: coarse) {
+
+  .harvester-cursor-preview {
+    display: none !important;
+  }
+
+  .harvester-placement-banner {
+    bottom:
+      max(
+        0.45rem,
+        env(safe-area-inset-bottom)
+      );
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      auto;
+
+    font-size: 0.66rem;
+  }
+}
+
+/* ==========================================================
+   7. SHORT LANDSCAPE
+========================================================== */
+
+@media
+  (orientation: landscape)
+  and
+  (max-height: 520px) {
+
+  .harvester-placement-banner {
+    min-height: 36px;
+
+    padding:
+      0.3rem
+      0.45rem
+      0.3rem
+      0.6rem;
+
+    font-size: 0.61rem;
+  }
+
+  .harvester-placement-cancel-button {
+    min-height: 28px;
+
+    padding:
+      0.25rem
+      0.42rem;
+
+    font-size: 0.61rem;
+  }
+}
+
+/* ==========================================================
+   8. REDUCED MOTION
+========================================================== */
+
+body.animations-disabled
+.harvester-placement-cancel-button {
+  transition: none;
+}
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+  .harvester-placement-cancel-button {
+    transition: none;
+  }
+}
