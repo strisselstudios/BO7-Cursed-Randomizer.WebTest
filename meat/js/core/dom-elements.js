@@ -344,7 +344,18 @@ const cancelRandomizerNavigationButton =
   );
 
 
-const silverSpoonIcon = document.getElementById(
+const silverSpoonCardGroup =
+  document.getElementById(
+    "silverSpoonCardGroup"
+  );
+
+const harvesterStoreActionButton =
+  document.getElementById(
+    "harvesterStoreActionButton"
+  );
+
+const silverSpoonIcon =
+  document.getElementById(
     "silverSpoonIcon"
   );
 
