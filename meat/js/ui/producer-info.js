@@ -31,11 +31,19 @@ let producerInfoTransitionToken = 0;
 
 let producerInfoActiveAnimation = null;
 
-let producerInfoOrientationRefreshTimer =
+let producerInfoViewportRefreshTimer =
   null;
 
-let producerInfoReopeningForOrientation =
+let producerInfoViewportRecoveryInProgress =
   false;
+
+let producerInfoIgnoreNextCloseEvent =
+  false;
+
+let producerInfoStableViewportMode =
+  window.innerWidth >= window.innerHeight
+    ? "landscape"
+    : "portrait";
 
 /* ==========================================================
    2. PRODUCER INFO PRESENTATION
@@ -736,6 +744,10 @@ function openProducerInfo(
 
   openProducerInfoKey =
     producerKey;
+   producerInfoStableViewportMode =
+  getProducerInfoViewportMode();
+
+cancelProducerInfoViewportRefresh();
 
   if (producerInfoPanel) {
     producerInfoPanel.scrollTop = 0;
@@ -768,6 +780,11 @@ function openProducerInfo(
 function closeProducerInfo() {
   cancelProducerInfoTransition();
 
+  cancelProducerInfoViewportRefresh();
+
+producerInfoViewportRecoveryInProgress =
+  false;
+
   if (!producerInfoDialog) {
     openProducerInfoKey = null;
 
@@ -794,21 +811,42 @@ function closeProducerInfo() {
 }
 
 /* ==========================================================
-   5.1 PRODUCER INFO ORIENTATION RECOVERY
+   5.1 PRODUCER INFO VIEWPORT RECOVERY
    ----------------------------------------------------------
-   Reopens an active modal after device rotation so the
-   browser recalculates its top-layer position and hit area.
+   Rebuilds the active modal after the browser window crosses
+   between landscape and portrait proportions.
 
-   This preserves the current producer and approximate
-   vertical scroll position.
+   Window resize events are debounced so the dialog is not
+   rebuilt while the user is still dragging the window.
 ========================================================== */
 
-function reopenProducerInfoAfterOrientationChange() {
+const PRODUCER_INFO_VIEWPORT_SETTLE_DELAY =
+  300;
+
+function getProducerInfoViewportMode() {
+  return (
+    window.innerWidth >=
+    window.innerHeight
+  )
+    ? "landscape"
+    : "portrait";
+}
+
+function cancelProducerInfoViewportRefresh() {
+  window.clearTimeout(
+    producerInfoViewportRefreshTimer
+  );
+
+  producerInfoViewportRefreshTimer =
+    null;
+}
+
+function reopenProducerInfoAfterViewportChange() {
   if (
     !producerInfoDialog ||
     !producerInfoDialog.open ||
     !openProducerInfoKey ||
-    producerInfoReopeningForOrientation
+    producerInfoViewportRecoveryInProgress
   ) {
     return;
   }
@@ -819,102 +857,98 @@ function reopenProducerInfoAfterOrientationChange() {
   const preservedScrollTop =
     producerInfoPanel?.scrollTop ?? 0;
 
-  producerInfoReopeningForOrientation =
+  producerInfoViewportRecoveryInProgress =
     true;
 
+  cancelProducerInfoViewportRefresh();
   cancelProducerInfoTransition();
 
   /*
-   * Closing and reopening is intentional. Merely changing
-   * CSS does not reliably rebuild Chrome Android's modal
-   * top-layer hit area after landscape-to-portrait rotation.
+   * The next close event belongs to this controlled modal
+   * rebuild. It must not erase the current producer key.
    */
+  producerInfoIgnoreNextCloseEvent =
+    true;
+
   producerInfoDialog.close();
 
   /*
-   * Wait for the orientation media query and dynamic
-   * viewport dimensions to finish updating.
+   * The resize debounce has already waited for the user to
+   * stop dragging. Two animation frames allow the browser to
+   * apply the final viewport dimensions before showModal().
    */
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      const producerStillExists =
-        Boolean(
-          producerData[producerKey]
-        );
+      try {
+        const producerStillExists =
+          Boolean(
+            producerData[producerKey]
+          );
 
-      const producerStillRevealed =
-        producerStillExists &&
-        isProducerRevealed(
-          producerKey
-        );
+        const producerStillRevealed =
+          producerStillExists &&
+          isProducerRevealed(
+            producerKey
+          );
 
-      if (!producerStillRevealed) {
-        openProducerInfoKey = null;
+        if (!producerStillRevealed) {
+          openProducerInfoKey = null;
 
-        producerInfoReopeningForOrientation =
-          false;
+          updateProducerInfoNavigationButtons();
+
+          return;
+        }
+
+        openProducerInfoKey =
+          producerKey;
+
+        updateProducerInfoDialog();
+
+        if (
+          typeof producerInfoDialog
+            .showModal === "function"
+        ) {
+          producerInfoDialog.showModal();
+        } else {
+          producerInfoDialog.setAttribute(
+            "open",
+            ""
+          );
+        }
+
+        if (producerInfoPanel) {
+          const maximumScrollTop =
+            Math.max(
+              0,
+              producerInfoPanel.scrollHeight -
+                producerInfoPanel.clientHeight
+            );
+
+          producerInfoPanel.scrollTop =
+            Math.min(
+              preservedScrollTop,
+              maximumScrollTop
+            );
+        }
+
+        producerInfoStableViewportMode =
+          getProducerInfoViewportMode();
 
         updateProducerInfoNavigationButtons();
 
-        return;
+        producerInfoCloseButton
+          ?.focus({
+            preventScroll: true
+          });
+      } finally {
+        producerInfoViewportRecoveryInProgress =
+          false;
       }
-
-      openProducerInfoKey =
-        producerKey;
-
-      updateProducerInfoDialog();
-
-      if (
-        typeof producerInfoDialog
-          .showModal === "function"
-      ) {
-        producerInfoDialog.showModal();
-      } else {
-        producerInfoDialog.setAttribute(
-          "open",
-          ""
-        );
-      }
-
-      if (producerInfoPanel) {
-        const maximumScrollTop =
-          Math.max(
-            0,
-            producerInfoPanel.scrollHeight -
-              producerInfoPanel.clientHeight
-          );
-
-        producerInfoPanel.scrollTop =
-          Math.min(
-            preservedScrollTop,
-            maximumScrollTop
-          );
-      }
-
-      updateProducerInfoNavigationButtons();
-
-      producerInfoCloseButton
-        ?.focus({
-          preventScroll: true
-        });
-
-      /*
-       * Keep the recovery flag active briefly so the close
-       * event generated by the temporary close cannot erase
-       * the restored producer state.
-       */
-      window.setTimeout(
-        () => {
-          producerInfoReopeningForOrientation =
-            false;
-        },
-        250
-      );
     });
   });
 }
 
-function scheduleProducerInfoOrientationRefresh() {
+function scheduleProducerInfoViewportRefresh() {
   if (
     !producerInfoDialog?.open ||
     !openProducerInfoKey
@@ -922,16 +956,56 @@ function scheduleProducerInfoOrientationRefresh() {
     return;
   }
 
-  window.clearTimeout(
-    producerInfoOrientationRefreshTimer
-  );
+  const currentViewportMode =
+    getProducerInfoViewportMode();
 
-  producerInfoOrientationRefreshTimer =
+  /*
+   * Ordinary resizing within the same orientation does not
+   * require the native modal to be rebuilt.
+   */
+  if (
+    currentViewportMode ===
+    producerInfoStableViewportMode
+  ) {
+    cancelProducerInfoViewportRefresh();
+
+    return;
+  }
+
+  /*
+   * Every new resize event resets the timer. Recovery occurs
+   * only after window resizing has stopped for 300ms.
+   */
+  cancelProducerInfoViewportRefresh();
+
+  producerInfoViewportRefreshTimer =
     window.setTimeout(
-      reopenProducerInfoAfterOrientationChange,
-      160
+      reopenProducerInfoAfterViewportChange,
+      PRODUCER_INFO_VIEWPORT_SETTLE_DELAY
     );
 }
+
+window.addEventListener(
+  "resize",
+  scheduleProducerInfoViewportRefresh,
+  {
+    passive: true
+  }
+);
+
+/*
+ * visualViewport catches viewport changes caused by mobile
+ * browser controls and device rotation in browsers that
+ * expose the API.
+ */
+window.visualViewport
+  ?.addEventListener(
+    "resize",
+    scheduleProducerInfoViewportRefresh,
+    {
+      passive: true
+    }
+  );
 
 const producerInfoOrientationQuery =
   window.matchMedia(
@@ -945,15 +1019,12 @@ if (
   producerInfoOrientationQuery
     .addEventListener(
       "change",
-      scheduleProducerInfoOrientationRefresh
+      scheduleProducerInfoViewportRefresh
     );
 } else {
-  /*
-   * Compatibility fallback for older Safari versions.
-   */
   producerInfoOrientationQuery
     .addListener(
-      scheduleProducerInfoOrientationRefresh
+      scheduleProducerInfoViewportRefresh
     );
 }
 
@@ -1001,19 +1072,27 @@ producerInfoDialog
     "close",
     () => {
       /*
-       * Orientation recovery temporarily closes and reopens
-       * the dialog. Do not erase its producer state during
-       * that controlled refresh.
+       * The viewport recovery system deliberately closes and
+       * reopens the dialog. Ignore exactly that one close
+       * event without using an unreliable timed flag.
        */
       if (
-        producerInfoReopeningForOrientation
+        producerInfoIgnoreNextCloseEvent
       ) {
+        producerInfoIgnoreNextCloseEvent =
+          false;
+
         return;
       }
 
       cancelProducerInfoTransition();
+      cancelProducerInfoViewportRefresh();
 
-      openProducerInfoKey = null;
+      producerInfoViewportRecoveryInProgress =
+        false;
+
+      openProducerInfoKey =
+        null;
 
       updateProducerInfoNavigationButtons();
     }
