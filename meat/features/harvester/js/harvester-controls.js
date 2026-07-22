@@ -153,13 +153,12 @@ function requestHarvesterDeployment() {
     )
   );
 }
-
 /* ==========================================================
    6. HARVESTER STORE INPUT
 ========================================================== */
 
-harvesterStoreActionButton
-  ?.addEventListener(
+if (harvesterStoreActionButton) {
+  harvesterStoreActionButton.addEventListener(
     "click",
     (event) => {
       event.preventDefault();
@@ -168,3 +167,4 @@ harvesterStoreActionButton
       requestHarvesterDeployment();
     }
   );
+}
