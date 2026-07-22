@@ -97,6 +97,11 @@
   rel="stylesheet"
   href="meat/features/harvester/css/harvester-controls.css"
   >
+
+  <link
+  rel="stylesheet"
+  href="meat/features/harvester/css/harvester-placement.css"
+  >
   
   <link
     rel="stylesheet"
@@ -256,6 +261,70 @@
   id="meatView"
   class="meat-view mobile-active-view"
   data-view="meat"
+
+  <!-- ==========================================================
+
+  HARVESTER PLACEMENT LAYER
+
+  ----------------------------------------------------------
+  Covers the complete MEAT-side panel while placement mode is
+  active. The entire MEAT view is a valid placement area.
+========================================================== -->
+
+<div
+  id="harvesterPlacementLayer"
+  class="harvester-placement-layer"
+  aria-hidden="true"
+  hidden
+>
+
+  <div
+    id="harvesterCursorPreview"
+    class="harvester-cursor-preview"
+    aria-hidden="true"
+    hidden
+  >
+    <img
+      src="meat/images/buildings/silver-spoon/spork-tier3.gif"
+      alt=""
+      draggable="false"
+    >
+  </div>
+
+</div>
+
+<div
+  id="placedHarvester"
+  class="placed-harvester"
+  aria-label="Golden Spork Harvester"
+  hidden
+>
+  <img
+    src="meat/images/buildings/silver-spoon/spork-tier3.gif"
+    alt=""
+    draggable="false"
+  >
+</div>
+
+<div
+  id="harvesterPlacementBanner"
+  class="harvester-placement-banner"
+  role="status"
+  aria-live="polite"
+  hidden
+>
+  <span>
+    CLICK TO PLACE HARVESTER
+  </span>
+
+  <button
+    id="harvesterPlacementCancelButton"
+    class="harvester-placement-cancel-button"
+    type="button"
+  >
+    CANCEL
+  </button>
+</div>
 >
 
   <div class="meat-button-wrapper">
@@ -1748,7 +1817,7 @@
 <script src="meat/features/harvester/js/harvester-state.js"></script>
 
 <script src="meat/features/harvester/js/harvester-controls.js"></script>
-  
+
 <script src="meat/js/ui/producer-info.js"></script>
   
 <script src="meat/js/ui/store-controls.js"></script>
