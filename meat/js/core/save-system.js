@@ -117,6 +117,61 @@ const migratedHarvesterPosition = {
       : 0.5
 };
 
+const migrationTimestamp =
+  Date.now();
+
+function migrateHarvesterNumber(
+  value
+) {
+  const numericValue =
+    Number(value);
+
+  return (
+    Number.isFinite(
+      numericValue
+    ) &&
+    numericValue >= 0
+  )
+    ? numericValue
+    : 0;
+}
+
+const savedHarvesterActiveStartedAt =
+  migrateHarvesterNumber(
+    savedHarvesterState
+      .activeStartedAt
+  );
+
+const savedHarvesterLastProcessedAt =
+  migrateHarvesterNumber(
+    savedHarvesterState
+      .lastProcessedAt
+  );
+
+const savedHarvesterCooldownStartedAt =
+  migrateHarvesterNumber(
+    savedHarvesterState
+      .cooldownStartedAt
+  );
+
+const savedHarvesterCooldownEndsAt =
+  migrateHarvesterNumber(
+    savedHarvesterState
+      .cooldownEndsAt
+  );
+
+const migratedHarvesterStoredMeat =
+  migrateHarvesterNumber(
+    savedHarvesterState
+      .storedMeat
+  );
+
+const migratedHarvesterLifetimeMeat =
+  migrateHarvesterNumber(
+    savedHarvesterState
+      .lifetimeMeat
+  );
+
   const migratedProducers = {};
 
   const migratedProducerLifetimeMeat =
@@ -248,6 +303,42 @@ const harvesterShouldBeDeployed =
   harvesterShouldBeUnlocked &&
   savedHarvesterState.deployed ===
     true;
+
+
+ const migratedActiveStartedAt =
+  harvesterShouldBeDeployed
+    ? (
+        savedHarvesterActiveStartedAt >
+        0
+          ? savedHarvesterActiveStartedAt
+          : migrationTimestamp
+      )
+    : 0;
+
+const migratedLastProcessedAt =
+  harvesterShouldBeDeployed
+    ? (
+        savedHarvesterLastProcessedAt >
+        0
+          ? savedHarvesterLastProcessedAt
+          : migratedActiveStartedAt
+      )
+    : 0;
+
+const savedCooldownIsStillActive =
+  !harvesterShouldBeDeployed &&
+  savedHarvesterCooldownEndsAt >
+    migrationTimestamp;
+
+const migratedCooldownStartedAt =
+  savedCooldownIsStillActive
+    ? savedHarvesterCooldownStartedAt
+    : 0;
+
+const migratedCooldownEndsAt =
+  savedCooldownIsStillActive
+    ? savedHarvesterCooldownEndsAt
+    : 0;
    
   const migratedState = {
     ...defaultState,
@@ -284,10 +375,27 @@ const harvesterShouldBeDeployed =
     harvesterShouldBeDeployed,
 
   position:
-    migratedHarvesterPosition
-      }
-    },
+    migratedHarvesterPosition,
 
+  activeStartedAt:
+    migratedActiveStartedAt,
+
+  lastProcessedAt:
+    migratedLastProcessedAt,
+
+  cooldownStartedAt:
+    migratedCooldownStartedAt,
+
+  cooldownEndsAt:
+    migratedCooldownEndsAt,
+
+  storedMeat:
+    migratedHarvesterStoredMeat,
+
+  lifetimeMeat:
+    migratedHarvesterLifetimeMeat
+ }
+}
     settings: {
       ...defaultState.settings,
       ...(savedState.settings || {})
