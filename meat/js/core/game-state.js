@@ -62,6 +62,7 @@ producers: {
   features: {
     harvester: {
       unlocked: false
+      legacyGrandfathered: false
     }
   },
 
