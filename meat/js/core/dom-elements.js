@@ -343,6 +343,9 @@ const cancelRandomizerNavigationButton =
     "cancelRandomizerNavigationButton"
   );
 
+/* ==========================================================
+   HARVESTER FEATURE ELEMENTS
+========================================================== */
 
 const silverSpoonCardGroup =
   document.getElementById(
@@ -377,11 +380,6 @@ const harvesterPlacementBanner =
 const harvesterPlacementCancelButton =
   document.getElementById(
     "harvesterPlacementCancelButton"
-  );
-
-const silverSpoonIcon =
-  document.getElementById(
-    "silverSpoonIcon"
   );
 
 const silverSpoonIcon =
