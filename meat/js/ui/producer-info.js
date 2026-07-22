@@ -299,6 +299,123 @@ function updateProducerInfoStatistics(
 }
 
 /* ==========================================================
+   3.1 PRODUCER INFO PURCHASE CONTROL
+   ----------------------------------------------------------
+   Displays the current purchase quantity and cost inside the
+   producer banner.
+
+   The dossier always performs a BUY transaction, regardless
+   of the Meat Mart's selected Buy or Sell mode.
+========================================================== */
+
+function getProducerInfoPurchaseQuantityLabel(
+  transaction
+) {
+  if (
+    selectedStoreTransactionQuantity ===
+    STORE_QUANTITY_MAX
+  ) {
+    if (transaction.amount <= 0) {
+      return "MAX";
+    }
+
+    return (
+      `MAX (${
+        transaction.amount.toLocaleString(
+          "en-US"
+        )
+      })`
+    );
+  }
+
+  return (
+    `×${
+      transaction.amount.toLocaleString(
+        "en-US"
+      )
+    }`
+  );
+}
+
+function updateProducerInfoPurchaseControl(
+  producerKey,
+  displayName
+) {
+  if (
+    !producerInfoPurchaseButton ||
+    !producerInfoPurchaseLabel
+  ) {
+    return;
+  }
+
+  const transaction =
+    getProducerBuyTransactionPreview(
+      producerKey
+    );
+
+  const quantityLabel =
+    getProducerInfoPurchaseQuantityLabel(
+      transaction
+    );
+
+  const hasQuotedCost =
+    transaction.amount > 0 &&
+    Number.isFinite(
+      transaction.total
+    );
+
+  const costLabel =
+    hasQuotedCost
+      ? `${formatStoreMeat(
+          transaction.total
+        )} MEAT`
+      : "NOT ENOUGH MEAT";
+
+  producerInfoPurchaseLabel.textContent =
+    `BUY ${quantityLabel} · ${costLabel}`;
+
+  producerInfoPurchaseButton
+    .classList
+    .toggle(
+      "producer-info-purchase-unavailable",
+      !transaction.canTransact
+    );
+
+  producerInfoPurchaseButton
+    .setAttribute(
+      "aria-disabled",
+      String(
+        !transaction.canTransact
+      )
+    );
+
+  const accessibleLabel =
+    transaction.canTransact
+      ? (
+          `Buy ${
+            transaction.amount.toLocaleString(
+              "en-US"
+            )
+          } ${displayName} for ${
+            formatStoreMeat(
+              transaction.total
+            )
+          } MEAT`
+        )
+      : (
+          `Not enough MEAT to buy the selected amount of ${displayName}`
+        );
+
+  producerInfoPurchaseButton
+    .setAttribute(
+      "aria-label",
+      accessibleLabel
+    );
+
+  producerInfoPurchaseButton.title =
+    accessibleLabel;
+}
+/* ==========================================================
    4. PRODUCER INFO NAVIGATION
    ----------------------------------------------------------
    Moves only through producers whose normal INFO button is
@@ -640,6 +757,8 @@ async function showAdjacentProducerInfo(
 function updateProducerInfoDialog() {
   if (
     !producerInfoDialog ||
+    !producerInfoPurchaseButton ||
+    !producerInfoPurchaseLabel ||
     !producerInfoIconSlot ||
     !producerInfoName ||
     !producerInfoTier ||
@@ -720,12 +839,16 @@ function updateProducerInfoDialog() {
   );
 
   updateProducerInfoStatistics(
-    openProducerInfoKey,
-    displayName
-  );
+  openProducerInfoKey,
+  displayName
+);
 
-  updateProducerInfoNavigationButtons();
-}
+updateProducerInfoPurchaseControl(
+  openProducerInfoKey,
+  displayName
+);
+
+updateProducerInfoNavigationButtons();
 
 function openProducerInfo(
   producerKey
@@ -1035,6 +1158,40 @@ if (
    Side controls move through known producers.
 ========================================================== */
 
+   producerInfoPurchaseButton
+  ?.addEventListener(
+    "click",
+    () => {
+      if (
+        !openProducerInfoKey ||
+        producerInfoTransitionInProgress ||
+        producerInfoViewportRecoveryInProgress
+      ) {
+        return;
+      }
+
+      const producerKey =
+        openProducerInfoKey;
+
+      transactProducer(
+        producerKey,
+        {
+          mode: STORE_MODE_BUY,
+
+          feedbackTarget:
+            producerInfoPurchaseButton
+        }
+      );
+
+      /*
+       * Refresh immediately so ownership, cost, output,
+       * producer tier, name, and icon update without waiting
+       * for the 250ms live-refresh interval.
+       */
+      updateProducerInfoDialog();
+    }
+  );
+   
 producerInfoPreviousButton
   ?.addEventListener(
     "click",
