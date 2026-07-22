@@ -779,6 +779,61 @@ function validateImportedGameState(
         "The imported Harvester legacy state is invalid."
       );
     }
+     if (
+  importedHarvesterState
+    ?.deployed !== undefined &&
+  typeof importedHarvesterState
+    .deployed !== "boolean"
+) {
+  throw new Error(
+    "The imported Harvester deployment state is invalid."
+  );
+}
+
+if (
+  importedHarvesterState
+    ?.position !== undefined
+) {
+  const importedPosition =
+    importedHarvesterState.position;
+
+  if (
+    !importedPosition ||
+    typeof importedPosition !==
+      "object" ||
+    Array.isArray(
+      importedPosition
+    )
+  ) {
+    throw new Error(
+      "The imported Harvester position is invalid."
+    );
+  }
+
+  [
+    "x",
+    "y"
+  ].forEach(
+    (axis) => {
+      const coordinate =
+        importedPosition[axis];
+
+      if (
+        typeof coordinate !==
+          "number" ||
+        !Number.isFinite(
+          coordinate
+        ) ||
+        coordinate < 0 ||
+        coordinate > 1
+      ) {
+        throw new Error(
+          `Invalid Harvester position: ${axis}`
+        );
+      }
+    }
+  );
+}
   }
 
   if (
