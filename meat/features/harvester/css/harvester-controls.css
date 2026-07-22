@@ -224,3 +224,97 @@ body.animations-disabled
     transform: none;
   }
 }
+
+/* ==========================================================
+   7. HARVESTER DUTY-CYCLE STATES
+   ----------------------------------------------------------
+   Displays cooldown progress inside the Meat Mart action
+   control and distinguishes active and depleted states.
+========================================================== */
+
+.harvester-store-action-button {
+  position: relative;
+
+  overflow: hidden;
+  isolation: isolate;
+
+  --harvester-cooldown-progress: 0%;
+}
+
+.harvester-store-action-button::before {
+  content: "";
+
+  position: absolute;
+  inset:
+    0
+    auto
+    0
+    0;
+
+  z-index: 0;
+
+  width:
+    var(
+      --harvester-cooldown-progress
+    );
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(86, 116, 62, 0.62),
+      rgba(126, 158, 87, 0.72)
+    );
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    width 240ms linear,
+    opacity 120ms ease;
+}
+
+.harvester-store-action-label {
+  position: relative;
+  z-index: 1;
+}
+
+.harvester-store-action-button.harvester-store-action-cooldown::before {
+  opacity: 1;
+}
+
+.harvester-store-action-button.harvester-store-action-cooldown {
+  color:
+    var(--primary-text);
+
+  cursor: not-allowed;
+
+  border-color:
+    rgba(139, 164, 106, 0.72);
+}
+
+.harvester-store-action-button.harvester-store-action-cooldown:disabled {
+  opacity: 1;
+}
+
+.harvester-store-action-button.harvester-store-action-active {
+  border-color:
+    #c9873d;
+
+  color:
+    #f0c47d;
+}
+
+.harvester-store-action-button.harvester-store-action-depleted {
+  border-color:
+    #ff5d5d;
+
+  color:
+    #ff8a8a;
+
+  box-shadow:
+    inset 0 0 14px
+      rgba(255, 54, 54, 0.14),
+    0 0 16px
+      rgba(255, 45, 45, 0.42);
+}
