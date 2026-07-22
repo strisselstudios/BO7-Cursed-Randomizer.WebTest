@@ -480,6 +480,13 @@ function placePersistentHarvester(
     updateHarvesterStoreControl();
   }
 
+if (
+  typeof updateHarvesterDutyCycleDisplay ===
+  "function"
+) {
+  updateHarvesterDutyCycleDisplay();
+}
+
   document.dispatchEvent(
     new CustomEvent(
       "harvester:deployed",
@@ -509,8 +516,13 @@ function retractDeployedHarvester() {
   cancelHarvesterPlacement();
   cancelHarvesterDrag();
 
-  setHarvesterRetracted();
+  const retractionSucceeded =
+    setHarvesterRetracted();
 
+  if (!retractionSucceeded) {
+    return;
+  }
+   
   updateHarvesterDeploymentDisplay();
 
   if (
@@ -519,6 +531,12 @@ function retractDeployedHarvester() {
   ) {
     updateHarvesterStoreControl();
   }
+   if (
+  typeof updateHarvesterDutyCycleDisplay ===
+  "function"
+) {
+  updateHarvesterDutyCycleDisplay();
+}
 
   document.dispatchEvent(
     new CustomEvent(
