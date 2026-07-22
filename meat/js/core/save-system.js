@@ -69,6 +69,54 @@ function migrateGameState(savedState) {
       ? savedFeatures.harvester
       : {};
 
+   const savedHarvesterPosition =
+  savedHarvesterState.position &&
+  typeof savedHarvesterState.position ===
+    "object" &&
+  !Array.isArray(
+    savedHarvesterState.position
+  )
+    ? savedHarvesterState.position
+    : {};
+
+const savedHarvesterPositionX =
+  Number(
+    savedHarvesterPosition.x
+  );
+
+const savedHarvesterPositionY =
+  Number(
+    savedHarvesterPosition.y
+  );
+
+const migratedHarvesterPosition = {
+  x:
+    Number.isFinite(
+      savedHarvesterPositionX
+    )
+      ? Math.min(
+          1,
+          Math.max(
+            0,
+            savedHarvesterPositionX
+          )
+        )
+      : 0.5,
+
+  y:
+    Number.isFinite(
+      savedHarvesterPositionY
+    )
+      ? Math.min(
+          1,
+          Math.max(
+            0,
+            savedHarvesterPositionY
+          )
+        )
+      : 0.5
+};
+
   const migratedProducers = {};
 
   const migratedProducerLifetimeMeat =
@@ -191,6 +239,16 @@ function migrateGameState(savedState) {
     savedHarvesterState
       .legacyGrandfathered === true;
 
+ const harvesterShouldBeUnlocked =
+  harvesterWasAlreadyUnlocked ||
+  harvesterTierWasRecorded ||
+  shouldGrandfatherHarvester;
+
+const harvesterShouldBeDeployed =
+  harvesterShouldBeUnlocked &&
+  savedHarvesterState.deployed ===
+    true;
+   
   const migratedState = {
     ...defaultState,
     ...savedState,
@@ -209,20 +267,24 @@ function migrateGameState(savedState) {
       ...savedFeatures,
 
       harvester: {
-        ...defaultState
-          .features
-          .harvester,
+  ...defaultState
+    .features
+    .harvester,
 
-        ...savedHarvesterState,
+  ...savedHarvesterState,
 
-        unlocked:
-          harvesterWasAlreadyUnlocked ||
-          harvesterTierWasRecorded ||
-          shouldGrandfatherHarvester,
+  unlocked:
+    harvesterShouldBeUnlocked,
 
-        legacyGrandfathered:
-          harvesterWasAlreadyGrandfathered ||
-          shouldGrandfatherHarvester
+  legacyGrandfathered:
+    harvesterWasAlreadyGrandfathered ||
+    shouldGrandfatherHarvester,
+
+  deployed:
+    harvesterShouldBeDeployed,
+
+  position:
+    migratedHarvesterPosition
       }
     },
 
