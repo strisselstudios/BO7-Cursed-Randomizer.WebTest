@@ -358,44 +358,45 @@ const migratedCooldownEndsAt =
       ...savedFeatures,
 
       harvester: {
-  ...defaultState
-    .features
-    .harvester,
+        ...defaultState
+          .features
+          .harvester,
 
-  ...savedHarvesterState,
+        ...savedHarvesterState,
 
-  unlocked:
-    harvesterShouldBeUnlocked,
+        unlocked:
+          harvesterShouldBeUnlocked,
 
-  legacyGrandfathered:
-    harvesterWasAlreadyGrandfathered ||
-    shouldGrandfatherHarvester,
+        legacyGrandfathered:
+          harvesterWasAlreadyGrandfathered ||
+          shouldGrandfatherHarvester,
 
-  deployed:
-    harvesterShouldBeDeployed,
+        deployed:
+          harvesterShouldBeDeployed,
 
-  position:
-    migratedHarvesterPosition,
+        position:
+          migratedHarvesterPosition,
 
-  activeStartedAt:
-    migratedActiveStartedAt,
+        activeStartedAt:
+          migratedActiveStartedAt,
 
-  lastProcessedAt:
-    migratedLastProcessedAt,
+        lastProcessedAt:
+          migratedLastProcessedAt,
 
-  cooldownStartedAt:
-    migratedCooldownStartedAt,
+        cooldownStartedAt:
+          migratedCooldownStartedAt,
 
-  cooldownEndsAt:
-    migratedCooldownEndsAt,
+        cooldownEndsAt:
+          migratedCooldownEndsAt,
 
-  storedMeat:
-    migratedHarvesterStoredMeat,
+        storedMeat:
+          migratedHarvesterStoredMeat,
 
-  lifetimeMeat:
-    migratedHarvesterLifetimeMeat
- }
-}
+        lifetimeMeat:
+          migratedHarvesterLifetimeMeat
+      }
+    },
+
     settings: {
       ...defaultState.settings,
       ...(savedState.settings || {})
