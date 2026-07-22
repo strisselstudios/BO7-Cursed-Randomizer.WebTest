@@ -229,8 +229,15 @@ function getHarvesterSavedPosition() {
   };
 }
 
+
 /* ==========================================================
    8. HARVESTER DEPLOYMENT MUTATION
+   ----------------------------------------------------------
+   Deploys, repositions, and retracts the Harvester.
+
+   Position changes are stored only after placement or after
+   a completed drag. Pointer movement does not repeatedly
+   write to localStorage.
 ========================================================== */
 
 function deployHarvesterAtPosition(
@@ -250,6 +257,42 @@ function deployHarvesterAtPosition(
 
   harvesterState.deployed =
     true;
+
+  saveGame();
+
+  return true;
+}
+
+function setHarvesterPosition(
+  position
+) {
+  const harvesterState =
+    ensureHarvesterState();
+
+  if (
+    !harvesterState.unlocked ||
+    !harvesterState.deployed
+  ) {
+    return false;
+  }
+
+  const normalizedPosition =
+    normalizeHarvesterPosition(
+      position
+    );
+
+  const positionDidNotChange =
+    harvesterState.position.x ===
+      normalizedPosition.x &&
+    harvesterState.position.y ===
+      normalizedPosition.y;
+
+  if (positionDidNotChange) {
+    return true;
+  }
+
+  harvesterState.position =
+    normalizedPosition;
 
   saveGame();
 
