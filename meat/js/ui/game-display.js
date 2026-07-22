@@ -67,23 +67,33 @@ function updateGameDisplay() {
     );
 
   /*
-   * Feature modules must not be able to prevent the core
-   * interface from rendering if one of their files is absent
-   * or temporarily broken during development.
+   * Producer tier history must update before feature unlocks
+   * are evaluated.
    */
   if (
-  typeof recordAllProducerHighestTiers ===
-  "function"
-) {
-  recordAllProducerHighestTiers();
-}
+    typeof recordAllProducerHighestTiers ===
+    "function"
+  ) {
+    recordAllProducerHighestTiers();
+  }
 
-if (
-  typeof updateHarvesterUnlockState ===
-  "function"
-) {
-  updateHarvesterUnlockState();
-}
+  /*
+   * Feature modules remain guarded so a missing feature file
+   * cannot prevent the core MEAT.exe interface from loading.
+   */
+  if (
+    typeof updateHarvesterUnlockState ===
+    "function"
+  ) {
+    updateHarvesterUnlockState();
+  }
+
+  if (
+    typeof updateHarvesterStoreControl ===
+    "function"
+  ) {
+    updateHarvesterStoreControl();
+  }
 
   updateProducerDisplay();
 }
