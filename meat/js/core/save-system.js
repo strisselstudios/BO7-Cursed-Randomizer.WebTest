@@ -1,13 +1,12 @@
 /* ==========================================================
    1. SAVE MIGRATION
    ----------------------------------------------------------
-   Repairs missing fields, preserves producer ownership, and
-   restores permanent producer reveal progress.
+   Repairs missing fields, preserves producer ownership,
+   restores permanent producer reveal progress, records the
+   highest producer tier, and migrates Harvester unlock data.
 ========================================================== */
 
-function migrateGameState(
-  savedState
-) {
+function migrateGameState(savedState) {
   const defaultState =
     createDefaultGameState();
 
@@ -171,12 +170,10 @@ function migrateGameState(
     );
 
   /*
-   * Save version 6 introduces permanent producer-tier
-   * history. Older progressed saves cannot prove or disprove
-   * whether Tier III was reached and later sold away.
+   * Version 6 introduces permanent producer-tier history.
    *
-   * Grandfathering guarantees that no legitimate old Tier III
-   * player loses access to the new feature.
+   * Older progressed saves cannot prove whether Tier III was
+   * reached and later sold away, so they are grandfathered.
    */
   const shouldGrandfatherHarvester =
     savedVersion < 6 &&
@@ -215,6 +212,7 @@ function migrateGameState(
         ...defaultState
           .features
           .harvester,
+
         ...savedHarvesterState,
 
         unlocked:
@@ -285,78 +283,6 @@ function migrateGameState(
   return migratedState;
 }
 
-    const migratedState = {
-    ...defaultState,
-    ...savedState,
-
-    producers:
-      migratedProducers,
-
-    producerLifetimeMeat:
-      migratedProducerLifetimeMeat,
-
-    features: {
-      ...defaultState.features,
-      ...savedFeatures,
-
-      harvester: {
-        ...defaultState.features.harvester,
-        ...savedHarvesterState,
-
-        unlocked:
-          savedHarvesterState.unlocked ===
-          true
-      }
-    },
-
-    settings: {
-      ...defaultState.settings,
-      ...(savedState.settings || {})
-    }
-  };
-
-  const savedRevealIndex =
-    Number.isInteger(
-      savedState.highestRevealedProducerIndex
-    )
-      ? savedState.highestRevealedProducerIndex
-      : -1;
-
-  let highestOwnedProducerIndex = -1;
-
-  producerOrder.forEach(
-    (producerKey, producerIndex) => {
-      const amountOwned =
-        migratedProducers[producerKey] ?? 0;
-
-      if (amountOwned > 0) {
-        highestOwnedProducerIndex =
-          producerIndex;
-      }
-    }
-  );
-
-  const boundedSavedRevealIndex =
-    Math.min(
-      producerOrder.length - 1,
-      Math.max(
-        -1,
-        savedRevealIndex
-      )
-    );
-
-  migratedState.highestRevealedProducerIndex =
-    Math.max(
-      boundedSavedRevealIndex,
-      highestOwnedProducerIndex
-    );
-
-  migratedState.saveVersion =
-    CURRENT_SAVE_VERSION;
-
-  return migratedState;
-}
-
 /* ==========================================================
    2. LOCAL SAVE SYSTEM
    ----------------------------------------------------------
@@ -364,17 +290,26 @@ function migrateGameState(
 ========================================================== */
 
 function loadGame() {
-  const savedData = localStorage.getItem(MEAT_SAVE_KEY);
+  const savedData =
+    localStorage.getItem(
+      MEAT_SAVE_KEY
+    );
 
   if (!savedData) {
-    gameState = createDefaultGameState();
+    gameState =
+      createDefaultGameState();
+
     return;
   }
 
   try {
-    const parsedSave = JSON.parse(savedData);
+    const parsedSave =
+      JSON.parse(savedData);
 
-    gameState = migrateGameState(parsedSave);
+    gameState =
+      migrateGameState(
+        parsedSave
+      );
 
     calculateMeatPerSecond();
   } catch (error) {
@@ -383,12 +318,14 @@ function loadGame() {
       error
     );
 
-    gameState = createDefaultGameState();
+    gameState =
+      createDefaultGameState();
   }
 }
 
 function saveGame() {
-  gameState.lastSavedAt = Date.now();
+  gameState.lastSavedAt =
+    Date.now();
 
   try {
     localStorage.setItem(
@@ -410,8 +347,8 @@ function saveGame() {
 /* ==========================================================
    3. SAVE EXPORT
    ----------------------------------------------------------
-   Downloads the current MEAT.exe progress as a JSON file
-   that can be transferred to another device.
+   Downloads the current MEAT.exe progress as a JSON file that
+   can be transferred to another device.
 ========================================================== */
 
 function exportGameSave() {
@@ -425,61 +362,81 @@ function exportGameSave() {
       saveData: gameState
     };
 
-    const saveFileContents = JSON.stringify(
-      exportPackage,
-      null,
-      2
-    );
+    const saveFileContents =
+      JSON.stringify(
+        exportPackage,
+        null,
+        2
+      );
 
-    const saveBlob = new Blob(
-      [saveFileContents],
-      {
-        type: "application/json"
-      }
-    );
+    const saveBlob =
+      new Blob(
+        [saveFileContents],
+        {
+          type:
+            "application/json"
+        }
+      );
 
     const downloadUrl =
-      URL.createObjectURL(saveBlob);
+      URL.createObjectURL(
+        saveBlob
+      );
 
     const downloadLink =
       document.createElement("a");
 
-    const exportDate = new Date();
+    const exportDate =
+      new Date();
 
-const timestamp = [
-  exportDate.getFullYear(),
-  String(
-    exportDate.getMonth() + 1
-  ).padStart(2, "0"),
-  String(
-    exportDate.getDate()
-  ).padStart(2, "0")
-].join("-") +
-  "_" +
-  [
-    String(
-      exportDate.getHours()
-    ).padStart(2, "0"),
-    String(
-      exportDate.getMinutes()
-    ).padStart(2, "0"),
-    String(
-      exportDate.getSeconds()
-    ).padStart(2, "0")
-  ].join("-");
+    const timestamp =
+      [
+        exportDate.getFullYear(),
 
-downloadLink.href = downloadUrl;
-downloadLink.download =
-  `MEAT-exe-save-${timestamp}.json`;
+        String(
+          exportDate.getMonth() + 1
+        ).padStart(2, "0"),
 
-    document.body.appendChild(downloadLink);
+        String(
+          exportDate.getDate()
+        ).padStart(2, "0")
+      ].join("-") +
+      "_" +
+      [
+        String(
+          exportDate.getHours()
+        ).padStart(2, "0"),
+
+        String(
+          exportDate.getMinutes()
+        ).padStart(2, "0"),
+
+        String(
+          exportDate.getSeconds()
+        ).padStart(2, "0")
+      ].join("-");
+
+    downloadLink.href =
+      downloadUrl;
+
+    downloadLink.download =
+      `MEAT-exe-save-${timestamp}.json`;
+
+    document.body.appendChild(
+      downloadLink
+    );
 
     downloadLink.click();
     downloadLink.remove();
 
-    setTimeout(() => {
-      URL.revokeObjectURL(downloadUrl);
-    }, 0);
+    window.setTimeout(
+      () => {
+        URL.revokeObjectURL(
+          downloadUrl
+        );
+      },
+      0
+    );
 
     return true;
   } catch (error) {
@@ -495,8 +452,8 @@ downloadLink.download =
 /* ==========================================================
    4. SAVE IMPORT
    ----------------------------------------------------------
-   Reads, validates, migrates, and stores an exported
-   MEAT.exe save file.
+   Reads, validates, migrates, and stores an exported MEAT.exe
+   save file.
 ========================================================== */
 
 function isValidImportedNumber(
@@ -514,21 +471,23 @@ function isValidImportedNumber(
   );
 }
 
-
 function validateImportedGameState(
   importedState
 ) {
   if (
     !importedState ||
-    typeof importedState !== "object" ||
-    Array.isArray(importedState)
+    typeof importedState !==
+      "object" ||
+    Array.isArray(
+      importedState
+    )
   ) {
     throw new Error(
       "The imported save data is invalid."
     );
   }
 
-    const requiredNumbers = [
+  const requiredNumbers = [
     "meat",
     "totalMeat",
     "totalClicks",
@@ -536,20 +495,25 @@ function validateImportedGameState(
     "runStartedAt"
   ];
 
-  requiredNumbers.forEach((propertyName) => {
-    if (
-      !isValidImportedNumber(
-        importedState[propertyName]
-      )
-    ) {
-      throw new Error(
-        `Invalid save value: ${propertyName}`
-      );
+  requiredNumbers.forEach(
+    (propertyName) => {
+      if (
+        !isValidImportedNumber(
+          importedState[
+            propertyName
+          ]
+        )
+      ) {
+        throw new Error(
+          `Invalid save value: ${propertyName}`
+        );
+      }
     }
-  });
+  );
 
   if (
-    importedState.lastSavedAt !== undefined &&
+    importedState.lastSavedAt !==
+      undefined &&
     !isValidImportedNumber(
       importedState.lastSavedAt
     )
@@ -573,175 +537,127 @@ function validateImportedGameState(
     !importedState.producers ||
     typeof importedState.producers !==
       "object" ||
-    Array.isArray(importedState.producers)
+    Array.isArray(
+      importedState.producers
+    )
   ) {
     throw new Error(
       "The imported producer data is invalid."
     );
   }
 
-  producerOrder.forEach((producerKey) => {
-    const ownedAmount =
-      importedState.producers[
-        producerKey
-      ] ?? 0;
-
-    if (
-      !Number.isInteger(ownedAmount) ||
-      ownedAmount < 0
-    ) {
-      throw new Error(
-        `Invalid producer amount: ${producerKey}`
-      );
-    }
-  });
-
-   if (
-  importedState.producerLifetimeMeat !==
-  undefined
-) {
-  if (
-    !importedState.producerLifetimeMeat ||
-    typeof importedState
-      .producerLifetimeMeat !== "object" ||
-    Array.isArray(
-      importedState.producerLifetimeMeat
-    )
-  ) {
-    throw new Error(
-      "The imported producer lifetime data is invalid."
-    );
-  }
-
-  if (
-  importedState
-    .producerHighestTier !==
-    undefined
-) {
-  if (
-    !importedState
-      .producerHighestTier ||
-    typeof importedState
-      .producerHighestTier !==
-      "object" ||
-    Array.isArray(
-      importedState
-        .producerHighestTier
-    )
-  ) {
-    throw new Error(
-      "The imported producer tier history is invalid."
-    );
-  }
-
   producerOrder.forEach(
     (producerKey) => {
-      const highestTier =
-        importedState
-          .producerHighestTier[
-            producerKey
-          ] ?? 0;
+      const ownedAmount =
+        importedState.producers[
+          producerKey
+        ] ?? 0;
 
       if (
         !Number.isInteger(
-          highestTier
+          ownedAmount
         ) ||
-        highestTier < 0 ||
-        highestTier > 3
+        ownedAmount < 0
       ) {
         throw new Error(
-          `Invalid highest producer tier: ${producerKey}`
+          `Invalid producer amount: ${producerKey}`
         );
       }
     }
   );
-}
 
-if (
-  importedState.features !==
-  undefined
-) {
   if (
-    !importedState.features ||
-    typeof importedState.features !==
-      "object" ||
-    Array.isArray(
-      importedState.features
-    )
-  ) {
-    throw new Error(
-      "The imported feature data is invalid."
-    );
-  }
-
-  const importedHarvesterState =
     importedState
-      .features
-      .harvester;
-
-  if (
-    importedHarvesterState !==
-      undefined &&
-    (
-      !importedHarvesterState ||
-      typeof importedHarvesterState !==
+      .producerLifetimeMeat !==
+      undefined
+  ) {
+    if (
+      !importedState
+        .producerLifetimeMeat ||
+      typeof importedState
+        .producerLifetimeMeat !==
         "object" ||
       Array.isArray(
-        importedHarvesterState
+        importedState
+          .producerLifetimeMeat
       )
-    )
-  ) {
-    throw new Error(
-      "The imported Harvester data is invalid."
-    );
-  }
-
-  if (
-    importedHarvesterState
-      ?.unlocked !== undefined &&
-    typeof importedHarvesterState
-      .unlocked !== "boolean"
-  ) {
-    throw new Error(
-      "The imported Harvester unlock state is invalid."
-    );
-  }
-
-  if (
-    importedHarvesterState
-      ?.legacyGrandfathered !==
-        undefined &&
-    typeof importedHarvesterState
-      .legacyGrandfathered !==
-        "boolean"
-  ) {
-    throw new Error(
-      "The imported Harvester legacy state is invalid."
-    );
-  }
-}
-
-  producerOrder.forEach((producerKey) => {
-    const lifetimeAmount =
-      importedState.producerLifetimeMeat[
-        producerKey
-      ] ?? 0;
-
-    if (
-      typeof lifetimeAmount !== "number" ||
-      !Number.isFinite(lifetimeAmount) ||
-      lifetimeAmount < 0
     ) {
       throw new Error(
-        `Invalid producer lifetime amount: ${producerKey}`
+        "The imported producer lifetime data is invalid."
       );
     }
-  });
-}
 
+    producerOrder.forEach(
+      (producerKey) => {
+        const lifetimeAmount =
+          importedState
+            .producerLifetimeMeat[
+              producerKey
+            ] ?? 0;
+
+        if (
+          typeof lifetimeAmount !==
+            "number" ||
+          !Number.isFinite(
+            lifetimeAmount
+          ) ||
+          lifetimeAmount < 0
+        ) {
+          throw new Error(
+            `Invalid producer lifetime amount: ${producerKey}`
+          );
+        }
+      }
+    );
+  }
 
   if (
-    importedState.features !== undefined
+    importedState
+      .producerHighestTier !==
+      undefined
+  ) {
+    if (
+      !importedState
+        .producerHighestTier ||
+      typeof importedState
+        .producerHighestTier !==
+        "object" ||
+      Array.isArray(
+        importedState
+          .producerHighestTier
+      )
+    ) {
+      throw new Error(
+        "The imported producer tier history is invalid."
+      );
+    }
+
+    producerOrder.forEach(
+      (producerKey) => {
+        const highestTier =
+          importedState
+            .producerHighestTier[
+              producerKey
+            ] ?? 0;
+
+        if (
+          !Number.isInteger(
+            highestTier
+          ) ||
+          highestTier < 0 ||
+          highestTier > 3
+        ) {
+          throw new Error(
+            `Invalid highest producer tier: ${producerKey}`
+          );
+        }
+      }
+    );
+  }
+
+  if (
+    importedState.features !==
+      undefined
   ) {
     if (
       !importedState.features ||
@@ -757,7 +673,9 @@ if (
     }
 
     const importedHarvesterState =
-      importedState.features.harvester;
+      importedState
+        .features
+        .harvester;
 
     if (
       importedHarvesterState !==
@@ -786,8 +704,21 @@ if (
         "The imported Harvester unlock state is invalid."
       );
     }
+
+    if (
+      importedHarvesterState
+        ?.legacyGrandfathered !==
+        undefined &&
+      typeof importedHarvesterState
+        .legacyGrandfathered !==
+        "boolean"
+    ) {
+      throw new Error(
+        "The imported Harvester legacy state is invalid."
+      );
+    }
   }
-   
+
   if (
     importedState.settings !==
       undefined &&
@@ -808,8 +739,8 @@ if (
   if (
     importedState.settings?.sound !==
       undefined &&
-    typeof importedState.settings.sound !==
-      "boolean"
+    typeof importedState.settings
+      .sound !== "boolean"
   ) {
     throw new Error(
       "The imported sound setting is invalid."
@@ -817,8 +748,8 @@ if (
   }
 
   if (
-    importedState.settings?.animations !==
-      undefined &&
+    importedState.settings
+      ?.animations !== undefined &&
     typeof importedState.settings
       .animations !== "boolean"
   ) {
@@ -829,7 +760,6 @@ if (
 
   return true;
 }
-
 
 async function importGameSave(file) {
   try {
@@ -843,13 +773,18 @@ async function importGameSave(file) {
       await file.text();
 
     const importPackage =
-      JSON.parse(fileContents);
+      JSON.parse(
+        fileContents
+      );
 
     if (
       !importPackage ||
-      typeof importPackage !== "object" ||
-      importPackage.game !== "MEAT.exe" ||
-      importPackage.exportVersion !== 1 ||
+      typeof importPackage !==
+        "object" ||
+      importPackage.game !==
+        "MEAT.exe" ||
+      importPackage.exportVersion !==
+        1 ||
       !importPackage.saveData
     ) {
       throw new Error(
@@ -861,13 +796,15 @@ async function importGameSave(file) {
       importPackage.saveData
     );
 
-    gameState = migrateGameState(
-      importPackage.saveData
-    );
+    gameState =
+      migrateGameState(
+        importPackage.saveData
+      );
 
     calculateMeatPerSecond();
 
-    const saveSucceeded = saveGame();
+    const saveSucceeded =
+      saveGame();
 
     if (!saveSucceeded) {
       throw new Error(
@@ -889,8 +826,8 @@ async function importGameSave(file) {
 /* ==========================================================
    5. PERMANENT GAME RESET
    ----------------------------------------------------------
-   Deletes the stored save and replaces the current state
-   with a completely new game.
+   Deletes the stored save and replaces the current state with
+   a completely new game.
 ========================================================== */
 
 function resetGameState() {
