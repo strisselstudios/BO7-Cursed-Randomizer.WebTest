@@ -5,7 +5,7 @@
 ========================================================== */
 
 const MEAT_SAVE_KEY = "meatExeSave";
-const CURRENT_SAVE_VERSION = 5;
+const CURRENT_SAVE_VERSION = 6;
 
 
 /* ==========================================================
@@ -43,23 +43,29 @@ producers: {
   shemsSpacetimeMacGuffin: 0
 },
 
-producerLifetimeMeat: {
-  silverSpoon: 0,
-  aetherRepairmen: 0,
-  vandornCrops: 0,
-  sunkenMiningTown: 0,
-  giantFactory: 0,
-  libertySavingsBonds: 0,
-  marsShrine: 0,
-  ominousLighthouse: 0,
-  cccpMissile: 0,
-  newIndustriesLaboratory: 0,
-  darkAetherRift: 0,
-  mpd: 0,
-  shemsSpacetimeMacGuffin: 0
-},
+  producerLifetimeMeat: {
+    silverSpoon: 0,
+    aetherRepairmen: 0,
+    vandornCrops: 0,
+    sunkenMiningTown: 0,
+    giantFactory: 0,
+    libertySavingsBonds: 0,
+    marsShrine: 0,
+    ominousLighthouse: 0,
+    cccpMissile: 0,
+    newIndustriesLaboratory: 0,
+    darkAetherRift: 0,
+    mpd: 0,
+    shemsSpacetimeMacGuffin: 0
+  },
 
-    settings: {
+  features: {
+    harvester: {
+      unlocked: false
+    }
+  },
+
+  settings: {
       sound: true,
       animations: true
     },
