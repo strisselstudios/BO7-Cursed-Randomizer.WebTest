@@ -274,14 +274,13 @@ document.addEventListener(
   beginHarvesterPlacement
 );
 
-harvesterPlacementLayer
-  ?.addEventListener(
+if (harvesterPlacementLayer) {
+  harvesterPlacementLayer.addEventListener(
     "pointermove",
     updateHarvesterCursorPreview
   );
 
-harvesterPlacementLayer
-  ?.addEventListener(
+  harvesterPlacementLayer.addEventListener(
     "pointerdown",
     (event) => {
       if (
@@ -299,21 +298,24 @@ harvesterPlacementLayer
       );
     }
   );
+}
 
-harvesterPlacementCancelButton
-  ?.addEventListener(
-    "click",
-    (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+if (harvesterPlacementCancelButton) {
+  harvesterPlacementCancelButton
+    .addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-      cancelHarvesterPlacement();
-    }
-  );
+        cancelHarvesterPlacement();
+      }
+    );
+}
 
 /*
- * Clicking anywhere outside the complete MEAT side cancels
- * placement and consumes the click.
+ * Clicking outside the complete MEAT side cancels placement.
+ * The capture listener does nothing outside placement mode.
  */
 document.addEventListener(
   "pointerdown",
