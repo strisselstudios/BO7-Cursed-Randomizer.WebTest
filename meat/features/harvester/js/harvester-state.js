@@ -11,8 +11,58 @@ const HARVESTER_SOURCE_PRODUCER_KEY =
 const HARVESTER_REQUIRED_PRODUCER_TIER =
   3;
 
+const HARVESTER_DEFAULT_POSITION = {
+  x: 0.5,
+  y: 0.5
+};
+
 /* ==========================================================
-   2. HARVESTER STATE SAFETY
+   2. HARVESTER POSITION NORMALIZATION
+   ----------------------------------------------------------
+   Keeps saved Harvester coordinates inside the complete MEAT
+   side.
+========================================================== */
+
+function normalizeHarvesterPosition(
+  position
+) {
+  const normalizedX =
+    Number(position?.x);
+
+  const normalizedY =
+    Number(position?.y);
+
+  return {
+    x:
+      Number.isFinite(
+        normalizedX
+      )
+        ? Math.min(
+            1,
+            Math.max(
+              0,
+              normalizedX
+            )
+          )
+        : HARVESTER_DEFAULT_POSITION.x,
+
+    y:
+      Number.isFinite(
+        normalizedY
+      )
+        ? Math.min(
+            1,
+            Math.max(
+              0,
+              normalizedY
+            )
+          )
+        : HARVESTER_DEFAULT_POSITION.y
+  };
+}
+
+/* ==========================================================
+   3. HARVESTER STATE SAFETY
 ========================================================== */
 
 function ensureHarvesterState() {
@@ -37,41 +87,66 @@ function ensureHarvesterState() {
   ) {
     gameState.features.harvester = {
       unlocked: false,
-      legacyGrandfathered: false
+      legacyGrandfathered: false,
+      deployed: false,
+
+      position: {
+        ...HARVESTER_DEFAULT_POSITION
+      }
     };
   }
 
+  const harvesterState =
+    gameState.features.harvester;
+
   if (
-    typeof gameState.features
-      .harvester
-      .unlocked !== "boolean"
+    typeof harvesterState.unlocked !==
+    "boolean"
   ) {
-    gameState.features
-      .harvester
-      .unlocked = false;
+    harvesterState.unlocked =
+      false;
   }
 
   if (
-    typeof gameState.features
-      .harvester
+    typeof harvesterState
       .legacyGrandfathered !==
-      "boolean"
+    "boolean"
   ) {
-    gameState.features
-      .harvester
-      .legacyGrandfathered = false;
+    harvesterState
+      .legacyGrandfathered =
+        false;
   }
 
-  return gameState
-    .features
-    .harvester;
+  if (
+    typeof harvesterState.deployed !==
+    "boolean"
+  ) {
+    harvesterState.deployed =
+      false;
+  }
+
+  harvesterState.position =
+    normalizeHarvesterPosition(
+      harvesterState.position
+    );
+
+  /*
+   * A locked Harvester can never remain deployed, even if a
+   * malformed save attempts to force that state.
+   */
+  if (!harvesterState.unlocked) {
+    harvesterState.deployed =
+      false;
+  }
+
+  return harvesterState;
 }
 
 /* ==========================================================
-   3. HARVESTER UNLOCK REQUIREMENT
+   4. HARVESTER UNLOCK REQUIREMENT
    ----------------------------------------------------------
-   Accepts either the currently visible producer tier or the
-   permanently recorded highest historical tier.
+   Accepts either the current producer tier or the permanently
+   recorded highest historical tier.
 ========================================================== */
 
 function hasReachedHarvesterUnlockTier() {
@@ -101,7 +176,7 @@ function hasReachedHarvesterUnlockTier() {
 }
 
 /* ==========================================================
-   4. HARVESTER UNLOCK ACCESS
+   5. HARVESTER UNLOCK ACCESS
 ========================================================== */
 
 function isHarvesterUnlocked() {
@@ -110,7 +185,7 @@ function isHarvesterUnlocked() {
 }
 
 /* ==========================================================
-   5. PERMANENT HARVESTER UNLOCK
+   6. PERMANENT HARVESTER UNLOCK
 ========================================================== */
 
 function updateHarvesterUnlockState() {
@@ -128,6 +203,69 @@ function updateHarvesterUnlockState() {
   }
 
   harvesterState.unlocked = true;
+
+  saveGame();
+
+  return true;
+}
+
+/* ==========================================================
+   7. HARVESTER DEPLOYMENT ACCESS
+========================================================== */
+
+function isHarvesterDeployed() {
+  return ensureHarvesterState()
+    .deployed;
+}
+
+function getHarvesterSavedPosition() {
+  const savedPosition =
+    ensureHarvesterState()
+      .position;
+
+  return {
+    x: savedPosition.x,
+    y: savedPosition.y
+  };
+}
+
+/* ==========================================================
+   8. HARVESTER DEPLOYMENT MUTATION
+========================================================== */
+
+function deployHarvesterAtPosition(
+  position
+) {
+  const harvesterState =
+    ensureHarvesterState();
+
+  if (!harvesterState.unlocked) {
+    return false;
+  }
+
+  harvesterState.position =
+    normalizeHarvesterPosition(
+      position
+    );
+
+  harvesterState.deployed =
+    true;
+
+  saveGame();
+
+  return true;
+}
+
+function setHarvesterRetracted() {
+  const harvesterState =
+    ensureHarvesterState();
+
+  if (!harvesterState.deployed) {
+    return false;
+  }
+
+  harvesterState.deployed =
+    false;
 
   saveGame();
 
