@@ -5,11 +5,6 @@
 let harvesterPlacementIsActive =
   false;
 
-let temporaryHarvesterPosition = {
-  x: 0.5,
-  y: 0.5
-};
-
 /* ==========================================================
    2. POINTER TYPE
 ========================================================== */
@@ -95,7 +90,42 @@ function positionHarvesterElement(
 }
 
 /* ==========================================================
-   5. PLACEMENT MODE
+   5. DEPLOYMENT DISPLAY
+   ----------------------------------------------------------
+   Synchronizes the placed Harvester element with saved state.
+========================================================== */
+
+function updateHarvesterDeploymentDisplay() {
+  if (!placedHarvester) {
+    return;
+  }
+
+  const harvesterIsDeployed =
+    typeof isHarvesterDeployed ===
+      "function" &&
+    isHarvesterDeployed();
+
+  if (!harvesterIsDeployed) {
+    placedHarvester.hidden =
+      true;
+
+    return;
+  }
+
+  const savedPosition =
+    getHarvesterSavedPosition();
+
+  positionHarvesterElement(
+    placedHarvester,
+    savedPosition
+  );
+
+  placedHarvester.hidden =
+    false;
+}
+
+/* ==========================================================
+   6. PLACEMENT MODE
 ========================================================== */
 
 function beginHarvesterPlacement() {
@@ -116,10 +146,14 @@ function beginHarvesterPlacement() {
     return;
   }
 
-  /*
-   * Portrait navigation normally displays one major view at a
-   * time. Restore the complete MEAT side before placement.
-   */
+  if (
+    typeof isHarvesterDeployed ===
+      "function" &&
+    isHarvesterDeployed()
+  ) {
+    return;
+  }
+
   if (
     typeof showMobileMeatView ===
     "function"
@@ -137,15 +171,19 @@ function beginHarvesterPlacement() {
   harvesterPlacementLayer.hidden =
     false;
 
-  harvesterPlacementLayer.setAttribute(
-    "aria-hidden",
-    "false"
-  );
+  harvesterPlacementLayer
+    .setAttribute(
+      "aria-hidden",
+      "false"
+    );
 
   harvesterPlacementBanner.hidden =
     false;
 
-  if (harvesterUsesPointerPreview()) {
+  if (
+    harvesterUsesPointerPreview() &&
+    harvesterCursorPreview
+  ) {
     harvesterCursorPreview.hidden =
       false;
   }
@@ -171,10 +209,11 @@ function cancelHarvesterPlacement() {
     harvesterPlacementLayer.hidden =
       true;
 
-    harvesterPlacementLayer.setAttribute(
-      "aria-hidden",
-      "true"
-    );
+    harvesterPlacementLayer
+      .setAttribute(
+        "aria-hidden",
+        "true"
+      );
   }
 
   if (harvesterCursorPreview) {
@@ -193,7 +232,7 @@ function cancelHarvesterPlacement() {
 }
 
 /* ==========================================================
-   6. PREVIEW MOVEMENT
+   7. PREVIEW MOVEMENT
 ========================================================== */
 
 function updateHarvesterCursorPreview(
@@ -220,44 +259,56 @@ function updateHarvesterCursorPreview(
 }
 
 /* ==========================================================
-   7. TEMPORARY PLACEMENT
-   ----------------------------------------------------------
-   This places the visual object but does not save deployment
-   state yet. Persistent state is the next implementation step.
+   8. PERSISTENT DEPLOYMENT
 ========================================================== */
 
-function placeTemporaryHarvester(
+function placePersistentHarvester(
   event
 ) {
   if (
     !harvesterPlacementIsActive ||
-    !placedHarvester
+    !placedHarvester ||
+    typeof deployHarvesterAtPosition !==
+      "function"
   ) {
     return;
   }
 
-  temporaryHarvesterPosition =
+  const selectedPosition =
     getNormalizedHarvesterPosition(
       event.clientX,
       event.clientY
     );
 
-  positionHarvesterElement(
-    placedHarvester,
-    temporaryHarvesterPosition
-  );
+  const deploymentSucceeded =
+    deployHarvesterAtPosition(
+      selectedPosition
+    );
 
-  placedHarvester.hidden = false;
+  if (!deploymentSucceeded) {
+    cancelHarvesterPlacement();
+
+    return;
+  }
+
+  updateHarvesterDeploymentDisplay();
 
   cancelHarvesterPlacement();
 
+  if (
+    typeof updateHarvesterStoreControl ===
+    "function"
+  ) {
+    updateHarvesterStoreControl();
+  }
+
   document.dispatchEvent(
     new CustomEvent(
-      "harvester:placement-selected",
+      "harvester:deployed",
       {
         detail: {
           position: {
-            ...temporaryHarvesterPosition
+            ...selectedPosition
           }
         }
       }
@@ -266,7 +317,39 @@ function placeTemporaryHarvester(
 }
 
 /* ==========================================================
-   8. PLACEMENT INPUT
+   9. HARVESTER RETRACTION
+========================================================== */
+
+function retractDeployedHarvester() {
+  if (
+    typeof setHarvesterRetracted !==
+      "function"
+  ) {
+    return;
+  }
+
+  cancelHarvesterPlacement();
+
+  setHarvesterRetracted();
+
+  updateHarvesterDeploymentDisplay();
+
+  if (
+    typeof updateHarvesterStoreControl ===
+    "function"
+  ) {
+    updateHarvesterStoreControl();
+  }
+
+  document.dispatchEvent(
+    new CustomEvent(
+      "harvester:retracted"
+    )
+  );
+}
+
+/* ==========================================================
+   10. PLACEMENT INPUT
 ========================================================== */
 
 document.addEventListener(
@@ -274,30 +357,37 @@ document.addEventListener(
   beginHarvesterPlacement
 );
 
+document.addEventListener(
+  "harvester:retract-requested",
+  retractDeployedHarvester
+);
+
 if (harvesterPlacementLayer) {
-  harvesterPlacementLayer.addEventListener(
-    "pointermove",
-    updateHarvesterCursorPreview
-  );
+  harvesterPlacementLayer
+    .addEventListener(
+      "pointermove",
+      updateHarvesterCursorPreview
+    );
 
-  harvesterPlacementLayer.addEventListener(
-    "pointerdown",
-    (event) => {
-      if (
-        event.button !== undefined &&
-        event.button !== 0
-      ) {
-        return;
+  harvesterPlacementLayer
+    .addEventListener(
+      "pointerdown",
+      (event) => {
+        if (
+          event.button !== undefined &&
+          event.button !== 0
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        placePersistentHarvester(
+          event
+        );
       }
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      placeTemporaryHarvester(
-        event
-      );
-    }
-  );
+    );
 }
 
 if (harvesterPlacementCancelButton) {
@@ -313,10 +403,6 @@ if (harvesterPlacementCancelButton) {
     );
 }
 
-/*
- * Clicking outside the complete MEAT side cancels placement.
- * The capture listener does nothing outside placement mode.
- */
 document.addEventListener(
   "pointerdown",
   (event) => {
