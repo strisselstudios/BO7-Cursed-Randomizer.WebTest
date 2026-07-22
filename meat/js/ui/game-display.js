@@ -102,6 +102,14 @@ if (
   updateHarvesterDeploymentDisplay();
 }
 
+
+if (
+  typeof updateHarvesterDutyCycleDisplay ===
+  "function"
+) {
+  updateHarvesterDutyCycleDisplay();
+}
+   
   updateProducerDisplay();
 }
 /* ==========================================================
