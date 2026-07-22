@@ -1,14 +1,15 @@
 /* ==========================================================
    1. HARVESTER STORE CONTROL STATE
    ----------------------------------------------------------
-   Controls the Tier III feature action attached to the Silver
-   Spoon producer entry.
-
-   Actual placement begins in the next implementation step.
+   Controls the Tier III action attached to the Silver Spoon
+   producer entry.
 ========================================================== */
 
 const HARVESTER_STORE_ACTION_DEPLOY =
   "deploy";
+
+const HARVESTER_STORE_ACTION_RETRACT =
+  "retract";
 
 const HARVESTER_STORE_ACTION_PRESS_DURATION =
   160;
@@ -18,11 +19,6 @@ let harvesterStoreActionFeedbackTimer =
 
 /* ==========================================================
    2. HARVESTER STORE CONTROL VISIBILITY
-   ----------------------------------------------------------
-   Displays the control only when:
-
-   1. The Harvester has been permanently unlocked.
-   2. The Silver Spoon producer is normally revealed.
 ========================================================== */
 
 function shouldShowHarvesterStoreControl() {
@@ -45,7 +41,22 @@ function shouldShowHarvesterStoreControl() {
 }
 
 /* ==========================================================
-   3. HARVESTER STORE CONTROL DISPLAY
+   3. HARVESTER STORE CONTROL ACTION
+========================================================== */
+
+function getHarvesterStoreAction() {
+  const harvesterIsDeployed =
+    typeof isHarvesterDeployed ===
+      "function" &&
+    isHarvesterDeployed();
+
+  return harvesterIsDeployed
+    ? HARVESTER_STORE_ACTION_RETRACT
+    : HARVESTER_STORE_ACTION_DEPLOY;
+}
+
+/* ==========================================================
+   4. HARVESTER STORE CONTROL DISPLAY
 ========================================================== */
 
 function updateHarvesterStoreControl() {
@@ -71,27 +82,50 @@ function updateHarvesterStoreControl() {
     return;
   }
 
+  const selectedAction =
+    getHarvesterStoreAction();
+
+  const actionIsRetract =
+    selectedAction ===
+    HARVESTER_STORE_ACTION_RETRACT;
+
+  const actionText =
+    actionIsRetract
+      ? "RETRACT HARVESTER"
+      : "DEPLOY HARVESTER";
+
+  const accessibleText =
+    actionIsRetract
+      ? "Retract Golden Spork Harvester"
+      : "Deploy Golden Spork Harvester";
+
   harvesterStoreActionButton.dataset
     .harvesterAction =
-      HARVESTER_STORE_ACTION_DEPLOY;
+      selectedAction;
+
+  const actionLabel =
+    harvesterStoreActionButton
+      .querySelector(
+        ".harvester-store-action-label"
+      );
+
+  if (actionLabel) {
+    actionLabel.textContent =
+      actionText;
+  }
 
   harvesterStoreActionButton
     .setAttribute(
       "aria-label",
-      "Deploy Golden Spork Harvester"
+      accessibleText
     );
 
   harvesterStoreActionButton.title =
-    "Deploy Golden Spork Harvester";
+    accessibleText;
 }
 
 /* ==========================================================
-   4. HARVESTER BUTTON FEEDBACK
-   ----------------------------------------------------------
-   Produces visible touch, mouse, and keyboard confirmation.
-
-   This does not use the producer transaction animation
-   because deploying the Harvester is not a purchase.
+   5. HARVESTER BUTTON FEEDBACK
 ========================================================== */
 
 function showHarvesterStoreActionFeedback() {
@@ -103,7 +137,8 @@ function showHarvesterStoreActionFeedback() {
     harvesterStoreActionFeedbackTimer
   );
 
-  harvesterStoreActionButton.classList
+  harvesterStoreActionButton
+    .classList
     .remove(
       "harvester-store-action-button-pressed"
     );
@@ -111,7 +146,8 @@ function showHarvesterStoreActionFeedback() {
   void harvesterStoreActionButton
     .offsetWidth;
 
-  harvesterStoreActionButton.classList
+  harvesterStoreActionButton
+    .classList
     .add(
       "harvester-store-action-button-pressed"
     );
@@ -130,15 +166,10 @@ function showHarvesterStoreActionFeedback() {
 }
 
 /* ==========================================================
-   5. DEPLOYMENT REQUEST
-   ----------------------------------------------------------
-   Dispatches a dedicated feature event.
-
-   The placement controller added in the next step will handle
-   this event and enter placement mode.
+   6. HARVESTER ACTION REQUEST
 ========================================================== */
 
-function requestHarvesterDeployment() {
+function requestHarvesterStoreAction() {
   if (
     !shouldShowHarvesterStoreControl()
   ) {
@@ -147,24 +178,42 @@ function requestHarvesterDeployment() {
 
   showHarvesterStoreActionFeedback();
 
+  const requestedAction =
+    getHarvesterStoreAction();
+
+  if (
+    requestedAction ===
+    HARVESTER_STORE_ACTION_RETRACT
+  ) {
+    document.dispatchEvent(
+      new CustomEvent(
+        "harvester:retract-requested"
+      )
+    );
+
+    return;
+  }
+
   document.dispatchEvent(
     new CustomEvent(
       "harvester:deploy-requested"
     )
   );
 }
+
 /* ==========================================================
-   6. HARVESTER STORE INPUT
+   7. HARVESTER STORE INPUT
 ========================================================== */
 
 if (harvesterStoreActionButton) {
-  harvesterStoreActionButton.addEventListener(
-    "click",
-    (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+  harvesterStoreActionButton
+    .addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-      requestHarvesterDeployment();
-    }
-  );
+        requestHarvesterStoreAction();
+      }
+    );
 }
