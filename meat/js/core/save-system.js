@@ -11,8 +11,26 @@ function migrateGameState(savedState) {
   const savedProducers =
     savedState.producers || {};
 
-  const savedProducerLifetimeMeat =
+    const savedProducerLifetimeMeat =
     savedState.producerLifetimeMeat || {};
+
+  const savedFeatures =
+    savedState.features &&
+    typeof savedState.features ===
+      "object" &&
+    !Array.isArray(savedState.features)
+      ? savedState.features
+      : {};
+
+  const savedHarvesterState =
+    savedFeatures.harvester &&
+    typeof savedFeatures.harvester ===
+      "object" &&
+    !Array.isArray(
+      savedFeatures.harvester
+    )
+      ? savedFeatures.harvester
+      : {};
 
   const migratedProducers = {};
 
@@ -39,7 +57,7 @@ function migrateGameState(savedState) {
         : 0;
   });
 
-  const migratedState = {
+    const migratedState = {
     ...defaultState,
     ...savedState,
 
@@ -48,6 +66,20 @@ function migrateGameState(savedState) {
 
     producerLifetimeMeat:
       migratedProducerLifetimeMeat,
+
+    features: {
+      ...defaultState.features,
+      ...savedFeatures,
+
+      harvester: {
+        ...defaultState.features.harvester,
+        ...savedHarvesterState,
+
+        unlocked:
+          savedHarvesterState.unlocked ===
+          true
+      }
+    },
 
     settings: {
       ...defaultState.settings,
@@ -371,6 +403,55 @@ function validateImportedGameState(
   });
 }
 
+
+  if (
+    importedState.features !== undefined
+  ) {
+    if (
+      !importedState.features ||
+      typeof importedState.features !==
+        "object" ||
+      Array.isArray(
+        importedState.features
+      )
+    ) {
+      throw new Error(
+        "The imported feature data is invalid."
+      );
+    }
+
+    const importedHarvesterState =
+      importedState.features.harvester;
+
+    if (
+      importedHarvesterState !==
+        undefined &&
+      (
+        !importedHarvesterState ||
+        typeof importedHarvesterState !==
+          "object" ||
+        Array.isArray(
+          importedHarvesterState
+        )
+      )
+    ) {
+      throw new Error(
+        "The imported Harvester data is invalid."
+      );
+    }
+
+    if (
+      importedHarvesterState
+        ?.unlocked !== undefined &&
+      typeof importedHarvesterState
+        .unlocked !== "boolean"
+    ) {
+      throw new Error(
+        "The imported Harvester unlock state is invalid."
+      );
+    }
+  }
+   
   if (
     importedState.settings !==
       undefined &&
