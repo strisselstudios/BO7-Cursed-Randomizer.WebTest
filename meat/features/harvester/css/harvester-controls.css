@@ -1,0 +1,261 @@
+/* ==========================================================
+   1. HARVESTER STORE CARD GROUP
+   ----------------------------------------------------------
+   Groups the existing Silver Spoon transaction card with its
+   separate Tier III feature action.
+
+   The action button must remain outside the producer-card
+   button so the HTML does not contain nested buttons.
+========================================================== */
+
+.producer-card-group {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * The normal producer card keeps its original rounded shape
+ * until the Harvester action becomes available.
+ */
+.producer-card-group
+.producer-card {
+  flex: 0 0 auto;
+}
+
+/* ==========================================================
+   2. UNLOCKED CARD SHAPE
+   ----------------------------------------------------------
+   Makes the producer card and Harvester action appear as one
+   connected Meat Mart entry.
+========================================================== */
+
+.producer-card-group-has-harvester
+.producer-card {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* ==========================================================
+   3. HARVESTER STORE ACTION
+   ----------------------------------------------------------
+   Dedicated action for entering Harvester placement mode.
+
+   This button does not purchase or sell Silver Spoons.
+========================================================== */
+
+.harvester-store-action-button {
+  width: 100%;
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: -1px;
+
+  padding:
+    0.5rem
+    0.75rem;
+
+  appearance: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(69, 20, 20, 0.98) 0%,
+      rgba(24, 7, 7, 0.98) 100%
+    );
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-top-color:
+    rgba(255, 93, 93, 0.48);
+
+  border-radius:
+    0
+    0
+    9px
+    9px;
+
+  box-shadow:
+    inset 0 0 12px
+      rgba(255, 93, 93, 0.08),
+    0 5px 12px
+      rgba(0, 0, 0, 0.28);
+
+  font: inherit;
+
+  cursor: pointer;
+
+  touch-action:
+    manipulation;
+
+  user-select: none;
+
+  transform-origin:
+    center top;
+
+  transition:
+    background 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease,
+    color 110ms ease,
+    filter 110ms ease,
+    transform 110ms ease;
+}
+
+.harvester-store-action-button[hidden] {
+  display: none;
+}
+
+.harvester-store-action-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.055em;
+
+  text-align: center;
+  text-transform: uppercase;
+
+  pointer-events: none;
+}
+
+/* ==========================================================
+   4. POINTER AND KEYBOARD FEEDBACK
+========================================================== */
+
+.harvester-store-action-button:hover,
+.harvester-store-action-button:focus-visible {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(104, 30, 30, 0.99) 0%,
+      rgba(38, 10, 10, 0.99) 100%
+    );
+
+  color:
+    var(--primary-text);
+
+  border-color:
+    var(--primary-text);
+
+  box-shadow:
+    inset 0 0 15px
+      rgba(255, 93, 93, 0.16),
+    0 0 17px
+      rgba(197, 44, 44, 0.36),
+    0 5px 12px
+      rgba(0, 0, 0, 0.32);
+}
+
+.harvester-store-action-button:focus-visible {
+  outline:
+    2px solid
+    var(--accent-bright);
+
+  outline-offset: 3px;
+}
+
+.harvester-store-action-button:active,
+.harvester-store-action-button
+.harvester-store-action-button-pressed {
+  transform:
+    scaleY(0.92);
+
+  filter:
+    brightness(1.28);
+
+  box-shadow:
+    inset 0 0 18px
+      rgba(255, 93, 93, 0.24),
+    0 0 19px
+      rgba(255, 63, 63, 0.45);
+}
+
+/*
+ * The JavaScript feedback class is placed directly on the
+ * button, so this selector must not contain a space.
+ */
+.harvester-store-action-button
+.harvester-store-action-button-pressed {
+  transform: none;
+}
+
+.harvester-store-action-button.harvester-store-action-button-pressed {
+  transform:
+    scaleY(0.92);
+
+  filter:
+    brightness(1.28);
+
+  box-shadow:
+    inset 0 0 18px
+      rgba(255, 93, 93, 0.24),
+    0 0 19px
+      rgba(255, 63, 63, 0.45);
+}
+
+/* ==========================================================
+   5. MOBILE SIZING
+========================================================== */
+
+@media (max-width: 760px) {
+
+  .harvester-store-action-button {
+    min-height: 40px;
+
+    padding:
+      0.45rem
+      0.65rem;
+  }
+
+  .harvester-store-action-label {
+    font-size: 0.74rem;
+  }
+}
+
+@media (max-width: 430px) {
+
+  .harvester-store-action-button {
+    min-height: 38px;
+
+    padding:
+      0.4rem
+      0.55rem;
+  }
+
+  .harvester-store-action-label {
+    font-size: 0.7rem;
+  }
+}
+
+/* ==========================================================
+   6. REDUCED MOTION
+========================================================== */
+
+body.animations-disabled
+.harvester-store-action-button,
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+  .harvester-store-action-button {
+    transition: none;
+  }
+
+  .harvester-store-action-button:active,
+  .harvester-store-action-button
+    .harvester-store-action-button-pressed,
+  .harvester-store-action-button
+    .harvester-store-action-button-pressed {
+    transform: none;
+  }
+
+  }
