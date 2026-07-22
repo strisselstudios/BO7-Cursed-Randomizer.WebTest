@@ -55,15 +55,28 @@ function updateGameDisplay() {
     );
 
   producersOwnedStat.textContent =
-    getTotalProducersOwned().toLocaleString(
-      "en-US"
-    );
+    getTotalProducersOwned()
+      .toLocaleString(
+        "en-US"
+      );
 
   runTimeStat.textContent =
     formatRunTime(
       Date.now() -
       gameState.runStartedAt
     );
+
+  /*
+   * Feature modules must not be able to prevent the core
+   * interface from rendering if one of their files is absent
+   * or temporarily broken during development.
+   */
+  if (
+    typeof updateHarvesterUnlockState ===
+    "function"
+  ) {
+    updateHarvesterUnlockState();
+  }
 
   updateProducerDisplay();
 }
