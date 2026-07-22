@@ -849,7 +849,7 @@ updateProducerInfoPurchaseControl(
 );
 
 updateProducerInfoNavigationButtons();
-
+}
 function openProducerInfo(
   producerKey
 ) {
