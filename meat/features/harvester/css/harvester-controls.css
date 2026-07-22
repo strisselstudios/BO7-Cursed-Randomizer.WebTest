@@ -1,11 +1,8 @@
 /* ==========================================================
    1. HARVESTER STORE CARD GROUP
    ----------------------------------------------------------
-   Groups the existing Silver Spoon transaction card with its
-   separate Tier III feature action.
-
-   The action button must remain outside the producer-card
-   button so the HTML does not contain nested buttons.
+   Groups the Silver Spoon transaction card with its separate
+   Tier III Harvester action.
 ========================================================== */
 
 .producer-card-group {
@@ -15,10 +12,6 @@
   flex-direction: column;
 }
 
-/*
- * The normal producer card keeps its original rounded shape
- * until the Harvester action becomes available.
- */
 .producer-card-group
 .producer-card {
   flex: 0 0 auto;
@@ -26,9 +19,6 @@
 
 /* ==========================================================
    2. UNLOCKED CARD SHAPE
-   ----------------------------------------------------------
-   Makes the producer card and Harvester action appear as one
-   connected Meat Mart entry.
 ========================================================== */
 
 .producer-card-group-has-harvester
@@ -39,10 +29,6 @@
 
 /* ==========================================================
    3. HARVESTER STORE ACTION
-   ----------------------------------------------------------
-   Dedicated action for entering Harvester placement mode.
-
-   This button does not purchase or sell Silver Spoons.
 ========================================================== */
 
 .harvester-store-action-button {
@@ -94,9 +80,7 @@
 
   cursor: pointer;
 
-  touch-action:
-    manipulation;
-
+  touch-action: manipulation;
   user-select: none;
 
   transform-origin:
@@ -164,30 +148,6 @@
 }
 
 .harvester-store-action-button:active,
-.harvester-store-action-button
-.harvester-store-action-button-pressed {
-  transform:
-    scaleY(0.92);
-
-  filter:
-    brightness(1.28);
-
-  box-shadow:
-    inset 0 0 18px
-      rgba(255, 93, 93, 0.24),
-    0 0 19px
-      rgba(255, 63, 63, 0.45);
-}
-
-/*
- * The JavaScript feedback class is placed directly on the
- * button, so this selector must not contain a space.
- */
-.harvester-store-action-button
-.harvester-store-action-button-pressed {
-  transform: none;
-}
-
 .harvester-store-action-button.harvester-store-action-button-pressed {
   transform:
     scaleY(0.92);
@@ -241,7 +201,16 @@
 ========================================================== */
 
 body.animations-disabled
-.harvester-store-action-button,
+.harvester-store-action-button {
+  transition: none;
+}
+
+body.animations-disabled
+.harvester-store-action-button:active,
+body.animations-disabled
+.harvester-store-action-button.harvester-store-action-button-pressed {
+  transform: none;
+}
 
 @media
   (prefers-reduced-motion: reduce) {
@@ -251,11 +220,7 @@ body.animations-disabled
   }
 
   .harvester-store-action-button:active,
-  .harvester-store-action-button
-    .harvester-store-action-button-pressed,
-  .harvester-store-action-button
-    .harvester-store-action-button-pressed {
+  .harvester-store-action-button.harvester-store-action-button-pressed {
     transform: none;
   }
-
-  }
+}
