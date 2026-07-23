@@ -93,7 +93,8 @@ function normalizeHarvesterNumber(
     : 0;
 }
 
-/* ==========================================================
+
+ /* ==========================================================
    3. HARVESTER STATE SAFETY
 ========================================================== */
 
@@ -129,6 +130,10 @@ function ensureHarvesterState() {
 
       activeStartedAt: 0,
       lastProcessedAt: 0,
+
+      passiveMpsSnapshot: 0,
+      ownedBuildingSnapshot: 0,
+      outputPerSecondSnapshot: 0,
 
       cooldownStartedAt: 0,
       cooldownEndsAt: 0,
@@ -182,6 +187,26 @@ function ensureHarvesterState() {
       harvesterState.lastProcessedAt
     );
 
+  harvesterState.passiveMpsSnapshot =
+    normalizeHarvesterNumber(
+      harvesterState
+        .passiveMpsSnapshot
+    );
+
+  harvesterState.ownedBuildingSnapshot =
+    Math.floor(
+      normalizeHarvesterNumber(
+        harvesterState
+          .ownedBuildingSnapshot
+      )
+    );
+
+  harvesterState.outputPerSecondSnapshot =
+    normalizeHarvesterNumber(
+      harvesterState
+        .outputPerSecondSnapshot
+    );
+
   harvesterState.cooldownStartedAt =
     normalizeHarvesterNumber(
       harvesterState.cooldownStartedAt
@@ -212,6 +237,15 @@ function ensureHarvesterState() {
     harvesterState.lastProcessedAt =
       0;
 
+    harvesterState.passiveMpsSnapshot =
+      0;
+
+    harvesterState.ownedBuildingSnapshot =
+      0;
+
+    harvesterState.outputPerSecondSnapshot =
+      0;
+
     harvesterState.cooldownStartedAt =
       0;
 
@@ -228,8 +262,7 @@ function ensureHarvesterState() {
   }
 
   return harvesterState;
-}
-
+} 
 /* ==========================================================
    4. HARVESTER UNLOCK REQUIREMENT
 ========================================================== */
@@ -475,11 +508,10 @@ function getHarvesterStoredMeat() {
 /* ==========================================================
    9. HARVESTER DEPLOYMENT MUTATION
    ----------------------------------------------------------
-   Every deployment begins with a full active-time charge.
+   Every deployment begins with a full active-time charge and
+   snapshots its output formula values.
 
-   Retracting at any point starts the complete cooldown. This
-   prevents repeated short deployments from bypassing the
-   recharge requirement.
+   Retracting at any point starts the complete cooldown.
 ========================================================== */
 
 function deployHarvesterAtPosition(
@@ -495,6 +527,51 @@ function deployHarvesterAtPosition(
   const deploymentTime =
     Date.now();
 
+  const fallbackPassiveMps =
+    Math.max(
+      HARVESTER_MINIMUM_MPS_SNAPSHOT,
+      Number(gameState.meatPerSecond) || 0
+    );
+
+  const fallbackOwnedBuildings =
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          gameState.producers?.[
+            HARVESTER_SOURCE_PRODUCER_KEY
+          ]
+        ) || 0
+      )
+    );
+
+  const fallbackOutputPerSecond =
+    typeof calculateHarvesterOutputPerSecond ===
+      "function"
+      ? calculateHarvesterOutputPerSecond(
+          fallbackPassiveMps,
+          fallbackOwnedBuildings
+        )
+      : Math.max(
+          1,
+          fallbackPassiveMps
+        );
+
+  const deploymentSnapshot =
+    typeof createHarvesterDeploymentSnapshot ===
+      "function"
+      ? createHarvesterDeploymentSnapshot()
+      : {
+          passiveMpsSnapshot:
+            fallbackPassiveMps,
+
+          ownedBuildingSnapshot:
+            fallbackOwnedBuildings,
+
+          outputPerSecondSnapshot:
+            fallbackOutputPerSecond
+        };
+
   harvesterState.position =
     normalizeHarvesterPosition(
       position
@@ -508,6 +585,35 @@ function deployHarvesterAtPosition(
 
   harvesterState.lastProcessedAt =
     deploymentTime;
+
+  harvesterState.passiveMpsSnapshot =
+    Math.max(
+      HARVESTER_MINIMUM_MPS_SNAPSHOT,
+      Number(
+        deploymentSnapshot
+          .passiveMpsSnapshot
+      ) || 0
+    );
+
+  harvesterState.ownedBuildingSnapshot =
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          deploymentSnapshot
+            .ownedBuildingSnapshot
+        ) || 0
+      )
+    );
+
+  harvesterState.outputPerSecondSnapshot =
+    Math.max(
+      HARVESTER_MINIMUM_OUTPUT_PER_SECOND,
+      Number(
+        deploymentSnapshot
+          .outputPerSecondSnapshot
+      ) || 0
+    );
 
   harvesterState.cooldownStartedAt =
     0;
@@ -556,7 +662,10 @@ function setHarvesterPosition(
   return true;
 }
 
-function setHarvesterRetracted() {
+function setHarvesterRetracted(
+  currentTime = Date.now(),
+  saveImmediately = true
+) {
   const harvesterState =
     ensureHarvesterState();
 
@@ -564,8 +673,15 @@ function setHarvesterRetracted() {
     return false;
   }
 
+  const normalizedRetractionTime =
+    Number(currentTime);
+
   const retractionTime =
-    Date.now();
+    Number.isFinite(
+      normalizedRetractionTime
+    )
+      ? normalizedRetractionTime
+      : Date.now();
 
   harvesterState.deployed =
     false;
@@ -583,7 +699,9 @@ function setHarvesterRetracted() {
     retractionTime +
     HARVESTER_COOLDOWN_DURATION_MS;
 
-  saveGame();
+  if (saveImmediately) {
+    saveGame();
+  }
 
   return true;
 }
