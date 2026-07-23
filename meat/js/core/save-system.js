@@ -137,41 +137,61 @@ function migrateHarvesterNumber(
 }
 
 const savedHarvesterActiveStartedAt =
-  migrateHarvesterNumber(
-    savedHarvesterState
-      .activeStartedAt
-  );
+  const savedHarvesterActiveStartedAt =
+    migrateHarvesterNumber(
+      savedHarvesterState
+        .activeStartedAt
+    );
 
-const savedHarvesterLastProcessedAt =
-  migrateHarvesterNumber(
-    savedHarvesterState
-      .lastProcessedAt
-  );
+  const savedHarvesterLastProcessedAt =
+    migrateHarvesterNumber(
+      savedHarvesterState
+        .lastProcessedAt
+    );
 
-const savedHarvesterCooldownStartedAt =
-  migrateHarvesterNumber(
-    savedHarvesterState
-      .cooldownStartedAt
-  );
+  const migratedHarvesterPassiveMpsSnapshot =
+    migrateHarvesterNumber(
+      savedHarvesterState
+        .passiveMpsSnapshot
+    );
 
-const savedHarvesterCooldownEndsAt =
-  migrateHarvesterNumber(
-    savedHarvesterState
-      .cooldownEndsAt
-  );
+  const migratedHarvesterOwnedBuildingSnapshot =
+    Math.floor(
+      migrateHarvesterNumber(
+        savedHarvesterState
+          .ownedBuildingSnapshot
+      )
+    );
 
-const migratedHarvesterStoredMeat =
-  migrateHarvesterNumber(
-    savedHarvesterState
-      .storedMeat
-  );
+  const migratedHarvesterOutputPerSecondSnapshot =
+    migrateHarvesterNumber(
+      savedHarvesterState
+        .outputPerSecondSnapshot
+    );
 
-const migratedHarvesterLifetimeMeat =
-  migrateHarvesterNumber(
-    savedHarvesterState
-      .lifetimeMeat
-  );
+  const savedHarvesterCooldownStartedAt =
+    migrateHarvesterNumber(
+      savedHarvesterState
+        .cooldownStartedAt
+    );
 
+  const savedHarvesterCooldownEndsAt =
+    migrateHarvesterNumber(
+      savedHarvesterState
+        .cooldownEndsAt
+    );
+
+  const migratedHarvesterStoredMeat =
+    migrateHarvesterNumber(
+      savedHarvesterState
+        .storedMeat
+    );
+
+  const migratedHarvesterLifetimeMeat =
+    migrateHarvesterNumber(
+      savedHarvesterState
+        .lifetimeMeat
+    );
   const migratedProducers = {};
 
   const migratedProducerLifetimeMeat =
@@ -357,7 +377,7 @@ const migratedCooldownEndsAt =
       ...defaultState.features,
       ...savedFeatures,
 
-      harvester: {
+            harvester: {
         ...defaultState
           .features
           .harvester,
@@ -382,6 +402,15 @@ const migratedCooldownEndsAt =
 
         lastProcessedAt:
           migratedLastProcessedAt,
+
+        passiveMpsSnapshot:
+          migratedHarvesterPassiveMpsSnapshot,
+
+        ownedBuildingSnapshot:
+          migratedHarvesterOwnedBuildingSnapshot,
+
+        outputPerSecondSnapshot:
+          migratedHarvesterOutputPerSecondSnapshot,
 
         cooldownStartedAt:
           migratedCooldownStartedAt,
