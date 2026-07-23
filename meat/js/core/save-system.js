@@ -981,9 +981,11 @@ function validateImportedGameState(
         );
       }
 
-      [
+            [
         "activeStartedAt",
         "lastProcessedAt",
+        "passiveMpsSnapshot",
+        "outputPerSecondSnapshot",
         "cooldownStartedAt",
         "cooldownEndsAt",
         "storedMeat",
@@ -1014,6 +1016,26 @@ function validateImportedGameState(
               `Invalid Harvester value: ${propertyName}`
             );
           }
+        }
+      );
+
+      if (
+        importedHarvesterState
+          .ownedBuildingSnapshot !==
+          undefined &&
+        (
+          !Number.isInteger(
+            importedHarvesterState
+              .ownedBuildingSnapshot
+          ) ||
+          importedHarvesterState
+            .ownedBuildingSnapshot < 0
+        )
+      ) {
+        throw new Error(
+          "The imported Harvester ownership snapshot is invalid."
+        );
+      }.
         }
       );
     }
