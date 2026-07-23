@@ -503,12 +503,16 @@ if (
 
 /* ==========================================================
    10. HARVESTER RETRACTION
+   ----------------------------------------------------------
+   Processes the final active interval, collects all stored
+   Harvester MEAT, removes the deployed sprite, and begins the
+   cooldown.
 ========================================================== */
 
 function retractDeployedHarvester() {
   if (
-    typeof setHarvesterRetracted !==
-      "function"
+    typeof retractAndCollectHarvester !==
+    "function"
   ) {
     return;
   }
@@ -516,31 +520,46 @@ function retractDeployedHarvester() {
   cancelHarvesterPlacement();
   cancelHarvesterDrag();
 
-  const retractionSucceeded =
-    setHarvesterRetracted();
+  const collectionResult =
+    retractAndCollectHarvester();
 
-  if (!retractionSucceeded) {
+  if (!collectionResult.success) {
     return;
   }
-   
+
   updateHarvesterDeploymentDisplay();
 
   if (
-    typeof updateHarvesterStoreControl ===
+    typeof updateGameDisplay ===
     "function"
   ) {
-    updateHarvesterStoreControl();
+    updateGameDisplay();
+  } else {
+    if (
+      typeof updateHarvesterStoreControl ===
+      "function"
+    ) {
+      updateHarvesterStoreControl();
+    }
+
+    if (
+      typeof updateHarvesterDutyCycleDisplay ===
+      "function"
+    ) {
+      updateHarvesterDutyCycleDisplay();
+    }
   }
-   if (
-  typeof updateHarvesterDutyCycleDisplay ===
-  "function"
-) {
-  updateHarvesterDutyCycleDisplay();
-}
 
   document.dispatchEvent(
     new CustomEvent(
-      "harvester:retracted"
+      "harvester:retracted",
+      {
+        detail: {
+          meatCollected:
+            collectionResult
+              .meatCollected
+        }
+      }
     )
   );
 }
