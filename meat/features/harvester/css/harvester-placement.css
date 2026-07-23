@@ -422,7 +422,8 @@ body.animations-disabled
 /* ==========================================================
    9. HARVESTER ACTIVE-TIME GAUGE
    ----------------------------------------------------------
-   Drains from full to empty while the Harvester is active.
+   Matches the full width of the deployed Harvester element
+   and drains from full to empty while active.
 ========================================================== */
 
 .harvester-charge-gauge {
@@ -430,20 +431,13 @@ body.animations-disabled
   left: 50%;
   top: calc(100% + 4px);
 
-  width:
-    min(
-      94%,
-      104px
-    );
+  width: 100%;
 
-  display: grid;
-  grid-template-columns:
-    minmax(0, 1fr)
-    auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 
-  align-items: center;
-
-  gap: 0.28rem;
+  gap: 2px;
 
   transform:
     translateX(-50%);
@@ -456,6 +450,7 @@ body.animations-disabled
 }
 
 .harvester-charge-track {
+  width: 100%;
   height: 8px;
 
   overflow: hidden;
@@ -503,7 +498,8 @@ body.animations-disabled
 }
 
 .harvester-charge-time {
-  min-width: 2.7rem;
+  width: 100%;
+  min-width: 0;
 
   color:
     var(--primary-text);
@@ -518,13 +514,12 @@ body.animations-disabled
   line-height: 1;
   letter-spacing: 0.02em;
 
-  text-align: right;
+  text-align: center;
 
   text-shadow:
     1px 1px 0
     #000;
 }
-
 /* ==========================================================
    10. DEPLETED HARVESTER
    ----------------------------------------------------------
