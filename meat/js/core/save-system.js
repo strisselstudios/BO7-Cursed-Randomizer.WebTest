@@ -136,7 +136,6 @@ function migrateHarvesterNumber(
     : 0;
 }
 
-const savedHarvesterActiveStartedAt =
   const savedHarvesterActiveStartedAt =
     migrateHarvesterNumber(
       savedHarvesterState
