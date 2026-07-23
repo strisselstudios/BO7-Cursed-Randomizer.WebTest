@@ -162,7 +162,10 @@ function updateHarvesterChargeDisplay(
 }
 
 /* ==========================================================
-   4. DUTY-CYCLE DISPLAY REFRESH
+   4. DUTY-CYCLE AND PRODUCTION REFRESH
+   ----------------------------------------------------------
+   Processes timestamp-based Harvester output before drawing
+   the current timer and gauge state.
 ========================================================== */
 
 let previousHarvesterDutyState =
@@ -171,6 +174,15 @@ let previousHarvesterDutyState =
 function updateHarvesterDutyCycleDisplay(
   currentTime = Date.now()
 ) {
+  if (
+    typeof processHarvesterProduction ===
+    "function"
+  ) {
+    processHarvesterProduction(
+      currentTime
+    );
+  }
+
   clearCompletedHarvesterCooldown(
     currentTime
   );
@@ -193,12 +205,15 @@ function updateHarvesterDutyCycleDisplay(
     );
   }
 
-  if (
-    previousHarvesterDutyState ===
-      HARVESTER_DUTY_STATE_ACTIVE &&
+  const harvesterJustDepleted =
     currentDutyState ===
-      HARVESTER_DUTY_STATE_DEPLETED
-  ) {
+      HARVESTER_DUTY_STATE_DEPLETED &&
+    previousHarvesterDutyState !==
+      HARVESTER_DUTY_STATE_DEPLETED;
+
+  if (harvesterJustDepleted) {
+    saveGame();
+
     document.dispatchEvent(
       new CustomEvent(
         "harvester:depleted"
@@ -210,8 +225,9 @@ function updateHarvesterDutyCycleDisplay(
     currentDutyState;
 }
 
+
 /* ==========================================================
-   5. DUTY-CYCLE TIMER
+   5. DUTY-CYCLE TIMER AND SAVE SAFETY
 ========================================================== */
 
 window.setInterval(
@@ -238,8 +254,33 @@ document.addEventListener(
 document.addEventListener(
   "visibilitychange",
   () => {
-    if (!document.hidden) {
-      updateHarvesterDutyCycleDisplay();
+    if (document.hidden) {
+      if (
+        typeof processHarvesterProduction ===
+        "function"
+      ) {
+        processHarvesterProduction();
+      }
+
+      saveGame();
+
+      return;
     }
+
+    updateHarvesterDutyCycleDisplay();
+  }
+);
+
+window.addEventListener(
+  "pagehide",
+  () => {
+    if (
+      typeof processHarvesterProduction ===
+      "function"
+    ) {
+      processHarvesterProduction();
+    }
+
+    saveGame();
   }
 );
