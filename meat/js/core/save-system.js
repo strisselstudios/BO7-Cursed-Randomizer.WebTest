@@ -359,12 +359,42 @@ const migratedCooldownEndsAt =
     ? savedHarvesterCooldownEndsAt
     : 0;
    
-  const migratedState = {
-    ...defaultState,
-    ...savedState,
+const savedMeatValue =
+  Number(savedState.meat);
 
-    producers:
-      migratedProducers,
+const migratedState = {
+  ...defaultState,
+  ...savedState,
+
+  meat:
+    clampMeatAmount(
+      savedState.meat
+    ),
+
+  totalMeat:
+    clampMeatAmount(
+      savedState.totalMeat
+    ),
+
+  infiniteMeat:
+    savedState.infiniteMeat ===
+      true ||
+    savedMeatValue >
+      MEAT_DISPLAY_LIMIT,
+
+  meatRemainder:
+    clampMeatAmount(
+      savedState.meatRemainder
+    ),
+
+  totalMeatRemainder:
+    clampMeatAmount(
+      savedState
+        .totalMeatRemainder
+    ),
+
+  producers:
+    migratedProducers,
 
     producerHighestTier:
       migratedProducerHighestTier,
