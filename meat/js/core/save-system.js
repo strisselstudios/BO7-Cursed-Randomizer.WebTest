@@ -1064,7 +1064,7 @@ function validateImportedGameState(
         throw new Error(
           "The imported Harvester ownership snapshot is invalid."
         );
-      }.
+      }
         }
       );
     }
