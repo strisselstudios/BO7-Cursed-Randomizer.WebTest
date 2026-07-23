@@ -15,7 +15,6 @@ function getTotalProducersOwned() {
 }
 
 function updateResourceDisplay() {
-function updateResourceDisplay() {
   const displayedMeatBank =
     gameState.infiniteMeat
       ? "INFINITE"
