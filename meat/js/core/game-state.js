@@ -5,7 +5,7 @@
 ========================================================== */
 
 const MEAT_SAVE_KEY = "meatExeSave";
-const CURRENT_SAVE_VERSION = 8;
+const CURRENT_SAVE_VERSION = 9;
 
 /* ==========================================================
    2. DEFAULT GAME STATE
@@ -88,6 +88,10 @@ function createDefaultGameState() {
 
     activeStartedAt: 0,
     lastProcessedAt: 0,
+
+    passiveMpsSnapshot: 0,
+    ownedBuildingSnapshot: 0,
+    outputPerSecondSnapshot: 0,
 
     cooldownStartedAt: 0,
     cooldownEndsAt: 0,
