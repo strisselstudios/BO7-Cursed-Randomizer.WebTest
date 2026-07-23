@@ -15,20 +15,25 @@ function getTotalProducersOwned() {
 }
 
 function updateResourceDisplay() {
-  meatCount.textContent =
-    `${formatMeat(
-      gameState.meat
-    )} MEAT`;
+function updateResourceDisplay() {
+  const displayedMeatBank =
+    gameState.infiniteMeat
+      ? "INFINITE"
+      : formatMeat(
+          gameState.meat
+        );
 
-  meatPerSecondDisplay.textContent =
+  meatCount.textContent =
+    `${displayedMeatBank} MEAT`;
+
+  meatPerSecondDisplay
+    .textContent =
     `${formatMeatPerSecond(
       gameState.meatPerSecond
     )} per second`;
 
   meatBankStat.textContent =
-    formatMeat(
-      gameState.meat
-    );
+    displayedMeatBank;
 
   totalMeatStat.textContent =
     formatMeat(
