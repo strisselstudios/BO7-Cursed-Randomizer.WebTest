@@ -406,7 +406,10 @@ body.nacht-raiders-window-open {
 }
 
 /* ==========================================================
-   8. TEMPORARY DOS TERMINAL
+   8. DOS BOOT TERMINAL
+   ----------------------------------------------------------
+   Boot lines are appended by the sequence controller and the
+   output automatically scrolls toward the newest message.
 ========================================================== */
 
 .nacht-raiders-loading-screen {
@@ -424,24 +427,39 @@ body.nacht-raiders-window-open {
       1.6rem
     );
 
-  overflow:
-    hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  overscroll-behavior: contain;
+
+  scrollbar-width: none;
 
   color:
     #9bbc0f;
 
   font-size:
     clamp(
-      0.68rem,
+      0.62rem,
       1.7vw,
       1rem
     );
 
-  line-height: 1.42;
+  line-height: 1.38;
 
   text-shadow:
     0 0 7px
     rgba(155, 188, 15, 0.42);
+
+  white-space: pre-wrap;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  pointer-events: none;
+}
+
+.nacht-raiders-terminal-output::-webkit-scrollbar {
+  display: none;
 }
 
 .nacht-raiders-terminal-output p {
@@ -450,7 +468,7 @@ body.nacht-raiders-window-open {
 
 .nacht-raiders-terminal-spacer {
   min-height:
-    1.42em;
+    1.38em;
 }
 
 .nacht-raiders-terminal-status {
@@ -464,6 +482,97 @@ body.nacht-raiders-window-open {
     infinite;
 }
 
+/* ==========================================================
+   8.1 GENERATED BOOT LINES
+========================================================== */
+
+.nacht-raiders-boot-line {
+  min-height:
+    1.38em;
+
+  margin: 0;
+
+  color:
+    #9bbc0f;
+
+  font: inherit;
+
+  line-height: inherit;
+
+  text-align: left;
+}
+
+.nacht-raiders-boot-line-default {
+  color:
+    #9bbc0f;
+}
+
+.nacht-raiders-boot-line-muted {
+  color:
+    #697d4b;
+
+  text-shadow:
+    0 0 5px
+    rgba(105, 125, 75, 0.3);
+}
+
+.nacht-raiders-boot-line-path {
+  color:
+    #cadc9f;
+
+  text-shadow:
+    0 0 6px
+    rgba(202, 220, 159, 0.35);
+}
+
+.nacht-raiders-boot-line-warning {
+  color:
+    #df9a3a;
+
+  text-shadow:
+    0 0 7px
+    rgba(223, 154, 58, 0.42);
+}
+
+.nacht-raiders-boot-line-error {
+  color:
+    #d63a3a;
+
+  text-shadow:
+    0 0 8px
+    rgba(214, 58, 58, 0.46);
+}
+
+.nacht-raiders-boot-line-success {
+  color:
+    #7fe34f;
+
+  text-shadow:
+    0 0 8px
+    rgba(127, 227, 79, 0.46);
+}
+
+/* ==========================================================
+   8.2 ACTIVE TYPING CURSOR
+========================================================== */
+
+.nacht-raiders-boot-line-active::after {
+  content: "█";
+
+  display: inline-block;
+
+  margin-left: 0.08em;
+
+  color:
+    currentColor;
+
+  animation:
+    nacht-raiders-terminal-cursor
+    560ms
+    steps(1, end)
+    infinite;
+}
+
 @keyframes nacht-raiders-terminal-cursor {
 
   0%,
@@ -473,10 +582,9 @@ body.nacht-raiders-window-open {
 
   49%,
   100% {
-    opacity: 0.42;
+    opacity: 0.25;
   }
 }
-
 /* ==========================================================
    9. TEMPORARY MENU PLACEHOLDER
 ========================================================== */
@@ -734,7 +842,10 @@ body.animations-disabled
 .nacht-raiders-window,
 
 body.animations-disabled
-.nacht-raiders-terminal-status {
+.nacht-raiders-terminal-status,
+
+body.animations-disabled
+.nacht-raiders-boot-line-active::after {
   animation: none;
 }
 
@@ -746,7 +857,9 @@ body.animations-disabled
   .nacht-raiders-overlay:not([hidden])
   .nacht-raiders-window,
 
-  .nacht-raiders-terminal-status {
+  .nacht-raiders-terminal-status,
+
+  .nacht-raiders-boot-line-active::after {
     animation: none;
   }
 }
