@@ -1108,6 +1108,19 @@ function validateImportedGameState(
     );
   }
 
+  if (
+    importedState.settings
+      ?.nachtRaidersBootScreen !==
+        undefined &&
+    typeof importedState.settings
+      .nachtRaidersBootScreen !==
+        "boolean"
+  ) {
+    throw new Error(
+      "The imported Nacht Raiders boot-screen setting is invalid."
+    );
+  }
+
   return true;
 }
 
