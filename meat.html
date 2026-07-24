@@ -123,7 +123,10 @@
   href="meat/features/nacht-raiders/css/nacht-raiders-launcher.css"
 >
 
-
+<link
+  rel="stylesheet"
+  href="meat/features/nacht-raiders/css/nacht-raiders-window.css"
+>
   
   
   <link
@@ -190,6 +193,181 @@
 </head>
 
 <body>
+
+  <!-- ==========================================================
+
+  2.0 NACHT RAIDERS WINDOW LAYER
+
+  ----------------------------------------------------------
+  Standalone DOS-style feature window opened through the
+  Tier III Aether Repairmen launcher.
+
+  Desktop:
+  - Centered window
+  - Blurred background
+  - Outside-click closing
+
+  Mobile:
+  - Full-screen window
+========================================================== -->
+
+<div
+  id="nachtRaidersOverlay"
+  class="nacht-raiders-overlay"
+  aria-hidden="true"
+  hidden
+>
+
+  <section
+    id="nachtRaidersWindow"
+    class="nacht-raiders-window"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="nachtRaidersWindowTitle"
+    tabindex="-1"
+  >
+
+    <!-- ======================================================
+
+      2.0.1 DOS WINDOW TITLE BAR
+
+    ======================================================= -->
+
+    <header class="nacht-raiders-title-bar">
+
+      <div class="nacht-raiders-window-identity">
+
+        <span
+          class="nacht-raiders-window-icon"
+          aria-hidden="true"
+        >
+          C:\&gt;_
+        </span>
+
+        <strong id="nachtRaidersWindowTitle">
+          Nacht-Raiders.exe - Command Prompt
+        </strong>
+
+      </div>
+
+      <button
+        id="nachtRaidersCloseButton"
+        class="nacht-raiders-close-button"
+        type="button"
+        aria-label="Close Nacht Raiders"
+        title="Close Nacht Raiders"
+      >
+        <span aria-hidden="true">
+          ×
+        </span>
+      </button>
+
+    </header>
+
+    <!-- ======================================================
+
+      2.0.2 DOS WINDOW CONTENT
+
+    ======================================================= -->
+
+    <div class="nacht-raiders-window-body">
+
+      <main
+        id="nachtRaidersScreen"
+        class="nacht-raiders-screen"
+      >
+
+        <!-- ==================================================
+
+          2.0.2.1 LOADING SCREEN
+
+          The real scrolling file sequence will replace this
+          temporary shell during the next step.
+        =================================================== -->
+
+        <section
+          id="nachtRaidersLoadingScreen"
+          class="
+            nacht-raiders-interface-screen
+            nacht-raiders-loading-screen
+          "
+          aria-label="Nacht Raiders loading screen"
+        >
+
+          <div
+            id="nachtRaidersTerminalOutput"
+            class="nacht-raiders-terminal-output"
+            aria-live="polite"
+            aria-atomic="false"
+          >
+
+            <p>
+              MEAT OPERATING SYSTEM [Version 115.935]
+            </p>
+
+            <p>
+              (C) BROKEN ARROW SYSTEMS. ALL RIGHTS RESERVED.
+            </p>
+
+            <p class="nacht-raiders-terminal-spacer">
+              &nbsp;
+            </p>
+
+            <p>
+              C:\MEAT\AETHER&gt;NACHT-RAIDERS.EXE
+            </p>
+
+            <p class="nacht-raiders-terminal-status">
+              INTERFACE SHELL ONLINE_
+            </p>
+
+          </div>
+
+        </section>
+
+        <!-- ==================================================
+
+          2.0.2.2 MENU SCREEN
+
+          Hidden placeholder prepared for the later animated
+          menu or clickable artwork.
+        =================================================== -->
+
+        <section
+          id="nachtRaidersMenuScreen"
+          class="
+            nacht-raiders-interface-screen
+            nacht-raiders-menu-screen
+          "
+          aria-label="Nacht Raiders main menu"
+          hidden
+        >
+
+          <div class="nacht-raiders-menu-placeholder">
+
+            <span>
+              AETHER REPAIRMEN FIELD PROGRAM
+            </span>
+
+            <h2>
+              NACHT RAIDERS
+            </h2>
+
+            <p>
+              MENU SYSTEM AWAITING INITIALIZATION
+            </p>
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </section>
+
+</div>
 
   <!-- ==========================================================
        2. MAIN APPLICATION
