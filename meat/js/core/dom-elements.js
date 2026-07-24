@@ -313,6 +313,91 @@ const producerInfoDescription =
     "producerInfoDescription"
   );
 
+const producerInfoHarvesterButton =
+  document.getElementById(
+    "producerInfoHarvesterButton"
+  );
+
+const harvesterInfoView =
+  document.getElementById(
+    "harvesterInfoView"
+  );
+
+const harvesterInfoStatus =
+  document.getElementById(
+    "harvesterInfoStatus"
+  );
+
+const harvesterInfoTimeRemaining =
+  document.getElementById(
+    "harvesterInfoTimeRemaining"
+  );
+
+const harvesterInfoPassiveMps =
+  document.getElementById(
+    "harvesterInfoPassiveMps"
+  );
+
+const harvesterInfoOwnedSnapshot =
+  document.getElementById(
+    "harvesterInfoOwnedSnapshot"
+  );
+
+const harvesterInfoClickRate =
+  document.getElementById(
+    "harvesterInfoClickRate"
+  );
+
+const harvesterInfoOwnershipMultiplier =
+  document.getElementById(
+    "harvesterInfoOwnershipMultiplier"
+  );
+
+const harvesterInfoOutputRate =
+  document.getElementById(
+    "harvesterInfoOutputRate"
+  );
+
+const harvesterInfoStoredMeat =
+  document.getElementById(
+    "harvesterInfoStoredMeat"
+  );
+
+const harvesterInfoProjectedYield =
+  document.getElementById(
+    "harvesterInfoProjectedYield"
+  );
+
+const harvesterInfoLifetimeMeat =
+  document.getElementById(
+    "harvesterInfoLifetimeMeat"
+  );
+
+const harvesterInfoFormulaHeading =
+  document.getElementById(
+    "harvesterInfoFormulaHeading"
+  );
+
+const harvesterInfoFormulaText =
+  document.getElementById(
+    "harvesterInfoFormulaText"
+  );
+
+const harvesterInfoCollectionResult =
+  document.getElementById(
+    "harvesterInfoCollectionResult"
+  );
+
+const harvesterInfoRetractButton =
+  document.getElementById(
+    "harvesterInfoRetractButton"
+  );
+
+const harvesterInfoBackButton =
+  document.getElementById(
+    "harvesterInfoBackButton"
+  );
+
 const producerInfoCloseButton =
   document.getElementById(
     "producerInfoCloseButton"
@@ -397,10 +482,17 @@ const harvesterPlacementCancelButton =
     "harvesterPlacementCancelButton"
   );
 
-const silverSpoonIcon =
+const harvesterCollectionNotice =
   document.getElementById(
-    "silverSpoonIcon"
+    "harvesterCollectionNotice"
   );
+
+const harvesterCollectionAmount =
+  document.getElementById(
+    "harvesterCollectionAmount"
+  );
+
+const silverSpoonIcon =
 
 const aetherRepairmenIcon = document.getElementById(
   "aetherRepairmenIcon"
