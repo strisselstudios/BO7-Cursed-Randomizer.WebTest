@@ -8,6 +8,9 @@ const NACHT_RAIDERS_SCREEN_LOADING =
 const NACHT_RAIDERS_SCREEN_MENU =
   "menu";
 
+const NACHT_RAIDERS_SCREEN_GAME =
+  "game";
+
 let nachtRaidersWindowIsOpen =
   false;
 
@@ -17,8 +20,8 @@ let nachtRaidersPreviouslyFocusedElement =
 /* ==========================================================
    2. INTERFACE SCREEN SWITCHING
    ----------------------------------------------------------
-   Prepared now so the next boot-sequence step can switch from
-   the DOS loading screen into the main menu.
+   Controls the boot screen, main menu, and future gameplay
+   stage without closing the DOS window.
 ========================================================== */
 
 function showNachtRaidersScreen(
@@ -27,6 +30,7 @@ function showNachtRaidersScreen(
   if (
     !nachtRaidersLoadingScreen ||
     !nachtRaidersMenuScreen ||
+    !nachtRaidersGameScreen ||
     !nachtRaidersWindow
   ) {
     return false;
@@ -40,9 +44,14 @@ function showNachtRaidersScreen(
     screenName ===
     NACHT_RAIDERS_SCREEN_MENU;
 
+  const showGameScreen =
+    screenName ===
+    NACHT_RAIDERS_SCREEN_GAME;
+
   if (
     !showLoadingScreen &&
-    !showMenuScreen
+    !showMenuScreen &&
+    !showGameScreen
   ) {
     return false;
   }
@@ -52,6 +61,9 @@ function showNachtRaidersScreen(
 
   nachtRaidersMenuScreen.hidden =
     !showMenuScreen;
+
+  nachtRaidersGameScreen.hidden =
+    !showGameScreen;
 
   nachtRaidersWindow.dataset
     .nachtRaidersScreen =
