@@ -1048,27 +1048,25 @@ function validateImportedGameState(
         }
       );
 
-      if (
-        importedHarvesterState
-          .ownedBuildingSnapshot !==
-          undefined &&
-        (
-          !Number.isInteger(
-            importedHarvesterState
-              .ownedBuildingSnapshot
-          ) ||
-          importedHarvesterState
-            .ownedBuildingSnapshot < 0
-        )
-      ) {
-        throw new Error(
-          "The imported Harvester ownership snapshot is invalid."
-        );
-      }
-        }
-      );
-    }
-  }
+            if (
+  importedHarvesterState
+    .ownedBuildingSnapshot !== undefined &&
+  (
+    !Number.isInteger(
+      importedHarvesterState
+        .ownedBuildingSnapshot
+    ) ||
+    importedHarvesterState
+      .ownedBuildingSnapshot < 0
+  )
+) {
+  throw new Error(
+    "The imported Harvester ownership snapshot is invalid."
+  );
+}
+}
+}
+
 
 
   if (
