@@ -186,17 +186,34 @@ function synchronizeProducerInfoIcon(
    of total producer output, and lifetime yield.
 ========================================================== */
 
-function getTotalEffectiveProducerOutput() {
+/* ==========================================================
+   3. PRODUCER INFO STATISTICS
+   ----------------------------------------------------------
+   Calculates effective unit output, combined output,
+   lifetime share of all producer-generated MEAT, and
+   lifetime yield.
+
+   Harvester output is credited to the Silver Spoon family,
+   so it is included in that producer's harvest share.
+========================================================== */
+
+function getTotalLifetimeProducerHarvest() {
   return producerOrder.reduce(
     (
-      totalOutput,
+      totalHarvest,
       producerKey
     ) => {
-      return (
-        totalOutput +
-        getProducerTotalMeatPerSecond(
-          producerKey
-        )
+      const producerHarvest =
+        clampMeatAmount(
+          gameState
+            .producerLifetimeMeat?.[
+              producerKey
+            ]
+        );
+
+      return addClampedMeatValues(
+        totalHarvest,
+        producerHarvest
       );
     },
     0
@@ -206,13 +223,14 @@ function getTotalEffectiveProducerOutput() {
 function formatProducerInfoPercentage(
   percentage
 ) {
-  const normalizedPercentage = Math.min(
-    100,
-    Math.max(
-      0,
-      Number(percentage) || 0
-    )
-  );
+  const normalizedPercentage =
+    Math.min(
+      100,
+      Math.max(
+        0,
+        Number(percentage) || 0
+      )
+    );
 
   if (
     normalizedPercentage === 0 ||
@@ -253,19 +271,21 @@ function updateProducerInfoStatistics(
     );
 
   const lifetimeOutput =
-    gameState
-      .producerLifetimeMeat?.[
-        producerKey
-      ] ?? 0;
+    clampMeatAmount(
+      gameState
+        .producerLifetimeMeat?.[
+          producerKey
+        ]
+    );
 
-  const totalOutput =
-    getTotalEffectiveProducerOutput();
+  const totalLifetimeHarvest =
+    getTotalLifetimeProducerHarvest();
 
-  const outputShare =
-    totalOutput > 0
+  const harvestShare =
+    totalLifetimeHarvest > 0
       ? (
-          combinedOutput /
-          totalOutput
+          lifetimeOutput /
+          totalLifetimeHarvest
         ) * 100
       : 0;
 
@@ -289,7 +309,7 @@ function updateProducerInfoStatistics(
 
   producerInfoShare.textContent =
     `${formatProducerInfoPercentage(
-      outputShare
+      harvestShare
     )}%`;
 
   producerInfoLifetime.textContent =
