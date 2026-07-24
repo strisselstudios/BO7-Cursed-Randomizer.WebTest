@@ -8,6 +8,9 @@ let nachtRaidersBootRunId =
 let nachtRaidersBootIsRunning =
   false;
 
+let nachtRaidersBootIsComplete =
+  false;
+
 let nachtRaidersBootTimerId =
   null;
 
@@ -15,14 +18,130 @@ let nachtRaidersBootDelayResolver =
   null;
 
 /* ==========================================================
-   2. BOOT-SEQUENCE CANCELLABLE DELAY
-   ----------------------------------------------------------
-   Allows the active boot sequence to stop immediately when
-   the DOS window closes.
-
-   The run ID also prevents an older sequence from changing
-   screens after a newer sequence has begun.
+   2. BOOT-SCREEN SETTING
 ========================================================== */
+
+function isNachtRaidersBootScreenEnabled() {
+  return (
+    gameState.settings
+      .nachtRaidersBootScreen !==
+    false
+  );
+}
+
+function shouldBypassNachtRaidersBootScreen() {
+  const animationsAreDisabled =
+    gameState.settings.animations ===
+      false ||
+    document.body.classList.contains(
+      "animations-disabled"
+    );
+
+  const reducedMotionIsRequested =
+    typeof window.matchMedia ===
+      "function" &&
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+  return (
+    !isNachtRaidersBootScreenEnabled() ||
+    animationsAreDisabled ||
+    reducedMotionIsRequested
+  );
+}
+
+function updateNachtRaidersBootSettingControl() {
+  if (
+    !nachtRaidersBootSettingRow ||
+    !nachtRaidersBootToggle
+  ) {
+    return;
+  }
+
+  const nachtRaidersIsUnlocked =
+    typeof isNachtRaidersUnlocked ===
+      "function" &&
+    isNachtRaidersUnlocked();
+
+  nachtRaidersBootSettingRow.hidden =
+    !nachtRaidersIsUnlocked;
+
+  nachtRaidersBootToggle.disabled =
+    !nachtRaidersIsUnlocked;
+
+  nachtRaidersBootToggle.checked =
+    isNachtRaidersBootScreenEnabled();
+}
+
+nachtRaidersBootToggle
+  ?.addEventListener(
+    "change",
+    () => {
+      const nachtRaidersIsUnlocked =
+        typeof isNachtRaidersUnlocked ===
+          "function" &&
+        isNachtRaidersUnlocked();
+
+      if (!nachtRaidersIsUnlocked) {
+        updateNachtRaidersBootSettingControl();
+
+        return;
+      }
+
+      gameState.settings
+        .nachtRaidersBootScreen =
+          nachtRaidersBootToggle.checked;
+
+      saveGame();
+    }
+  );
+
+/* ==========================================================
+   3. BOOT-SEQUENCE CANCELLABLE DELAY
+========================================================== */
+
+function clearNachtRaidersBootDelay() {
+  if (
+    nachtRaidersBootTimerId !==
+    null
+  ) {
+    window.clearTimeout(
+      nachtRaidersBootTimerId
+    );
+
+    nachtRaidersBootTimerId =
+      null;
+  }
+
+  if (
+    typeof nachtRaidersBootDelayResolver ===
+      "function"
+  ) {
+    const resolvePendingDelay =
+      nachtRaidersBootDelayResolver;
+
+    nachtRaidersBootDelayResolver =
+      null;
+
+    resolvePendingDelay(
+      false
+    );
+  }
+}
+
+function invalidateNachtRaidersBootRun() {
+  nachtRaidersBootRunId +=
+    1;
+
+  nachtRaidersBootIsRunning =
+    false;
+
+  clearNachtRaidersBootDelay();
+  removeNachtRaidersActiveCursor();
+
+  return nachtRaidersBootRunId;
+}
 
 function waitForNachtRaidersBootDelay(
   durationMs,
@@ -78,7 +197,7 @@ function waitForNachtRaidersBootDelay(
 }
 
 /* ==========================================================
-   3. TERMINAL OUTPUT HELPERS
+   4. TERMINAL OUTPUT HELPERS
 ========================================================== */
 
 function clearNachtRaidersTerminalOutput() {
@@ -150,8 +269,42 @@ function removeNachtRaidersActiveCursor() {
     );
 }
 
+function removeNachtRaidersProceedPrompt() {
+  nachtRaidersTerminalOutput
+    ?.querySelector(
+      ".nacht-raiders-boot-proceed"
+    )
+    ?.remove();
+}
+
+function appendNachtRaidersProceedPrompt() {
+  if (!nachtRaidersTerminalOutput) {
+    return;
+  }
+
+  removeNachtRaidersProceedPrompt();
+
+  const promptElement =
+    document.createElement(
+      "p"
+    );
+
+  promptElement.className =
+    "nacht-raiders-boot-proceed";
+
+  promptElement.textContent =
+    NACHT_RAIDERS_BOOT_PROCEED_TEXT;
+
+  nachtRaidersTerminalOutput
+    .appendChild(
+      promptElement
+    );
+
+  scrollNachtRaidersTerminalToBottom();
+}
+
 /* ==========================================================
-   4. BOOT-LINE PRESENTATION
+   5. BOOT-LINE PRESENTATION
 ========================================================== */
 
 function getNachtRaidersCharacterDelay(
@@ -332,27 +485,19 @@ async function typeNachtRaidersBootLine(
   );
 }
 
-/* ==========================================================
-   5. REDUCED-MOTION PRESENTATION
-========================================================== */
-
-function shouldSkipNachtRaidersBootTyping() {
-  const animationsAreDisabled =
-    document.body.classList.contains(
-      "animations-disabled"
+function renderNachtRaidersBootLineImmediately(
+  bootLine
+) {
+  const lineElement =
+    createNachtRaidersBootLine(
+      bootLine
     );
 
-  const reducedMotionIsRequested =
-    typeof window.matchMedia ===
-      "function" &&
-    window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+  lineElement.textContent =
+    bootLine.text ||
+    "\u00A0";
 
-  return (
-    animationsAreDisabled ||
-    reducedMotionIsRequested
-  );
+  return lineElement;
 }
 
 function renderNachtRaidersBootImmediately() {
@@ -360,14 +505,9 @@ function renderNachtRaidersBootImmediately() {
 
   NACHT_RAIDERS_BOOT_LINES.forEach(
     (bootLine) => {
-      const lineElement =
-        createNachtRaidersBootLine(
-          bootLine
-        );
-
-      lineElement.textContent =
-        bootLine.text ||
-        "\u00A0";
+      renderNachtRaidersBootLineImmediately(
+        bootLine
+      );
     }
   );
 
@@ -375,16 +515,114 @@ function renderNachtRaidersBootImmediately() {
 }
 
 /* ==========================================================
-   6. START AND COMPLETE BOOT SEQUENCE
+   6. READY STATE AND MENU PROGRESSION
+========================================================== */
+
+function setNachtRaidersBootReady() {
+  removeNachtRaidersActiveCursor();
+  appendNachtRaidersProceedPrompt();
+
+  nachtRaidersBootIsRunning =
+    false;
+
+  nachtRaidersBootIsComplete =
+    true;
+
+  document.dispatchEvent(
+    new CustomEvent(
+      "nacht-raiders:boot-ready"
+    )
+  );
+}
+
+function completeNachtRaidersBootImmediately() {
+  if (
+    typeof isNachtRaidersWindowOpen !==
+      "function" ||
+    !isNachtRaidersWindowOpen() ||
+    nachtRaidersLoadingScreen?.hidden
+  ) {
+    return false;
+  }
+
+  invalidateNachtRaidersBootRun();
+
+  renderNachtRaidersBootImmediately();
+
+  renderNachtRaidersBootLineImmediately(
+    NACHT_RAIDERS_BOOT_READY_LINE
+  );
+
+  setNachtRaidersBootReady();
+
+  document.dispatchEvent(
+    new CustomEvent(
+      "nacht-raiders:boot-skipped"
+    )
+  );
+
+  return true;
+}
+
+function proceedFromNachtRaidersBootToMenu() {
+  if (
+    !nachtRaidersBootIsComplete ||
+    typeof showNachtRaidersScreen !==
+      "function"
+  ) {
+    return false;
+  }
+
+  nachtRaidersBootIsComplete =
+    false;
+
+  showNachtRaidersScreen(
+    NACHT_RAIDERS_SCREEN_MENU
+  );
+
+  document.dispatchEvent(
+    new CustomEvent(
+      "nacht-raiders:boot-proceeded"
+    )
+  );
+
+  return true;
+}
+
+function handleNachtRaidersBootActivation() {
+  if (
+    typeof isNachtRaidersWindowOpen !==
+      "function" ||
+    !isNachtRaidersWindowOpen() ||
+    nachtRaidersLoadingScreen?.hidden
+  ) {
+    return;
+  }
+
+  if (nachtRaidersBootIsRunning) {
+    completeNachtRaidersBootImmediately();
+
+    return;
+  }
+
+  if (nachtRaidersBootIsComplete) {
+    proceedFromNachtRaidersBootToMenu();
+  }
+}
+
+/* ==========================================================
+   7. START BOOT SEQUENCE
 ========================================================== */
 
 async function startNachtRaidersBootSequence() {
-  cancelNachtRaidersBootSequence(
-    true
-  );
+  invalidateNachtRaidersBootRun();
+
+  nachtRaidersBootIsComplete =
+    false;
+
+  clearNachtRaidersTerminalOutput();
 
   if (
-    !nachtRaidersTerminalOutput ||
     typeof showNachtRaidersScreen !==
       "function" ||
     typeof isNachtRaidersWindowOpen !==
@@ -394,17 +632,31 @@ async function startNachtRaidersBootSequence() {
     return false;
   }
 
-  const runId =
-    nachtRaidersBootRunId;
+  if (
+    shouldBypassNachtRaidersBootScreen()
+  ) {
+    showNachtRaidersScreen(
+      NACHT_RAIDERS_SCREEN_MENU
+    );
 
-  nachtRaidersBootIsRunning =
-    true;
+    document.dispatchEvent(
+      new CustomEvent(
+        "nacht-raiders:boot-bypassed"
+      )
+    );
+
+    return true;
+  }
 
   showNachtRaidersScreen(
     NACHT_RAIDERS_SCREEN_LOADING
   );
 
-  clearNachtRaidersTerminalOutput();
+  const runId =
+    nachtRaidersBootRunId;
+
+  nachtRaidersBootIsRunning =
+    true;
 
   document.dispatchEvent(
     new CustomEvent(
@@ -412,112 +664,66 @@ async function startNachtRaidersBootSequence() {
     )
   );
 
-  if (
-    shouldSkipNachtRaidersBootTyping()
+  for (
+    const bootLine of
+    NACHT_RAIDERS_BOOT_LINES
   ) {
-    renderNachtRaidersBootImmediately();
-
-    const reducedMotionDelayCompleted =
-      await waitForNachtRaidersBootDelay(
-        NACHT_RAIDERS_BOOT_SETTINGS
-          .reducedMotionDelayMs,
+    const lineCompleted =
+      await typeNachtRaidersBootLine(
+        bootLine,
         runId
       );
 
-    if (!reducedMotionDelayCompleted) {
+    if (!lineCompleted) {
       return false;
-    }
-  } else {
-    for (
-      const bootLine of
-      NACHT_RAIDERS_BOOT_LINES
-    ) {
-      const lineCompleted =
-        await typeNachtRaidersBootLine(
-          bootLine,
-          runId
-        );
-
-      if (!lineCompleted) {
-        return false;
-      }
     }
   }
 
-  const finalDelayCompleted =
-    await waitForNachtRaidersBootDelay(
-      NACHT_RAIDERS_BOOT_SETTINGS
-        .finalDelayMs,
+  const readyLineCompleted =
+    await typeNachtRaidersBootLine(
+      NACHT_RAIDERS_BOOT_READY_LINE,
       runId
     );
 
   if (
-    !finalDelayCompleted ||
+    !readyLineCompleted ||
     runId !== nachtRaidersBootRunId ||
     !isNachtRaidersWindowOpen()
   ) {
     return false;
   }
 
-  removeNachtRaidersActiveCursor();
+  const promptDelayCompleted =
+    await waitForNachtRaidersBootDelay(
+      NACHT_RAIDERS_BOOT_SETTINGS
+        .readyPromptDelayMs,
+      runId
+    );
 
-  nachtRaidersBootIsRunning =
-    false;
+  if (
+    !promptDelayCompleted ||
+    runId !== nachtRaidersBootRunId ||
+    !isNachtRaidersWindowOpen()
+  ) {
+    return false;
+  }
 
-  showNachtRaidersScreen(
-    NACHT_RAIDERS_SCREEN_MENU
-  );
-
-  document.dispatchEvent(
-    new CustomEvent(
-      "nacht-raiders:boot-completed"
-    )
-  );
+  setNachtRaidersBootReady();
 
   return true;
 }
 
 /* ==========================================================
-   7. CANCEL BOOT SEQUENCE
+   8. CANCEL BOOT SEQUENCE
 ========================================================== */
 
 function cancelNachtRaidersBootSequence(
   clearOutput = false
 ) {
-  nachtRaidersBootRunId +=
-    1;
+  invalidateNachtRaidersBootRun();
 
-  nachtRaidersBootIsRunning =
+  nachtRaidersBootIsComplete =
     false;
-
-  if (
-    nachtRaidersBootTimerId !==
-    null
-  ) {
-    window.clearTimeout(
-      nachtRaidersBootTimerId
-    );
-
-    nachtRaidersBootTimerId =
-      null;
-  }
-
-  if (
-    typeof nachtRaidersBootDelayResolver ===
-      "function"
-  ) {
-    const resolvePendingDelay =
-      nachtRaidersBootDelayResolver;
-
-    nachtRaidersBootDelayResolver =
-      null;
-
-    resolvePendingDelay(
-      false
-    );
-  }
-
-  removeNachtRaidersActiveCursor();
 
   if (clearOutput) {
     clearNachtRaidersTerminalOutput();
@@ -533,7 +739,38 @@ function cancelNachtRaidersBootSequence(
 }
 
 /* ==========================================================
-   8. WINDOW EVENT INTEGRATION
+   9. BOOT-SCREEN INPUT
+========================================================== */
+
+nachtRaidersLoadingScreen
+  ?.addEventListener(
+    "click",
+    (event) => {
+      event.preventDefault();
+
+      handleNachtRaidersBootActivation();
+    }
+  );
+
+nachtRaidersLoadingScreen
+  ?.addEventListener(
+    "keydown",
+    (event) => {
+      if (
+        event.key !== "Enter" &&
+        event.key !== " "
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      handleNachtRaidersBootActivation();
+    }
+  );
+
+/* ==========================================================
+   10. WINDOW EVENT INTEGRATION
 ========================================================== */
 
 document.addEventListener(
