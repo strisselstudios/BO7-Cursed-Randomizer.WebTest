@@ -79,7 +79,19 @@ const soundToggle =
   document.getElementById("soundToggle");
 
 const animationToggle =
-  document.getElementById("animationToggle");
+  document.getElementById(
+    "animationToggle"
+  );
+
+const nachtRaidersBootSettingRow =
+  document.getElementById(
+    "nachtRaidersBootSettingRow"
+  );
+
+const nachtRaidersBootToggle =
+  document.getElementById(
+    "nachtRaidersBootToggle"
+  );
 
 const saveGameButton =
   document.getElementById("saveGameButton");
