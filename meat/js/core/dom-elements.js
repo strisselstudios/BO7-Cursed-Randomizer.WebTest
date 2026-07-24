@@ -509,12 +509,50 @@ const aetherRepairmenCardGroup =
 const nachtRaidersLauncherButton =
   document.getElementById(
     "nachtRaidersLauncherButton"
-  )
+  );
+
+const nachtRaidersOverlay =
+  document.getElementById(
+    "nachtRaidersOverlay"
+  );
+
+const nachtRaidersWindow =
+  document.getElementById(
+    "nachtRaidersWindow"
+  );
+
+const nachtRaidersCloseButton =
+  document.getElementById(
+    "nachtRaidersCloseButton"
+  );
+
+const nachtRaidersScreen =
+  document.getElementById(
+    "nachtRaidersScreen"
+  );
+
+const nachtRaidersLoadingScreen =
+  document.getElementById(
+    "nachtRaidersLoadingScreen"
+  );
+
+const nachtRaidersTerminalOutput =
+  document.getElementById(
+    "nachtRaidersTerminalOutput"
+  );
+
+const nachtRaidersMenuScreen =
+  document.getElementById(
+    "nachtRaidersMenuScreen"
+  );
 
 const aetherRepairmenIcon =
   document.getElementById(
     "aetherRepairmenIcon"
   );
+
+
+
 
 const producerDisplayElements = {
   silverSpoon: {
