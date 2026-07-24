@@ -565,6 +565,41 @@ const nachtRaidersMenuScreen =
     "nachtRaidersMenuScreen"
   );
 
+const nachtRaidersMenuArtwork =
+  document.getElementById(
+    "nachtRaidersMenuArtwork"
+  );
+
+const nachtRaidersPrimaryButton =
+  document.getElementById(
+    "nachtRaidersPrimaryButton"
+  );
+
+const nachtRaidersPrimaryButtonLabel =
+  document.getElementById(
+    "nachtRaidersPrimaryButtonLabel"
+  );
+
+const nachtRaidersMenuStatus =
+  document.getElementById(
+    "nachtRaidersMenuStatus"
+  );
+
+const nachtRaidersExitButton =
+  document.getElementById(
+    "nachtRaidersExitButton"
+  );
+
+const nachtRaidersGameScreen =
+  document.getElementById(
+    "nachtRaidersGameScreen"
+  );
+
+const nachtRaidersGameBackButton =
+  document.getElementById(
+    "nachtRaidersGameBackButton"
+  );
+
 const aetherRepairmenIcon =
   document.getElementById(
     "aetherRepairmenIcon"
