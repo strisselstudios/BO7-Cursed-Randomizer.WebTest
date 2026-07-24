@@ -35,16 +35,12 @@ const NACHT_RAIDERS_BOOT_TONE_SUCCESS =
   "success";
 
 /* ==========================================================
-   2. BOOT-SEQUENCE TIMING
+   2. BOOT-SEQUENCE TIMING AND COMPLETION TEXT
    ----------------------------------------------------------
-   All general sequence timing is editable here.
+   All general boot timing remains editable here.
 
-   Smaller character delays make the terminal type faster.
-   Whole-line entries use lineDelayMs rather than typing every
-   character.
-
-   The finished boot sequence waits finalDelayMs before opening
-   the prepared main menu.
+   The sequence never proceeds automatically. After reaching
+   the ready state, it waits for player input.
 ========================================================== */
 
 const NACHT_RAIDERS_BOOT_SETTINGS =
@@ -59,10 +55,25 @@ const NACHT_RAIDERS_BOOT_SETTINGS =
 
     defaultPauseAfterLineMs: 45,
 
-    finalDelayMs: 650,
-
-    reducedMotionDelayMs: 120
+    readyPromptDelayMs: 180
   });
+
+const NACHT_RAIDERS_BOOT_READY_LINE =
+  Object.freeze({
+    text:
+      "Nacht Raiders.exe is ready",
+
+    tone:
+      NACHT_RAIDERS_BOOT_TONE_SUCCESS,
+
+    mode:
+      NACHT_RAIDERS_BOOT_MODE_CHARACTER,
+
+    pauseAfterMs: 0
+  });
+
+const NACHT_RAIDERS_BOOT_PROCEED_TEXT =
+  "click to proceed";
 
 /* ==========================================================
    3. BOOT-SEQUENCE LINES
@@ -643,18 +654,5 @@ const NACHT_RAIDERS_BOOT_LINES =
         NACHT_RAIDERS_BOOT_MODE_LINE,
 
       pauseAfterMs: 70
-    },
-
-    {
-      text:
-        "NACHT-RAIDERS.EXE READY",
-
-      tone:
-        NACHT_RAIDERS_BOOT_TONE_SUCCESS,
-
-      mode:
-        NACHT_RAIDERS_BOOT_MODE_CHARACTER,
-
-      pauseAfterMs: 140
     }
   ]);
