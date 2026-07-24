@@ -1070,40 +1070,70 @@
 
    </div>
 
-    <button
-  class="producer-card"
-  type="button"
-  data-producer="aetherRepairmen"
+<div
+  id="aetherRepairmenCardGroup"
+  class="nacht-raiders-card-group"
 >
-  <span
-    class="producer-icon-slot producer-icon-slot-filled"
-    aria-hidden="true"
+
+  <button
+    class="producer-card"
+    type="button"
+    data-producer="aetherRepairmen"
   >
-    <img
-      id="aetherRepairmenIcon"
-      src="meat/images/buildings/aether-repairmen/aether-repairman-locked.png"
-      alt=""
+
+    <span
+      class="
+        producer-icon-slot
+        producer-icon-slot-filled
+      "
+      aria-hidden="true"
     >
-  </span>
+      <img
+        id="aetherRepairmenIcon"
+        src="meat/images/buildings/aether-repairmen/aether-repairman-locked.png"
+        alt=""
+      >
+    </span>
 
-  <span class="producer-information">
-    <strong>Aether Repairmen</strong>
+    <span class="producer-information">
 
-    <small>
-      Produces 1 meat per second
-    </small>
-  </span>
+      <strong>
+        Aether Repairmen
+      </strong>
 
-  <span class="producer-purchase">
-    <strong id="aetherRepairmenCost">
-      100 MEAT
-    </strong>
+      <small>
+        Produces 1 meat per second
+      </small>
 
-    <small id="aetherRepairmenOwned">
-      Owned: 0
-    </small>
-  </span>
-</button>
+    </span>
+
+    <span class="producer-purchase">
+
+      <strong id="aetherRepairmenCost">
+        100 MEAT
+      </strong>
+
+      <small id="aetherRepairmenOwned">
+        Owned: 0
+      </small>
+
+    </span>
+
+  </button>
+
+  <button
+    id="nachtRaidersLauncherButton"
+    class="nacht-raiders-launcher-button"
+    type="button"
+    aria-label="Open Nacht Raiders"
+    hidden
+  >
+    <span class="nacht-raiders-launcher-label">
+      Nacht-Raiders.exe
+    </span>
+  </button>
+
+</div>
 
     <button
       class="producer-card"
