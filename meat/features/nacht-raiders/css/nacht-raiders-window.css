@@ -594,7 +594,29 @@ body.nacht-raiders-window-open {
   cursor: pointer;
 
   touch-action: manipulation;
+
   user-select: none;
+  -webkit-user-select: none;
+
+  -webkit-touch-callout: none;
+
+  /*
+   * Removes the blue/gray native flash shown by mobile
+   * Chromium, Android WebView, and Safari when the screen is
+   * tapped.
+   */
+  -webkit-tap-highlight-color:
+    transparent;
+
+  outline: none;
+}
+
+.nacht-raiders-loading-screen * {
+  user-select: none;
+  -webkit-user-select: none;
+
+  -webkit-tap-highlight-color:
+    transparent;
 }
 
 .nacht-raiders-loading-screen:focus-visible {
