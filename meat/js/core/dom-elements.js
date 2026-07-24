@@ -509,12 +509,7 @@ const aetherRepairmenCardGroup =
 const nachtRaidersLauncherButton =
   document.getElementById(
     "nachtRaidersLauncherButton"
-  );
-
-const silverSpoonIcon =
-  document.getElementById(
-    "silverSpoonIcon"
-  );
+  )
 
 const aetherRepairmenIcon =
   document.getElementById(
