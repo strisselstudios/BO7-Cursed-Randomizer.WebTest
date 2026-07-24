@@ -647,41 +647,241 @@
       </div>
     </section>
 
-   <blockquote id="producerInfoDescription"></blockquote>
+     <blockquote
+    id="producerInfoDescription"
+  ></blockquote>
 
-<!-- ========================================================
+  <!-- ========================================================
 
-  2.2.2.2.1.1 HARVESTER DOSSIER CONTROL
+    2.2.2.2.1.1 HARVESTER DOSSIER CONTROL
 
-  ----------------------------------------------------------
-  Appears only while viewing the unlocked Silver Spoon family.
-========================================================= -->
+    ----------------------------------------------------------
+    Appears only while viewing the unlocked Silver Spoon
+    producer family.
+  ========================================================= -->
 
-<blockquote id="producerInfoDescription"></blockquote>
+  <button
+    id="producerInfoHarvesterButton"
+    class="producer-info-harvester-button"
+    type="button"
+    aria-controls="harvesterInfoView"
+    hidden
+  >
+    HARVESTER INFO
+  </button>
 
-<button
-  id="producerInfoHarvesterButton"
-  ...
->
-  HARVESTER INFO
-</button>
+  <!-- ========================================================
 
-<section
-  id="harvesterInfoView"
-  ...
->
-  ...
-</section>
+    2.2.2.2.1.2 HARVESTER INFO SUBVIEW
 
-    <!-- ========================================================
-        2.2.2.2.1.2 HARVESTER INFO SUBVIEW
-    ========================================================= -->
-<button
-  id="producerInfoCloseButton"
-  type="button"
->
-  CLOSE
-</button>
+    ----------------------------------------------------------
+    Internal Harvest Dossier view for the Golden Spork
+    Knife's finite-duty automatic Harvester feature.
+  ========================================================= -->
+
+  <section
+    id="harvesterInfoView"
+    class="harvester-info-view"
+    aria-labelledby="harvesterInfoHeading"
+    hidden
+  >
+
+    <header class="harvester-info-header">
+
+      <div>
+
+        <span class="harvester-info-eyebrow">
+          GOLDEN SPORK KNIFE FEATURE
+        </span>
+
+        <h2 id="harvesterInfoHeading">
+          SPORK HARVESTER
+        </h2>
+
+      </div>
+
+      <strong
+        id="harvesterInfoStatus"
+        class="
+          harvester-info-status
+          harvester-info-status-ready
+        "
+      >
+        READY
+      </strong>
+
+    </header>
+
+    <section
+      class="harvester-info-statistics"
+      aria-label="Harvester statistics"
+    >
+
+      <div class="harvester-info-stat">
+
+        <span>
+          TIME REMAINING
+        </span>
+
+        <strong id="harvesterInfoTimeRemaining">
+          FULL CHARGE
+        </strong>
+
+      </div>
+
+      <div class="harvester-info-stat">
+
+        <span>
+          PASSIVE MPS SNAPSHOT
+        </span>
+
+        <strong id="harvesterInfoPassiveMps">
+          0 MEAT / SECOND
+        </strong>
+
+      </div>
+
+      <div class="harvester-info-stat">
+
+        <span>
+          SPORKS AT DEPLOYMENT
+        </span>
+
+        <strong id="harvesterInfoOwnedSnapshot">
+          0
+        </strong>
+
+      </div>
+
+      <div class="harvester-info-stat">
+
+        <span>
+          AUTOMATIC CLICK RATE
+        </span>
+
+        <strong id="harvesterInfoClickRate">
+          5 / SECOND
+        </strong>
+
+      </div>
+
+      <div class="harvester-info-stat">
+
+        <span>
+          OWNERSHIP MULTIPLIER
+        </span>
+
+        <strong id="harvesterInfoOwnershipMultiplier">
+          ×1
+        </strong>
+
+      </div>
+
+      <div class="harvester-info-stat">
+
+        <span>
+          HARVESTER OUTPUT
+        </span>
+
+        <strong id="harvesterInfoOutputRate">
+          0 MEAT / SECOND
+        </strong>
+
+      </div>
+
+      <div class="harvester-info-stat">
+
+        <span>
+          STORED MEAT
+        </span>
+
+        <strong id="harvesterInfoStoredMeat">
+          0 MEAT
+        </strong>
+
+      </div>
+
+      <div class="harvester-info-stat">
+
+        <span>
+          PROJECTED FULL-CYCLE YIELD
+        </span>
+
+        <strong id="harvesterInfoProjectedYield">
+          0 MEAT
+        </strong>
+
+      </div>
+
+      <div class="harvester-info-stat">
+
+        <span>
+          LIFETIME HARVESTED
+        </span>
+
+        <strong id="harvesterInfoLifetimeMeat">
+          0 MEAT
+        </strong>
+
+      </div>
+
+    </section>
+
+    <section
+      class="harvester-info-formula"
+      aria-labelledby="harvesterInfoFormulaHeading"
+    >
+
+      <h3 id="harvesterInfoFormulaHeading">
+        NEXT DEPLOYMENT ESTIMATE
+      </h3>
+
+      <p id="harvesterInfoFormulaText">
+        5 CLICKS/SEC × PASSIVE MPS × OWNERSHIP MULTIPLIER
+      </p>
+
+    </section>
+
+    <p
+      id="harvesterInfoCollectionResult"
+      class="harvester-info-collection-result"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></p>
+
+    <div class="harvester-info-actions">
+
+      <button
+        id="harvesterInfoRetractButton"
+        class="
+          harvester-info-action-button
+          harvester-info-retract-button
+        "
+        type="button"
+        hidden
+      >
+        RETRACT &amp; COLLECT
+      </button>
+
+      <button
+        id="harvesterInfoBackButton"
+        class="harvester-info-action-button"
+        type="button"
+      >
+        BACK TO DOSSIER
+      </button>
+
+    </div>
+
+  </section>
+
+  <button
+    id="producerInfoCloseButton"
+    type="button"
+  >
+    CLOSE
+  </button>
 
   </article>
   
