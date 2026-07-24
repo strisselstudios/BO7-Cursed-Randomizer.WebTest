@@ -1,0 +1,219 @@
+/* ==========================================================
+   1. NACHT RAIDERS PRODUCER CARD GROUP
+   ----------------------------------------------------------
+   Groups the normal Aether Repairmen transaction card with
+   its separate Tier III executable launcher.
+
+   The launcher remains outside the producer-card button.
+========================================================== */
+
+.nacht-raiders-card-group {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.nacht-raiders-card-group
+.producer-card {
+  flex: 0 0 auto;
+}
+
+/* ==========================================================
+   2. UNLOCKED CARD SHAPE
+========================================================== */
+
+.nacht-raiders-card-group-has-launcher
+.producer-card {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* ==========================================================
+   3. NACHT RAIDERS EXECUTABLE BUTTON
+========================================================== */
+
+.nacht-raiders-launcher-button {
+  width: 100%;
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: -1px;
+
+  padding:
+    0.5rem
+    0.75rem;
+
+  appearance: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(22, 31, 18, 0.99),
+      rgba(5, 10, 4, 0.99)
+    );
+
+  color:
+    #9bbc0f;
+
+  border:
+    1px solid
+    #8bac0f;
+
+  border-top-color:
+    rgba(155, 188, 15, 0.52);
+
+  border-radius:
+    0
+    0
+    9px
+    9px;
+
+  box-shadow:
+    inset 0 0 12px
+      rgba(155, 188, 15, 0.08),
+    0 5px 12px
+      rgba(0, 0, 0, 0.28);
+
+  font: inherit;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+  user-select: none;
+
+  transition:
+    background 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease,
+    color 110ms ease,
+    filter 110ms ease,
+    transform 110ms ease;
+}
+
+.nacht-raiders-launcher-button[hidden] {
+  display: none;
+}
+
+.nacht-raiders-launcher-label {
+  font-family:
+    "Courier New",
+    monospace;
+
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  line-height: 1;
+  letter-spacing: 0.035em;
+
+  text-align: center;
+
+  pointer-events: none;
+}
+
+/* ==========================================================
+   4. POINTER AND KEYBOARD FEEDBACK
+========================================================== */
+
+.nacht-raiders-launcher-button:hover,
+.nacht-raiders-launcher-button:focus-visible {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(42, 58, 32, 0.99),
+      rgba(9, 17, 7, 0.99)
+    );
+
+  color:
+    #cadc9f;
+
+  border-color:
+    #cadc9f;
+
+  box-shadow:
+    inset 0 0 15px
+      rgba(155, 188, 15, 0.16),
+    0 0 17px
+      rgba(139, 172, 15, 0.34),
+    0 5px 12px
+      rgba(0, 0, 0, 0.32);
+}
+
+.nacht-raiders-launcher-button:focus-visible {
+  outline:
+    2px solid
+    #9bbc0f;
+
+  outline-offset: 3px;
+}
+
+.nacht-raiders-launcher-button:active {
+  transform:
+    scaleY(0.92);
+
+  filter:
+    brightness(1.22);
+}
+
+/* ==========================================================
+   5. MOBILE SIZING
+========================================================== */
+
+@media (max-width: 760px) {
+
+  .nacht-raiders-launcher-button {
+    min-height: 40px;
+
+    padding:
+      0.45rem
+      0.65rem;
+  }
+
+  .nacht-raiders-launcher-label {
+    font-size: 0.74rem;
+  }
+}
+
+@media (max-width: 430px) {
+
+  .nacht-raiders-launcher-button {
+    min-height: 38px;
+
+    padding:
+      0.4rem
+      0.55rem;
+  }
+
+  .nacht-raiders-launcher-label {
+    font-size: 0.7rem;
+  }
+}
+
+/* ==========================================================
+   6. REDUCED MOTION
+========================================================== */
+
+body.animations-disabled
+.nacht-raiders-launcher-button {
+  transition: none;
+}
+
+body.animations-disabled
+.nacht-raiders-launcher-button:active {
+  transform: none;
+}
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+  .nacht-raiders-launcher-button {
+    transition: none;
+  }
+
+  .nacht-raiders-launcher-button:active {
+    transform: none;
+  }
+}
