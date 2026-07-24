@@ -127,6 +127,13 @@
   rel="stylesheet"
   href="meat/features/nacht-raiders/css/nacht-raiders-window.css"
 >
+
+  <link
+  rel="stylesheet"
+  href="meat/features/nacht-raiders/css/nacht-raiders-menu.css"
+>
+
+  
   
   
   <link
@@ -331,49 +338,153 @@
 
         </section>
 
-        <!-- ==================================================
+<!-- ========================================================
 
-          2.0.2.2 MENU SCREEN
+  2.0.2.2 NACHT RAIDERS MAIN MENU
 
-          Hidden placeholder prepared for the later animated
-          menu or clickable artwork.
-        =================================================== -->
+  ----------------------------------------------------------
+  Real HTML controls are placed over a separate artwork layer.
 
-        <section
-          id="nachtRaidersMenuScreen"
+  A future PNG, GIF, or animated menu background can replace
+  the temporary artwork without changing the buttons.
+========================================================= -->
+
+<section
+  id="nachtRaidersMenuScreen"
+  class="
+    nacht-raiders-interface-screen
+    nacht-raiders-menu-screen
+  "
+  aria-labelledby="nachtRaidersMenuHeading"
+  hidden
+>
+
+  <div
+    id="nachtRaidersMenuArtwork"
+    class="nacht-raiders-menu-artwork"
+  >
+
+    <div
+      class="nacht-raiders-menu-background"
+      aria-hidden="true"
+    ></div>
+
+    <div class="nacht-raiders-menu-content">
+
+      <header class="nacht-raiders-menu-header">
+
+        <span class="nacht-raiders-menu-eyebrow">
+          AETHER REPAIRMEN FIELD PROGRAM
+        </span>
+
+        <h2 id="nachtRaidersMenuHeading">
+          NACHT RAIDERS
+        </h2>
+
+        <p>
+          MOBILE FIELD RECOVERY SYSTEM
+        </p>
+
+      </header>
+
+      <nav
+        class="nacht-raiders-menu-actions"
+        aria-label="Nacht Raiders menu"
+      >
+
+        <button
+          id="nachtRaidersPrimaryButton"
           class="
-            nacht-raiders-interface-screen
-            nacht-raiders-menu-screen
+            nacht-raiders-menu-button
+            nacht-raiders-menu-button-primary
           "
-          aria-label="Nacht Raiders main menu"
-          hidden
+          type="button"
         >
 
-          <div class="nacht-raiders-menu-placeholder">
+          <span
+            class="nacht-raiders-menu-cursor"
+            aria-hidden="true"
+          >
+            &gt;
+          </span>
 
-            <span>
-              AETHER REPAIRMEN FIELD PROGRAM
-            </span>
+          <span id="nachtRaidersPrimaryButtonLabel">
+            START
+          </span>
 
-            <h2>
-              NACHT RAIDERS
-            </h2>
+        </button>
 
-            <p>
-              MENU SYSTEM AWAITING INITIALIZATION
-            </p>
+        <button
+          id="nachtRaidersExitButton"
+          class="nacht-raiders-menu-button"
+          type="button"
+        >
+          EXIT TO MEAT.exe
+        </button>
 
-          </div>
+      </nav>
 
-        </section>
-
-      </main>
+      <p
+        id="nachtRaidersMenuStatus"
+        class="nacht-raiders-menu-status"
+        role="status"
+        aria-live="polite"
+      >
+        NO FIELD RECORD DETECTED
+      </p>
 
     </div>
 
-  </section>
+  </div>
 
-</div>
+</section>
+
+<!-- ========================================================
+
+  2.0.2.3 GAME STAGING SCREEN
+
+  ----------------------------------------------------------
+  Temporary destination for START and CONTINUE.
+
+  This proves that menu navigation works without beginning
+  actual gameplay development.
+========================================================= -->
+
+<section
+  id="nachtRaidersGameScreen"
+  class="
+    nacht-raiders-interface-screen
+    nacht-raiders-game-screen
+  "
+  aria-labelledby="nachtRaidersGameHeading"
+  hidden
+>
+
+  <div class="nacht-raiders-game-placeholder">
+
+    <span>
+      DEVELOPMENT INTERFACE
+    </span>
+
+    <h2 id="nachtRaidersGameHeading">
+      FIELD LINK ESTABLISHED
+    </h2>
+
+    <p>
+      NACHT RAIDERS GAMEPLAY MODULE NOT YET CONNECTED
+    </p>
+
+    <button
+      id="nachtRaidersGameBackButton"
+      class="nacht-raiders-menu-button"
+      type="button"
+    >
+      RETURN TO MENU
+    </button>
+
+  </div>
+
+</section>
 
   <!-- ==========================================================
        2. MAIN APPLICATION
