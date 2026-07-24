@@ -1,0 +1,444 @@
+/* ==========================================================
+   2. PRODUCER INFO HEADER
+   ----------------------------------------------------------
+   Displays the dossier heading and the producer's current
+   icon, name, tier, and ownership total.
+========================================================== */
+
+.producer-info-header {
+  margin-bottom: 1rem;
+}
+
+.producer-info-header h2 {
+  margin:
+    0 0
+    1rem;
+
+  color:
+    var(--accent-bright);
+
+  font-size:
+    clamp(
+      1.15rem,
+      4vw,
+      1.65rem
+    );
+
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+
+  text-align: center;
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 10px
+    rgba(255, 93, 93, 0.32);
+}
+
+.producer-info-banner {
+  display: grid;
+
+  grid-template-columns:
+    104px
+    minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: 1rem;
+
+  padding: 0.9rem;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(60, 23, 23, 0.98) 0%,
+      rgba(20, 8, 8, 0.98) 100%
+    );
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-radius: 8px;
+
+  box-shadow:
+    inset 0 0 18px
+      rgba(255, 93, 93, 0.08),
+    0 4px 14px
+      rgba(0, 0, 0, 0.45);
+}
+
+#producerInfoIconSlot {
+  width: 96px;
+  height: 96px;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#producerInfoIconSlot img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+#producerInfoIconSlot.producer-info-icon-missing {
+  color:
+    var(--accent-bright);
+
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.producer-info-identity {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+  justify-content: center;
+
+  gap: 0.55rem;
+}
+
+#producerInfoName {
+  max-width: 100%;
+
+  color:
+    var(--primary-text);
+
+  font-size:
+    clamp(
+      1.15rem,
+      4.5vw,
+      1.8rem
+    );
+
+  line-height: 1.05;
+
+  overflow-wrap: anywhere;
+
+  text-shadow:
+    0 2px 3px
+    rgba(0, 0, 0, 0.8);
+}
+
+.producer-info-meta {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 0.45rem;
+}
+
+#producerInfoTier,
+#producerInfoOwned {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+
+  padding:
+    0.3rem
+    0.55rem;
+
+  background:
+    rgba(7, 7, 7, 0.76);
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--border-color);
+
+  border-radius: 4px;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  line-height: 1;
+  letter-spacing: 0.05em;
+
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================
+   3. PRODUCER STATISTICS
+   ----------------------------------------------------------
+   Displays individual production, combined production,
+   output share, and cumulative lifetime yield.
+========================================================== */
+
+.producer-info-statistics {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 0.75rem;
+
+  margin-top: 1rem;
+}
+
+.producer-info-statistics h3 {
+  grid-column: 1 / -1;
+
+  margin:
+    0 0
+    0.1rem;
+
+  color:
+    var(--accent-bright);
+
+  font-size: 0.8rem;
+  line-height: 1.2;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.producer-info-stat {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  gap: 0.6rem;
+
+  min-height: 96px;
+
+  padding: 0.85rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(39, 16, 16, 0.96) 0%,
+      rgba(12, 5, 5, 0.96) 100%
+    );
+
+  border:
+    1px solid
+    var(--border-color);
+
+  border-left:
+    4px solid
+    var(--accent);
+
+  border-radius: 6px;
+
+  box-shadow:
+    inset 0 0 14px
+    rgba(0, 0, 0, 0.42);
+}
+
+.producer-info-stat-label {
+  color:
+    var(--secondary-text);
+
+  font-size:
+    clamp(
+      0.67rem,
+      2.5vw,
+      0.78rem
+    );
+
+  font-weight: 700;
+
+  line-height: 1.25;
+  letter-spacing: 0.055em;
+
+  text-transform: uppercase;
+}
+
+.producer-info-stat strong {
+  color:
+    var(--primary-text);
+
+  font-size:
+    clamp(
+      1rem,
+      4vw,
+      1.35rem
+    );
+
+  line-height: 1.1;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================
+   4. PRODUCER DESCRIPTION
+   ----------------------------------------------------------
+   Displays the current tier description as an operational
+   note.
+========================================================== */
+
+#producerInfoDescription {
+  position: relative;
+
+  margin:
+    1rem 0
+    0;
+
+  padding:
+    1rem
+    1rem
+    1rem
+    1.2rem;
+
+  background:
+    rgba(0, 0, 0, 0.34);
+
+  color:
+    var(--secondary-text);
+
+  border:
+    1px solid
+    rgba(116, 32, 32, 0.75);
+
+  border-left:
+    4px solid
+    var(--accent);
+
+  border-radius: 5px;
+
+  font-size:
+    clamp(
+      0.8rem,
+      3vw,
+      0.96rem
+    );
+
+  font-style: italic;
+
+  line-height: 1.5;
+}
+
+#producerInfoDescription::before {
+  content: "OPERATIONAL NOTES";
+
+  display: block;
+
+  margin-bottom: 0.45rem;
+
+  color:
+    var(--accent-bright);
+
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 700;
+
+  letter-spacing: 0.09em;
+
+  text-transform: uppercase;
+}
+
+#producerInfoDescription:empty {
+  display: none;
+}
+
+
+/* ==========================================================
+   5. PRODUCER INFO CLOSE BUTTON
+   ----------------------------------------------------------
+   Closes the dossier without affecting producer ownership or
+   store transactions.
+========================================================== */
+
+#producerInfoCloseButton {
+  width: 100%;
+  min-height: 46px;
+
+  display: block;
+
+  margin-top: 1rem;
+
+  padding:
+    0.7rem
+    1rem;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-radius: 6px;
+
+  box-shadow:
+    inset 0 0 12px
+    rgba(255, 93, 93, 0.07);
+
+  font: inherit;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#producerInfoCloseButton:hover,
+#producerInfoCloseButton:focus-visible {
+  background:
+    var(--button-hover);
+
+  color:
+    var(--primary-text);
+
+  outline: none;
+
+  box-shadow:
+    0 0 12px
+      rgba(255, 93, 93, 0.26),
+    inset 0 0 12px
+      rgba(255, 93, 93, 0.1);
+}
+
+#producerInfoCloseButton:active {
+  transform:
+    scale(0.98);
+}
+
+
+/* ==========================================================
+   6. PRODUCER INFO FOCUS STATES
+   ----------------------------------------------------------
+   Keeps keyboard navigation visible.
+========================================================== */
+
+.producer-info-dialog
+button:focus-visible {
+  outline:
+    2px solid
+    var(--accent-bright);
+
+  outline-offset: 2px;
+}
+
+
