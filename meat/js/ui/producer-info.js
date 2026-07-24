@@ -843,12 +843,26 @@ function updateProducerInfoDialog() {
   displayName
 );
 
-updateProducerInfoPurchaseControl(
-  openProducerInfoKey,
-  displayName
-);
+  updateProducerInfoPurchaseControl(
+    openProducerInfoKey,
+    displayName
+  );
 
-updateProducerInfoNavigationButtons();
+  updateProducerInfoNavigationButtons();
+
+  if (
+    typeof updateHarvesterInfoAvailability ===
+    "function"
+  ) {
+    updateHarvesterInfoAvailability();
+  }
+
+  if (
+    typeof updateHarvesterInfoView ===
+    "function"
+  ) {
+    updateHarvesterInfoView();
+  }
 }
 function openProducerInfo(
   producerKey
@@ -863,7 +877,16 @@ function openProducerInfo(
     return;
   }
 
-  cancelProducerInfoTransition();
+    cancelProducerInfoTransition();
+
+  if (
+    typeof resetHarvesterInfoSubview ===
+    "function"
+  ) {
+    resetHarvesterInfoSubview(
+      false
+    );
+  }
 
   openProducerInfoKey =
     producerKey;
@@ -901,6 +924,15 @@ cancelProducerInfoViewportRefresh();
 }
 
 function closeProducerInfo() {
+  if (
+    typeof resetHarvesterInfoSubview ===
+    "function"
+  ) {
+    resetHarvesterInfoSubview(
+      false
+    );
+  }
+
   cancelProducerInfoTransition();
 
   cancelProducerInfoViewportRefresh();
