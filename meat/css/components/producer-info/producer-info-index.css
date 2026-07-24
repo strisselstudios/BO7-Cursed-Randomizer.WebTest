@@ -1,0 +1,14 @@
+/* ==========================================================
+   PRODUCER INFO COMPONENT STYLES
+   ----------------------------------------------------------
+   Preserves the original Producer Info CSS cascade order
+   while keeping the stylesheet list out of meat.html.
+========================================================== */
+
+@import url("producer-info-shell.css");
+@import url("producer-info-navigation.css");
+@import url("producer-info-content.css");
+@import url("producer-info-responsive.css");
+@import url("producer-info-desktop.css");
+@import url("producer-info-purchase.css");
+@import url("producer-info-centering.css");
