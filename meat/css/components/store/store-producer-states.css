@@ -73,11 +73,11 @@
   border-color: #3e1515;
 }
 
-.producer-card:not(:disabled):active)
+.producer-card:not(:disabled):active {
   opacity: 0.55;
-
   cursor: not-allowed;
 }
+
 .producer-card.producer-transaction-unavailable {
   cursor: not-allowed;
 }
