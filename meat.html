@@ -394,6 +394,33 @@
 
   </div>
 
+  <!-- ========================================================
+
+  2.2.1.4 HARVESTER COLLECTION NOTICE
+
+  ----------------------------------------------------------
+  Non-blocking feedback shown when the deployed Harvester is
+  retracted and its stored MEAT is transferred to the player.
+========================================================= -->
+
+<div
+  id="harvesterCollectionNotice"
+  class="harvester-collection-notice"
+  role="status"
+  aria-live="polite"
+  hidden
+>
+
+  <strong>
+    HARVESTER RECOVERED
+  </strong>
+
+  <span id="harvesterCollectionAmount">
+    0 MEAT COLLECTED
+  </span>
+
+</div>
+
 </section>
       
       <!-- ==========================================================
@@ -615,14 +642,41 @@
       </div>
     </section>
 
-    <blockquote id="producerInfoDescription"></blockquote>
+   <blockquote id="producerInfoDescription"></blockquote>
 
-    <button
-      id="producerInfoCloseButton"
-      type="button"
-    >
-      CLOSE
-    </button>
+<!-- ========================================================
+
+  2.2.2.2.1.1 HARVESTER DOSSIER CONTROL
+
+  ----------------------------------------------------------
+  Appears only while viewing the unlocked Silver Spoon family.
+========================================================= -->
+
+<blockquote id="producerInfoDescription"></blockquote>
+
+<button
+  id="producerInfoHarvesterButton"
+  ...
+>
+  HARVESTER INFO
+</button>
+
+<section
+  id="harvesterInfoView"
+  ...
+>
+  ...
+</section>
+
+    <!-- ========================================================
+        2.2.2.2.1.2 HARVESTER INFO SUBVIEW
+    ========================================================= -->
+<button
+  id="producerInfoCloseButton"
+  type="button"
+>
+  CLOSE
+</button>
 
   </article>
   
