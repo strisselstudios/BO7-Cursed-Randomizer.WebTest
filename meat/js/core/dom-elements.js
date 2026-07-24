@@ -94,7 +94,14 @@ const nachtRaidersBootToggle =
   );
 
 const saveGameButton =
-  document.getElementById("saveGameButton");
+  document.getElementById(
+    "saveGameButton"
+  );
+
+const saveGameButtonLabel =
+  document.getElementById(
+    "saveGameButtonLabel"
+  );
 
 const exportSaveButton =
   document.getElementById("exportSaveButton");
