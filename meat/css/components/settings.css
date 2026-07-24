@@ -26,6 +26,20 @@
   border-radius: 6px;
 }
 
+/* ==========================================================
+   1.1 FEATURE-SPECIFIC SETTINGS
+========================================================== */
+
+.nacht-raiders-boot-setting-row[hidden] {
+  display: none;
+}
+
+.nacht-raiders-boot-setting-row span {
+  min-width: 0;
+}
+
+
+
 .settings-button {
   width: 100%;
 
