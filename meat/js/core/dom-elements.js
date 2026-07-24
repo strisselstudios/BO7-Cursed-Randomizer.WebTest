@@ -497,6 +497,25 @@ const silverSpoonIcon =
     "silverSpoonIcon"
   );
 
+/* ==========================================================
+   NACHT RAIDERS FEATURE ELEMENTS
+========================================================== */
+
+const aetherRepairmenCardGroup =
+  document.getElementById(
+    "aetherRepairmenCardGroup"
+  );
+
+const nachtRaidersLauncherButton =
+  document.getElementById(
+    "nachtRaidersLauncherButton"
+  );
+
+const silverSpoonIcon =
+  document.getElementById(
+    "silverSpoonIcon"
+  );
+
 const aetherRepairmenIcon =
   document.getElementById(
     "aetherRepairmenIcon"
