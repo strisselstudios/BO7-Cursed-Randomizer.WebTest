@@ -1,0 +1,639 @@
+/* ==========================================================
+   1. HARVESTER COLLECTION NOTICE
+   ----------------------------------------------------------
+   Non-blocking collection feedback positioned over the MEAT
+   side.
+========================================================== */
+
+.harvester-collection-notice {
+  position: absolute;
+  left: 50%;
+  top:
+    clamp(
+      0.75rem,
+      8vh,
+      4rem
+    );
+
+  z-index: 95;
+
+  width:
+    min(
+      calc(100% - 1.5rem),
+      420px
+    );
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0.22rem;
+
+  padding:
+    0.7rem
+    0.9rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(58, 15, 15, 0.96),
+      rgba(14, 4, 4, 0.96)
+    );
+
+  color:
+    var(--primary-text);
+
+  border:
+    2px solid
+    var(--accent-bright);
+
+  border-radius: 6px;
+
+  box-shadow:
+    0 0 18px
+      rgba(255, 62, 62, 0.45),
+    inset 0 0 15px
+      rgba(255, 93, 93, 0.1);
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  text-align: center;
+
+  pointer-events: none;
+
+  transform:
+    translateX(-50%);
+
+  opacity: 0;
+}
+
+.harvester-collection-notice[hidden] {
+  display: none;
+}
+
+.harvester-collection-notice strong {
+  color:
+    var(--accent-bright);
+
+  font-size:
+    clamp(
+      0.72rem,
+      2.4vw,
+      0.9rem
+    );
+
+  letter-spacing: 0.06em;
+}
+
+.harvester-collection-notice span {
+  font-size:
+    clamp(
+      0.65rem,
+      2vw,
+      0.82rem
+    );
+
+  font-weight: 700;
+}
+
+.harvester-collection-notice-visible {
+  animation:
+    harvester-collection-notice
+    2.8s
+    ease
+    both;
+}
+
+@keyframes harvester-collection-notice {
+
+  0% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -12px)
+      scale(0.96);
+  }
+
+  12%,
+  78% {
+    opacity: 1;
+
+    transform:
+      translate(-50%, 0)
+      scale(1);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -7px)
+      scale(0.98);
+  }
+}
+
+/* ==========================================================
+   2. HARVESTER DOSSIER ENTRY CONTROL
+========================================================== */
+
+.producer-info-harvester-button {
+  width: 100%;
+  min-height: 42px;
+
+  margin-top: 0.75rem;
+
+  padding:
+    0.55rem
+    0.75rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(72, 22, 22, 0.98),
+      rgba(24, 7, 7, 0.98)
+    );
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-radius: 5px;
+
+  box-shadow:
+    inset 0 0 12px
+      rgba(255, 93, 93, 0.08);
+
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  letter-spacing: 0.055em;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+
+  transition:
+    background 110ms ease,
+    color 110ms ease,
+    transform 110ms ease,
+    box-shadow 110ms ease;
+}
+
+.producer-info-harvester-button[hidden] {
+  display: none;
+}
+
+.producer-info-harvester-button:hover,
+.producer-info-harvester-button:focus-visible {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(111, 31, 31, 0.99),
+      rgba(42, 10, 10, 0.99)
+    );
+
+  color:
+    var(--primary-text);
+
+  box-shadow:
+    0 0 16px
+      rgba(255, 70, 70, 0.38);
+}
+
+.producer-info-harvester-button:active {
+  transform:
+    scale(0.97);
+}
+
+/* ==========================================================
+   3. INTERNAL DOSSIER VIEW SWITCHING
+========================================================== */
+
+.harvester-info-view[hidden] {
+  display: none;
+}
+
+.producer-info-panel.harvester-info-view-active
+> .producer-info-header,
+
+.producer-info-panel.harvester-info-view-active
+> .producer-info-statistics,
+
+.producer-info-panel.harvester-info-view-active
+> #producerInfoDescription,
+
+.producer-info-panel.harvester-info-view-active
+> #producerInfoHarvesterButton,
+
+.producer-info-panel.harvester-info-view-active
+> #producerInfoCloseButton {
+  display: none;
+}
+
+.producer-info-navigation-button[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   4. HARVESTER INFO HEADER
+========================================================== */
+
+.harvester-info-view {
+  width: 100%;
+}
+
+.harvester-info-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: 0.85rem;
+
+  padding-bottom: 0.7rem;
+
+  border-bottom:
+    1px solid
+    rgba(255, 93, 93, 0.32);
+}
+
+.harvester-info-eyebrow {
+  display: block;
+
+  margin-bottom: 0.2rem;
+
+  color:
+    rgba(255, 255, 255, 0.58);
+
+  font-size: 0.61rem;
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
+}
+
+.harvester-info-header h2 {
+  margin: 0;
+
+  color:
+    var(--accent-bright);
+
+  font-size:
+    clamp(
+      1rem,
+      4vw,
+      1.35rem
+    );
+
+  letter-spacing: 0.045em;
+}
+
+/* ==========================================================
+   5. HARVESTER DUTY STATUS
+========================================================== */
+
+.harvester-info-status {
+  flex: 0 0 auto;
+
+  min-width: 88px;
+
+  padding:
+    0.38rem
+    0.48rem;
+
+  border:
+    1px solid
+    currentColor;
+
+  border-radius: 4px;
+
+  font-size: 0.67rem;
+
+  letter-spacing: 0.05em;
+
+  text-align: center;
+}
+
+.harvester-info-status-ready {
+  color:
+    #89c85a;
+}
+
+.harvester-info-status-active {
+  color:
+    #e2a14d;
+}
+
+.harvester-info-status-depleted {
+  color:
+    #ff5d5d;
+
+  box-shadow:
+    0 0 10px
+      rgba(255, 50, 50, 0.35);
+}
+
+.harvester-info-status-cooldown {
+  color:
+    #a7c4cf;
+}
+
+.harvester-info-status-locked {
+  color:
+    rgba(255, 255, 255, 0.5);
+}
+
+/* ==========================================================
+   6. HARVESTER STATISTICS
+========================================================== */
+
+.harvester-info-statistics {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 0.55rem;
+}
+
+.harvester-info-stat {
+  min-width: 0;
+
+  padding:
+    0.58rem
+    0.62rem;
+
+  background:
+    rgba(0, 0, 0, 0.26);
+
+  border:
+    1px solid
+    rgba(255, 93, 93, 0.18);
+
+  border-radius: 4px;
+}
+
+.harvester-info-stat span {
+  display: block;
+
+  margin-bottom: 0.25rem;
+
+  color:
+    rgba(255, 255, 255, 0.58);
+
+  font-size: 0.57rem;
+  font-weight: 700;
+
+  letter-spacing: 0.045em;
+}
+
+.harvester-info-stat strong {
+  display: block;
+
+  overflow-wrap: anywhere;
+
+  color:
+    var(--primary-text);
+
+  font-size:
+    clamp(
+      0.68rem,
+      2.3vw,
+      0.82rem
+    );
+
+  line-height: 1.2;
+}
+
+/* ==========================================================
+   7. FORMULA BREAKDOWN
+========================================================== */
+
+.harvester-info-formula {
+  margin-top: 0.75rem;
+
+  padding:
+    0.7rem;
+
+  background:
+    rgba(91, 29, 29, 0.17);
+
+  border:
+    1px solid
+    rgba(255, 93, 93, 0.3);
+
+  border-radius: 5px;
+}
+
+.harvester-info-formula h3 {
+  margin:
+    0
+    0
+    0.38rem;
+
+  color:
+    var(--accent-bright);
+
+  font-size: 0.66rem;
+
+  letter-spacing: 0.055em;
+}
+
+.harvester-info-formula p {
+  margin: 0;
+
+  color:
+    rgba(255, 255, 255, 0.82);
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  font-size:
+    clamp(
+      0.62rem,
+      2vw,
+      0.75rem
+    );
+
+  line-height: 1.45;
+
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================================
+   8. COLLECTION RESULT
+========================================================== */
+
+.harvester-info-collection-result {
+  margin:
+    0.7rem
+    0
+    0;
+
+  padding:
+    0.55rem;
+
+  background:
+    rgba(85, 112, 54, 0.2);
+
+  color:
+    #a8df73;
+
+  border:
+    1px solid
+    rgba(137, 200, 90, 0.56);
+
+  border-radius: 4px;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  text-align: center;
+}
+
+.harvester-info-collection-result[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   9. HARVESTER INFO ACTIONS
+========================================================== */
+
+.harvester-info-actions {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 0.55rem;
+
+  margin-top: 0.8rem;
+}
+
+.harvester-info-action-button {
+  min-height: 40px;
+
+  padding:
+    0.5rem
+    0.62rem;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--primary-text);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-radius: 4px;
+
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+}
+
+.harvester-info-action-button[hidden] {
+  display: none;
+}
+
+.harvester-info-action-button:hover,
+.harvester-info-action-button:focus-visible {
+  background:
+    var(--accent);
+}
+
+.harvester-info-retract-button {
+  color:
+    #ff9a9a;
+
+  border-color:
+    #ff5d5d;
+}
+
+/* ==========================================================
+   10. MOBILE AND SHORT VIEWPORTS
+========================================================== */
+
+@media (max-width: 520px) {
+
+  .harvester-info-statistics {
+    grid-template-columns:
+      minmax(0, 1fr);
+  }
+
+  .harvester-info-actions {
+    grid-template-columns:
+      minmax(0, 1fr);
+  }
+}
+
+@media
+  (orientation: landscape)
+  and
+  (max-height: 520px) {
+
+  .harvester-info-header {
+    margin-bottom: 0.55rem;
+    padding-bottom: 0.45rem;
+  }
+
+  .harvester-info-statistics {
+    gap: 0.38rem;
+  }
+
+  .harvester-info-stat {
+    padding:
+      0.42rem
+      0.5rem;
+  }
+
+  .harvester-info-formula {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+  }
+}
+
+/* ==========================================================
+   11. REDUCED MOTION
+========================================================== */
+
+body.animations-disabled
+.harvester-collection-notice-visible {
+  animation: none;
+  opacity: 1;
+}
+
+body.animations-disabled
+.producer-info-harvester-button {
+  transition: none;
+}
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+  .harvester-collection-notice-visible {
+    animation: none;
+    opacity: 1;
+  }
+
+  .producer-info-harvester-button {
+    transition: none;
+  }
+}
