@@ -1,0 +1,752 @@
+/* ==========================================================
+   1. NACHT RAIDERS OVERLAY
+   ----------------------------------------------------------
+   Fixed feature layer above all MEAT.exe interface elements.
+========================================================== */
+
+.nacht-raiders-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 20000;
+
+  width: 100%;
+  height: 100dvh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    clamp(
+      1rem,
+      4vw,
+      3rem
+    );
+
+  background:
+    rgba(0, 0, 0, 0.64);
+
+  -webkit-backdrop-filter:
+    blur(6px)
+    brightness(0.58);
+
+  backdrop-filter:
+    blur(6px)
+    brightness(0.58);
+
+  overflow: hidden;
+
+  touch-action: none;
+}
+
+.nacht-raiders-overlay[hidden] {
+  display: none;
+}
+
+body.nacht-raiders-window-open {
+  overflow: hidden;
+}
+
+/* ==========================================================
+   2. DOS WINDOW FRAME
+========================================================== */
+
+.nacht-raiders-window {
+  position: relative;
+
+  width:
+    min(
+      960px,
+      calc(100vw - 2rem)
+    );
+
+  height:
+    min(
+      620px,
+      calc(100dvh - 2rem)
+    );
+
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  grid-template-rows:
+    auto
+    minmax(0, 1fr);
+
+  background:
+    #c0c0c0;
+
+  color:
+    #000;
+
+  border:
+    2px solid
+    #dfdfdf;
+
+  border-right-color:
+    #202020;
+
+  border-bottom-color:
+    #202020;
+
+  box-shadow:
+    inset 1px 1px 0
+      #ffffff,
+    inset -1px -1px 0
+      #808080,
+    0 18px 70px
+      rgba(0, 0, 0, 0.78);
+
+  overflow: hidden;
+
+  outline: none;
+
+  touch-action: manipulation;
+}
+
+/* ==========================================================
+   3. CLASSIC WINDOWS TITLE BAR
+========================================================== */
+
+.nacht-raiders-title-bar {
+  min-width: 0;
+  min-height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 0.55rem;
+
+  padding:
+    3px
+    3px
+    3px
+    7px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #000080,
+      #103f8f
+    );
+
+  color:
+    #ffffff;
+
+  border-bottom:
+    1px solid
+    #202020;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  user-select: none;
+}
+
+.nacht-raiders-window-identity {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 0.48rem;
+}
+
+.nacht-raiders-window-icon {
+  flex: 0 0 auto;
+
+  padding:
+    2px
+    4px;
+
+  background:
+    #000000;
+
+  color:
+    #9bbc0f;
+
+  border:
+    1px solid
+    #d7d7d7;
+
+  font-family:
+    "Courier New",
+    monospace;
+
+  font-size: 0.66rem;
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+.nacht-raiders-window-identity strong {
+  min-width: 0;
+
+  overflow: hidden;
+
+  font-size:
+    clamp(
+      0.72rem,
+      2vw,
+      0.86rem
+    );
+
+  line-height: 1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================
+   4. WINDOW CLOSE BUTTON
+========================================================== */
+
+.nacht-raiders-close-button {
+  flex:
+    0
+    0
+    27px;
+
+  width: 27px;
+  height: 25px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  appearance: none;
+
+  background:
+    #c0c0c0;
+
+  color:
+    #000000;
+
+  border:
+    2px solid
+    #ffffff;
+
+  border-right-color:
+    #202020;
+
+  border-bottom-color:
+    #202020;
+
+  font:
+    700
+    1.15rem/1
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+}
+
+.nacht-raiders-close-button:hover,
+.nacht-raiders-close-button:focus-visible {
+  background:
+    #d7d7d7;
+}
+
+.nacht-raiders-close-button:focus-visible {
+  outline:
+    2px solid
+    #ffffff;
+
+  outline-offset:
+    -4px;
+}
+
+.nacht-raiders-close-button:active {
+  padding:
+    2px
+    0
+    0
+    2px;
+
+  background:
+    #a5a5a5;
+
+  border-color:
+    #202020;
+
+  border-right-color:
+    #ffffff;
+
+  border-bottom-color:
+    #ffffff;
+}
+
+/* ==========================================================
+   5. WINDOW BODY
+========================================================== */
+
+.nacht-raiders-window-body {
+  min-width: 0;
+  min-height: 0;
+
+  padding: 5px;
+
+  background:
+    #c0c0c0;
+}
+
+/* ==========================================================
+   6. DOS SCREEN
+========================================================== */
+
+.nacht-raiders-screen {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% 46%,
+      #071006 0%,
+      #020602 55%,
+      #000000 100%
+    );
+
+  color:
+    #9bbc0f;
+
+  border:
+    2px solid
+    #202020;
+
+  border-right-color:
+    #ffffff;
+
+  border-bottom-color:
+    #ffffff;
+
+  box-shadow:
+    inset 0 0 32px
+      rgba(58, 88, 25, 0.16);
+
+  overflow: hidden;
+
+  font-family:
+    "Courier New",
+    Courier,
+    monospace;
+
+  image-rendering:
+    pixelated;
+}
+
+.nacht-raiders-screen::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 3;
+
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.018)
+        0,
+      rgba(255, 255, 255, 0.018)
+        1px,
+      rgba(0, 0, 0, 0.055)
+        1px,
+      rgba(0, 0, 0, 0.055)
+        3px
+    );
+
+  pointer-events: none;
+}
+
+.nacht-raiders-screen::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 4;
+
+  box-shadow:
+    inset 0 0 52px
+      rgba(0, 0, 0, 0.9);
+
+  pointer-events: none;
+}
+
+/* ==========================================================
+   7. SHARED INTERFACE SCREENS
+========================================================== */
+
+.nacht-raiders-interface-screen {
+  position: absolute;
+  inset: 0;
+
+  z-index: 2;
+
+  min-width: 0;
+  min-height: 0;
+}
+
+.nacht-raiders-interface-screen[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   8. TEMPORARY DOS TERMINAL
+========================================================== */
+
+.nacht-raiders-loading-screen {
+  overflow: hidden;
+}
+
+.nacht-raiders-terminal-output {
+  width: 100%;
+  height: 100%;
+
+  padding:
+    clamp(
+      0.75rem,
+      3vw,
+      1.6rem
+    );
+
+  overflow:
+    hidden;
+
+  color:
+    #9bbc0f;
+
+  font-size:
+    clamp(
+      0.68rem,
+      1.7vw,
+      1rem
+    );
+
+  line-height: 1.42;
+
+  text-shadow:
+    0 0 7px
+    rgba(155, 188, 15, 0.42);
+}
+
+.nacht-raiders-terminal-output p {
+  margin: 0;
+}
+
+.nacht-raiders-terminal-spacer {
+  min-height:
+    1.42em;
+}
+
+.nacht-raiders-terminal-status {
+  margin-top:
+    0.25rem !important;
+
+  animation:
+    nacht-raiders-terminal-cursor
+    850ms
+    steps(1, end)
+    infinite;
+}
+
+@keyframes nacht-raiders-terminal-cursor {
+
+  0%,
+  48% {
+    opacity: 1;
+  }
+
+  49%,
+  100% {
+    opacity: 0.42;
+  }
+}
+
+/* ==========================================================
+   9. TEMPORARY MENU PLACEHOLDER
+========================================================== */
+
+.nacht-raiders-menu-screen {
+  display: grid;
+  place-items: center;
+
+  padding: 1.25rem;
+
+  text-align: center;
+}
+
+.nacht-raiders-menu-placeholder {
+  width:
+    min(
+      580px,
+      100%
+    );
+
+  padding:
+    clamp(
+      1rem,
+      4vw,
+      2.2rem
+    );
+
+  background:
+    rgba(5, 15, 4, 0.68);
+
+  border:
+    1px solid
+    rgba(155, 188, 15, 0.42);
+
+  box-shadow:
+    0 0 30px
+      rgba(80, 120, 25, 0.13);
+}
+
+.nacht-raiders-menu-placeholder span {
+  color:
+    rgba(202, 220, 159, 0.66);
+
+  font-size:
+    clamp(
+      0.55rem,
+      1.8vw,
+      0.76rem
+    );
+
+  letter-spacing: 0.08em;
+}
+
+.nacht-raiders-menu-placeholder h2 {
+  margin:
+    0.7rem
+    0;
+
+  color:
+    #cadc9f;
+
+  font-size:
+    clamp(
+      1.6rem,
+      7vw,
+      3.6rem
+    );
+
+  line-height: 0.95;
+
+  letter-spacing: 0.07em;
+
+  text-shadow:
+    0 0 16px
+      rgba(155, 188, 15, 0.38);
+}
+
+.nacht-raiders-menu-placeholder p {
+  margin: 0;
+
+  color:
+    #8bac0f;
+
+  font-size:
+    clamp(
+      0.6rem,
+      2vw,
+      0.86rem
+    );
+}
+
+/* ==========================================================
+   10. OPENING ANIMATION
+========================================================== */
+
+.nacht-raiders-overlay:not([hidden]) {
+  animation:
+    nacht-raiders-overlay-open
+    150ms
+    ease-out
+    both;
+}
+
+.nacht-raiders-overlay:not([hidden])
+.nacht-raiders-window {
+  animation:
+    nacht-raiders-window-open
+    170ms
+    ease-out
+    both;
+}
+
+@keyframes nacht-raiders-overlay-open {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes nacht-raiders-window-open {
+
+  from {
+    opacity: 0;
+
+    transform:
+      scale(0.975)
+      translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      scale(1)
+      translateY(0);
+  }
+}
+
+/* ==========================================================
+   11. MOBILE FULL-SCREEN PRESENTATION
+========================================================== */
+
+@media (max-width: 760px) {
+
+  .nacht-raiders-overlay {
+    padding: 0;
+  }
+
+  .nacht-raiders-window {
+    width: 100vw;
+    height: 100dvh;
+
+    max-width: none;
+    max-height: none;
+
+    border: 0;
+
+    box-shadow: none;
+  }
+
+  .nacht-raiders-title-bar {
+    min-height: 36px;
+
+    padding-left:
+      max(
+        7px,
+        env(safe-area-inset-left)
+      );
+
+    padding-right:
+      max(
+        3px,
+        env(safe-area-inset-right)
+      );
+
+    padding-top:
+      max(
+        3px,
+        env(safe-area-inset-top)
+      );
+  }
+
+  .nacht-raiders-window-body {
+    padding:
+      3px
+      max(
+        3px,
+        env(safe-area-inset-right)
+      )
+      max(
+        3px,
+        env(safe-area-inset-bottom)
+      )
+      max(
+        3px,
+        env(safe-area-inset-left)
+      );
+  }
+}
+
+/* ==========================================================
+   12. SHORT MOBILE LANDSCAPE
+========================================================== */
+
+@media
+  (orientation: landscape)
+  and
+  (max-height: 520px) {
+
+  .nacht-raiders-overlay {
+    padding: 0;
+  }
+
+  .nacht-raiders-window {
+    width: 100vw;
+    height: 100dvh;
+
+    max-width: none;
+    max-height: none;
+
+    border: 0;
+
+    box-shadow: none;
+  }
+
+  .nacht-raiders-title-bar {
+    min-height: 30px;
+  }
+
+  .nacht-raiders-close-button {
+    width: 25px;
+    height: 23px;
+
+    flex-basis: 25px;
+  }
+
+  .nacht-raiders-window-body {
+    padding: 2px;
+  }
+}
+
+/* ==========================================================
+   13. DISABLED AND REDUCED ANIMATIONS
+========================================================== */
+
+body.animations-disabled
+.nacht-raiders-overlay:not([hidden]),
+
+body.animations-disabled
+.nacht-raiders-overlay:not([hidden])
+.nacht-raiders-window,
+
+body.animations-disabled
+.nacht-raiders-terminal-status {
+  animation: none;
+}
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+  .nacht-raiders-overlay:not([hidden]),
+
+  .nacht-raiders-overlay:not([hidden])
+  .nacht-raiders-window,
+
+  .nacht-raiders-terminal-status {
+    animation: none;
+  }
+}
