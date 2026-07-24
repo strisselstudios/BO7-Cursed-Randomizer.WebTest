@@ -121,11 +121,19 @@ if (
    * attached card shape and visibility use the final producer
    * display state.
    */
-  if (
+    if (
     typeof updateNachtRaidersLauncher ===
     "function"
   ) {
     updateNachtRaidersLauncher();
+  }
+
+  if (
+    typeof
+      updateNachtRaidersBootSettingControl ===
+      "function"
+  ) {
+    updateNachtRaidersBootSettingControl();
   }
 }
 /* ==========================================================
