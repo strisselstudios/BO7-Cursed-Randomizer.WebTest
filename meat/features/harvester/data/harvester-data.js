@@ -17,7 +17,7 @@
 ========================================================== */
 
 const HARVESTER_ACTIVE_DURATION_SECONDS =
-  60;
+  30;
 
 const HARVESTER_ACTIVE_DURATION_MS =
   HARVESTER_ACTIVE_DURATION_SECONDS *
@@ -27,7 +27,7 @@ const HARVESTER_COOLDOWN_DURATION_MS =
   30 * 1000;
 
 const HARVESTER_BASE_CLICKS_PER_SECOND =
-  10;
+  5;
 
 const HARVESTER_OWNED_BONUS_PER_BUILDING =
   0.1;
