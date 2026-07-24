@@ -69,6 +69,17 @@ function migrateGameState(savedState) {
       ? savedFeatures.harvester
       : {};
 
+   const savedNachtRaidersState =
+  savedFeatures.nachtRaiders &&
+  typeof savedFeatures.nachtRaiders ===
+    "object" &&
+  !Array.isArray(
+    savedFeatures.nachtRaiders
+  )
+    ? savedFeatures.nachtRaiders
+    : {};
+
+
    const savedHarvesterPosition =
   savedHarvesterState.position &&
   typeof savedHarvesterState.position ===
@@ -403,57 +414,67 @@ const migratedState = {
       migratedProducerLifetimeMeat,
 
     features: {
-      ...defaultState.features,
-      ...savedFeatures,
+  ...defaultState.features,
+  ...savedFeatures,
 
-            harvester: {
-        ...defaultState
-          .features
-          .harvester,
+  harvester: {
+    ...defaultState
+      .features
+      .harvester,
 
-        ...savedHarvesterState,
+    ...savedHarvesterState,
 
-        unlocked:
-          harvesterShouldBeUnlocked,
+    unlocked:
+      harvesterShouldBeUnlocked,
 
-        legacyGrandfathered:
-          harvesterWasAlreadyGrandfathered ||
-          shouldGrandfatherHarvester,
+    legacyGrandfathered:
+      harvesterWasAlreadyGrandfathered ||
+      shouldGrandfatherHarvester,
 
-        deployed:
-          harvesterShouldBeDeployed,
+    deployed:
+      harvesterShouldBeDeployed,
 
-        position:
-          migratedHarvesterPosition,
+    position:
+      migratedHarvesterPosition,
 
-        activeStartedAt:
-          migratedActiveStartedAt,
+    activeStartedAt:
+      migratedActiveStartedAt,
 
-        lastProcessedAt:
-          migratedLastProcessedAt,
+    lastProcessedAt:
+      migratedLastProcessedAt,
 
-        passiveMpsSnapshot:
-          migratedHarvesterPassiveMpsSnapshot,
+    passiveMpsSnapshot:
+      migratedHarvesterPassiveMpsSnapshot,
 
-        ownedBuildingSnapshot:
-          migratedHarvesterOwnedBuildingSnapshot,
+    ownedBuildingSnapshot:
+      migratedHarvesterOwnedBuildingSnapshot,
 
-        outputPerSecondSnapshot:
-          migratedHarvesterOutputPerSecondSnapshot,
+    outputPerSecondSnapshot:
+      migratedHarvesterOutputPerSecondSnapshot,
 
-        cooldownStartedAt:
-          migratedCooldownStartedAt,
+    cooldownStartedAt:
+      migratedCooldownStartedAt,
 
-        cooldownEndsAt:
-          migratedCooldownEndsAt,
+    cooldownEndsAt:
+      migratedCooldownEndsAt,
 
-        storedMeat:
-          migratedHarvesterStoredMeat,
+    storedMeat:
+      migratedHarvesterStoredMeat,
 
-        lifetimeMeat:
-          migratedHarvesterLifetimeMeat
-      }
-    },
+    lifetimeMeat:
+      migratedHarvesterLifetimeMeat
+  },
+
+  nachtRaiders: {
+    ...defaultState
+      .features
+      .nachtRaiders,
+
+    hasStarted:
+      savedNachtRaidersState
+        .hasStarted === true
+  }
+},
 
     settings: {
       ...defaultState.settings,
@@ -1008,6 +1029,39 @@ function validateImportedGameState(
             }
           }
         );
+
+         const importedNachtRaidersState =
+  importedState
+    .features
+    .nachtRaiders;
+
+if (
+  importedNachtRaidersState !==
+    undefined &&
+  (
+    !importedNachtRaidersState ||
+    typeof importedNachtRaidersState !==
+      "object" ||
+    Array.isArray(
+      importedNachtRaidersState
+    )
+  )
+) {
+  throw new Error(
+    "The imported Nacht Raiders data is invalid."
+  );
+}
+
+if (
+  importedNachtRaidersState
+    ?.hasStarted !== undefined &&
+  typeof importedNachtRaidersState
+    .hasStarted !== "boolean"
+) {
+  throw new Error(
+    "The imported Nacht Raiders start state is invalid."
+  );
+}
       }
 
             [
