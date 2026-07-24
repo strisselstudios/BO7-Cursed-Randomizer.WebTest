@@ -5,45 +5,80 @@
    confirmation directly on the Save Game button.
 ========================================================== */
 
-const SAVE_BUTTON_DEFAULT_TEXT = "SAVE GAME";
-const SAVE_BUTTON_SUCCESS_TEXT = "GAME SAVED";
-const SAVE_BUTTON_FAILURE_TEXT = "SAVE FAILED";
+const SAVE_BUTTON_DEFAULT_TEXT =
+  "SAVE GAME";
 
-let saveButtonFeedbackTimeout = null;
+const SAVE_BUTTON_SUCCESS_TEXT =
+  "GAME SAVED";
 
+const SAVE_BUTTON_FAILURE_TEXT =
+  "SAVE FAILED";
 
-function setSaveButtonFeedback(message) {
-  const buttonLabel =
-    saveGameButton?.querySelector(
-      "span:last-child"
-    );
+const SAVE_BUTTON_FEEDBACK_DURATION_MS =
+  1500;
 
-  if (!buttonLabel) {
+let saveButtonFeedbackTimeout =
+  null;
+
+/* ==========================================================
+   2. SAVE BUTTON FEEDBACK
+========================================================== */
+
+function setSaveButtonFeedback(
+  message
+) {
+  if (!saveGameButtonLabel) {
     return;
   }
 
-  buttonLabel.textContent = message;
+  saveGameButtonLabel.textContent =
+    message;
 
-  clearTimeout(saveButtonFeedbackTimeout);
+  window.clearTimeout(
+    saveButtonFeedbackTimeout
+  );
 
-  saveButtonFeedbackTimeout = setTimeout(() => {
-    buttonLabel.textContent =
-      SAVE_BUTTON_DEFAULT_TEXT;
-  }, 1500);
+  saveButtonFeedbackTimeout =
+    window.setTimeout(
+      () => {
+        if (!saveGameButtonLabel) {
+          return;
+        }
+
+        saveGameButtonLabel.textContent =
+          SAVE_BUTTON_DEFAULT_TEXT;
+      },
+      SAVE_BUTTON_FEEDBACK_DURATION_MS
+    );
 }
 
+/* ==========================================================
+   3. MANUAL SAVE REQUEST
+========================================================== */
 
-if (saveGameButton) {
-  saveGameButton.addEventListener(
-    "click",
-    () => {
-      const saveSucceeded = saveGame();
+function handleManualSaveRequest(
+  event
+) {
+  event.preventDefault();
+  event.stopPropagation();
 
-      setSaveButtonFeedback(
-        saveSucceeded
-          ? SAVE_BUTTON_SUCCESS_TEXT
-          : SAVE_BUTTON_FAILURE_TEXT
-      );
-    }
+  const saveSucceeded =
+    typeof saveGame === "function" &&
+    saveGame();
+
+  setSaveButtonFeedback(
+    saveSucceeded
+      ? SAVE_BUTTON_SUCCESS_TEXT
+      : SAVE_BUTTON_FAILURE_TEXT
   );
 }
+
+/* ==========================================================
+   4. SAVE BUTTON INPUT
+========================================================== */
+
+saveGameButton
+  ?.addEventListener(
+    "click",
+    handleManualSaveRequest
+  );
