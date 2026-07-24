@@ -493,10 +493,14 @@ const harvesterCollectionAmount =
   );
 
 const silverSpoonIcon =
+  document.getElementById(
+    "silverSpoonIcon"
+  );
 
-const aetherRepairmenIcon = document.getElementById(
-  "aetherRepairmenIcon"
-);
+const aetherRepairmenIcon =
+  document.getElementById(
+    "aetherRepairmenIcon"
+  );
 
 const producerDisplayElements = {
   silverSpoon: {
