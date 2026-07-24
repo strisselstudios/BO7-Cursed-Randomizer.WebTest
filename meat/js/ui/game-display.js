@@ -107,14 +107,26 @@ if (
 }
 
 
-if (
-  typeof updateHarvesterDutyCycleDisplay ===
-  "function"
-) {
-  updateHarvesterDutyCycleDisplay();
-}
-   
+  if (
+    typeof updateHarvesterDutyCycleDisplay ===
+    "function"
+  ) {
+    updateHarvesterDutyCycleDisplay();
+  }
+
   updateProducerDisplay();
+
+  /*
+   * Feature launchers update after producer cards so their
+   * attached card shape and visibility use the final producer
+   * display state.
+   */
+  if (
+    typeof updateNachtRaidersLauncher ===
+    "function"
+  ) {
+    updateNachtRaidersLauncher();
+  }
 }
 /* ==========================================================
    2. STORE DISPLAY AND PRODUCER REVEALS
