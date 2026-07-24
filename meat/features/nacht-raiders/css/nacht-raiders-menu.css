@@ -1,0 +1,582 @@
+/* ==========================================================
+   1. NACHT RAIDERS MAIN MENU
+========================================================== */
+
+.nacht-raiders-menu-screen {
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+}
+
+.nacht-raiders-menu-screen[hidden],
+.nacht-raiders-game-screen[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   2. MENU ARTWORK CONTAINER
+   ----------------------------------------------------------
+   This layer can later receive a PNG or GIF without moving
+   or rebuilding the actual menu buttons.
+========================================================== */
+
+.nacht-raiders-menu-artwork {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  isolation: isolate;
+}
+
+.nacht-raiders-menu-background {
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+
+  background:
+    radial-gradient(
+      circle at 64% 42%,
+      rgba(88, 115, 38, 0.2),
+      transparent 28%
+    ),
+    linear-gradient(
+      110deg,
+      rgba(1, 5, 1, 0.98) 0%,
+      rgba(5, 13, 4, 0.94) 48%,
+      rgba(1, 4, 1, 0.98) 100%
+    );
+
+  /*
+   * Later, menu artwork can be added here:
+   *
+   * background-image:
+   *   url("../images/nacht-raiders-menu.gif");
+   *
+   * background-size: cover;
+   * background-position: center;
+   */
+}
+
+.nacht-raiders-menu-background::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 46px,
+      rgba(155, 188, 15, 0.025) 47px,
+      transparent 48px
+    );
+
+  opacity: 0.7;
+}
+
+.nacht-raiders-menu-background::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 35%,
+      rgba(0, 0, 0, 0.82) 100%
+    );
+}
+
+/* ==========================================================
+   3. MENU CONTENT
+========================================================== */
+
+.nacht-raiders-menu-content {
+  position: relative;
+
+  z-index: 2;
+
+  width:
+    min(
+      620px,
+      calc(100% - 2rem)
+    );
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap:
+    clamp(
+      1rem,
+      4vh,
+      2.3rem
+    );
+
+  padding:
+    clamp(
+      1rem,
+      4vw,
+      2.25rem
+    );
+
+  text-align: center;
+}
+
+/* ==========================================================
+   4. MENU TITLE
+========================================================== */
+
+.nacht-raiders-menu-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0.45rem;
+}
+
+.nacht-raiders-menu-eyebrow {
+  color:
+    rgba(202, 220, 159, 0.64);
+
+  font-size:
+    clamp(
+      0.56rem,
+      1.7vw,
+      0.76rem
+    );
+
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+}
+
+.nacht-raiders-menu-header h2 {
+  margin: 0;
+
+  color:
+    #cadc9f;
+
+  font-size:
+    clamp(
+      2.2rem,
+      9vw,
+      5.4rem
+    );
+
+  line-height: 0.9;
+  letter-spacing: 0.075em;
+
+  text-shadow:
+    0 0 6px
+      rgba(202, 220, 159, 0.7),
+    0 0 24px
+      rgba(155, 188, 15, 0.25);
+}
+
+.nacht-raiders-menu-header p {
+  margin: 0;
+
+  color:
+    #8bac0f;
+
+  font-size:
+    clamp(
+      0.62rem,
+      2vw,
+      0.9rem
+    );
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+/* ==========================================================
+   5. MENU ACTIONS
+========================================================== */
+
+.nacht-raiders-menu-actions {
+  width:
+    min(
+      330px,
+      100%
+    );
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.55rem;
+}
+
+.nacht-raiders-menu-button {
+  position: relative;
+
+  width: 100%;
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.55rem;
+
+  padding:
+    0.62rem
+    0.9rem;
+
+  appearance: none;
+
+  background:
+    rgba(2, 8, 2, 0.82);
+
+  color:
+    #9bbc0f;
+
+  border:
+    1px solid
+    rgba(155, 188, 15, 0.62);
+
+  border-radius: 0;
+
+  box-shadow:
+    inset 0 0 12px
+      rgba(155, 188, 15, 0.05);
+
+  font:
+    700
+    clamp(
+      0.72rem,
+      2.2vw,
+      0.94rem
+    )/1
+    "Courier New",
+    monospace;
+
+  letter-spacing: 0.07em;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  -webkit-touch-callout: none;
+
+  -webkit-tap-highlight-color:
+    transparent;
+
+  transition:
+    background 100ms ease,
+    border-color 100ms ease,
+    box-shadow 100ms ease,
+    color 100ms ease,
+    transform 100ms ease;
+}
+
+.nacht-raiders-menu-button:hover,
+.nacht-raiders-menu-button:focus-visible {
+  background:
+    rgba(31, 52, 15, 0.9);
+
+  color:
+    #e2f1bd;
+
+  border-color:
+    #cadc9f;
+
+  box-shadow:
+    inset 0 0 17px
+      rgba(155, 188, 15, 0.14),
+    0 0 18px
+      rgba(155, 188, 15, 0.2);
+}
+
+.nacht-raiders-menu-button:focus-visible {
+  outline:
+    2px solid
+    rgba(255, 255, 255, 0.74);
+
+  outline-offset: 3px;
+}
+
+.nacht-raiders-menu-button:active {
+  transform:
+    scale(0.97);
+}
+
+.nacht-raiders-menu-button-primary {
+  color:
+    #cadc9f;
+
+  border-color:
+    #9bbc0f;
+}
+
+/* ==========================================================
+   6. MENU CURSOR
+========================================================== */
+
+.nacht-raiders-menu-cursor {
+  display: inline-block;
+
+  color:
+    #ffffff;
+
+  animation:
+    nacht-raiders-menu-cursor
+    900ms
+    steps(1, end)
+    infinite;
+}
+
+@keyframes nacht-raiders-menu-cursor {
+
+  0%,
+  48% {
+    opacity: 1;
+  }
+
+  49%,
+  100% {
+    opacity: 0.24;
+  }
+}
+
+/* ==========================================================
+   7. MENU STATUS
+========================================================== */
+
+.nacht-raiders-menu-status {
+  min-height: 1.3em;
+
+  margin: 0;
+
+  color:
+    rgba(202, 220, 159, 0.58);
+
+  font-size:
+    clamp(
+      0.56rem,
+      1.6vw,
+      0.72rem
+    );
+
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
+}
+
+/* ==========================================================
+   8. GAME STAGING SCREEN
+========================================================== */
+
+.nacht-raiders-game-screen {
+  display: grid;
+  place-items: center;
+
+  padding:
+    clamp(
+      1rem,
+      4vw,
+      2rem
+    );
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(31, 52, 15, 0.34),
+      rgba(0, 0, 0, 0.96) 68%
+    );
+}
+
+.nacht-raiders-game-placeholder {
+  width:
+    min(
+      620px,
+      100%
+    );
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0.85rem;
+
+  padding:
+    clamp(
+      1rem,
+      5vw,
+      2.4rem
+    );
+
+  background:
+    rgba(2, 8, 2, 0.8);
+
+  border:
+    1px solid
+    rgba(155, 188, 15, 0.5);
+
+  text-align: center;
+}
+
+.nacht-raiders-game-placeholder span {
+  color:
+    #df9a3a;
+
+  font-size: 0.65rem;
+  font-weight: 700;
+
+  letter-spacing: 0.09em;
+}
+
+.nacht-raiders-game-placeholder h2 {
+  margin: 0;
+
+  color:
+    #cadc9f;
+
+  font-size:
+    clamp(
+      1.35rem,
+      6vw,
+      2.8rem
+    );
+
+  line-height: 1;
+}
+
+.nacht-raiders-game-placeholder p {
+  margin:
+    0
+    0
+    0.6rem;
+
+  color:
+    rgba(202, 220, 159, 0.7);
+
+  font-size:
+    clamp(
+      0.62rem,
+      2vw,
+      0.82rem
+    );
+
+  line-height: 1.45;
+}
+
+/* ==========================================================
+   9. MOBILE LANDSCAPE
+========================================================== */
+
+@media
+  (orientation: landscape)
+  and
+  (max-height: 520px) {
+
+  .nacht-raiders-menu-content {
+    gap: 0.65rem;
+
+    padding:
+      0.65rem
+      1rem;
+  }
+
+  .nacht-raiders-menu-header {
+    gap: 0.25rem;
+  }
+
+  .nacht-raiders-menu-header h2 {
+    font-size:
+      clamp(
+        1.8rem,
+        11vh,
+        3.2rem
+      );
+  }
+
+  .nacht-raiders-menu-actions {
+    gap: 0.35rem;
+  }
+
+  .nacht-raiders-menu-button {
+    min-height: 36px;
+
+    padding:
+      0.42rem
+      0.7rem;
+  }
+
+  .nacht-raiders-menu-status {
+    font-size: 0.56rem;
+  }
+}
+
+/* ==========================================================
+   10. MOBILE PORTRAIT
+========================================================== */
+
+@media
+  (orientation: portrait)
+  and
+  (max-width: 760px) {
+
+  .nacht-raiders-menu-content {
+    width:
+      min(
+        430px,
+        calc(100% - 1.25rem)
+      );
+  }
+
+  .nacht-raiders-menu-header h2 {
+    font-size:
+      clamp(
+        2.1rem,
+        13vw,
+        4.2rem
+      );
+  }
+}
+
+/* ==========================================================
+   11. DISABLED AND REDUCED ANIMATIONS
+========================================================== */
+
+body.animations-disabled
+.nacht-raiders-menu-cursor {
+  animation: none;
+}
+
+body.animations-disabled
+.nacht-raiders-menu-button {
+  transition: none;
+}
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+  .nacht-raiders-menu-cursor {
+    animation: none;
+  }
+
+  .nacht-raiders-menu-button {
+    transition: none;
+  }
+}
