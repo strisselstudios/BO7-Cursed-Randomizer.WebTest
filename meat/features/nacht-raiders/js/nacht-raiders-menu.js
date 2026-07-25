@@ -1,5 +1,5 @@
 /* ==========================================================
-   1. NACHT RAIDERS FEATURE STATE SAFETY
+   1. NACHT RAIDERS FEATURE STATE ACCESS
 ========================================================== */
 
 function ensureNachtRaidersFeatureState() {
@@ -14,30 +14,13 @@ function ensureNachtRaidersFeatureState() {
     gameState.features = {};
   }
 
-  if (
-    !gameState.features.nachtRaiders ||
-    typeof gameState.features
-      .nachtRaiders !== "object" ||
-    Array.isArray(
-      gameState.features
-        .nachtRaiders
-    )
-  ) {
-    gameState.features.nachtRaiders = {
-      hasStarted: false
-    };
-  }
-
   const nachtRaidersState =
-    gameState.features.nachtRaiders;
+    migrateNachtRaidersState(
+      gameState.features.nachtRaiders
+    );
 
-  if (
-    typeof nachtRaidersState
-      .hasStarted !== "boolean"
-  ) {
-    nachtRaidersState.hasStarted =
-      false;
-  }
+  gameState.features.nachtRaiders =
+    nachtRaidersState;
 
   return nachtRaidersState;
 }
@@ -113,9 +96,19 @@ function enterNachtRaidersGameStage() {
   const isFirstStart =
     !nachtRaidersState.hasStarted;
 
-  if (isFirstStart) {
+    if (isFirstStart) {
     nachtRaidersState.hasStarted =
       true;
+
+    nachtRaidersState.status =
+      NACHT_RAIDERS_STATUS_RUNNING;
+
+    nachtRaidersState.expedition.seed =
+      createNachtRaidersExpeditionSeed();
+
+    nachtRaidersState.expedition
+      .lastSimulationAt =
+        Date.now();
 
     saveGame();
   }
