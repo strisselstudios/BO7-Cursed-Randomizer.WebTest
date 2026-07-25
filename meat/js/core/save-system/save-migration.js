@@ -15,6 +15,7 @@ function migrateGameState(savedState) {
   const savedFeatures = savedState.features && typeof savedState.features === "object" && !Array.isArray(savedState.features) ? savedState.features : {};
   const savedHarvesterState = savedFeatures.harvester && typeof savedFeatures.harvester === "object" && !Array.isArray(savedFeatures.harvester) ? savedFeatures.harvester : {};
   const savedNachtRaidersState = savedFeatures.nachtRaiders && typeof savedFeatures.nachtRaiders === "object" && !Array.isArray(savedFeatures.nachtRaiders) ? savedFeatures.nachtRaiders : {};
+  const migratedNachtRaidersState = migrateNachtRaidersState(savedNachtRaidersState);
   const savedHarvesterPosition = savedHarvesterState.position && typeof savedHarvesterState.position === "object" && !Array.isArray(savedHarvesterState.position) ? savedHarvesterState.position : {};
   const savedHarvesterPositionX = Number(savedHarvesterPosition.x);
   const savedHarvesterPositionY = Number(savedHarvesterPosition.y);
@@ -117,10 +118,8 @@ function migrateGameState(savedState) {
         storedMeat: migratedHarvesterStoredMeat,
         lifetimeMeat: migratedHarvesterLifetimeMeat
       },
-      nachtRaiders: {
-        ...defaultState.features.nachtRaiders,
-        hasStarted: savedNachtRaidersState.hasStarted === true
-      }
+            nachtRaiders:
+        migratedNachtRaidersState
     },
     settings: {
       ...defaultState.settings,
