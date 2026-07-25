@@ -5,7 +5,7 @@
 ========================================================== */
 
 const MEAT_SAVE_KEY = "meatExeSave";
-const CURRENT_SAVE_VERSION = 12;
+const CURRENT_SAVE_VERSION = 13;
 
 /* ==========================================================
    2. DEFAULT GAME STATE
@@ -106,9 +106,8 @@ totalClicks: 0,
     lifetimeMeat: 0
   },
 
-  nachtRaiders: {
-    hasStarted: false
-  }
+    nachtRaiders:
+    createDefaultNachtRaidersState()
 },
 
         settings: {
