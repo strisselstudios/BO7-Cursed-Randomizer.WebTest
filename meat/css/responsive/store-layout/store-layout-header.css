@@ -1,0 +1,152 @@
+/* ==========================================================
+   6. DESKTOP HEADER ALIGNMENT REPAIR
+   ----------------------------------------------------------
+   Allows the raised side-panel navigation to remain visible
+   above the game-shell and replaces the two separate divider
+   borders with one continuous, precisely aligned divider.
+========================================================== */
+
+@media (min-width: 761px) {
+  .meat-app {
+    position: relative;
+  }
+
+  /*
+   * The side panel is deliberately moved upward by the height
+   * of the resource header. Overflow must remain visible here
+   * or the desktop panel tabs are clipped out of sight.
+   */
+  .game-shell {
+    grid-template-columns:
+      minmax(0, 1fr)
+      var(--desktop-side-panel-width);
+
+    overflow: visible;
+  }
+
+  /*
+   * Ensure the desktop navigation is displayed even when
+   * another responsive stylesheet previously changed it.
+   */
+  .desktop-panel-tabs {
+    display: grid !important;
+
+    flex:
+      0
+      0
+      var(--desktop-shell-header-height);
+
+    position: relative;
+
+    z-index: 21;
+  }
+
+  /*
+   * Remove the two independently positioned divider borders.
+   * A single divider is drawn by .meat-app::after instead.
+   */
+  .resource-header {
+    border-right: none;
+  }
+
+  .side-panel {
+    border-left: none;
+  }
+
+  /*
+   * One continuous divider shared by the resource header,
+   * meat area, and side panel.
+   */
+  .meat-app::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+
+    right:
+      var(--desktop-side-panel-width);
+
+    width: 2px;
+
+    background:
+      var(--border-color);
+
+    pointer-events: none;
+
+    z-index: 30;
+  }
+}
+
+/* ==========================================================
+   7. HEADER CORNER CONTROL SPACING
+   ----------------------------------------------------------
+   Reserves equal space on both sides of the resource header
+   so the MEAT total remains centered while the wider
+   Randomizer text control occupies the upper-left corner.
+========================================================== */
+
+.resource-header {
+  padding-left: calc(
+    4.75rem +
+    env(safe-area-inset-left)
+  );
+
+  padding-right: calc(
+    4.75rem +
+    env(safe-area-inset-right)
+  );
+}
+
+/*
+ * The Randomizer item remains outside the mobile navigation,
+ * leaving four bottom navigation tabs.
+ */
+@media
+  (max-width: 760px)
+  and
+  (orientation: portrait) {
+
+  .mobile-bottom-navigation {
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(0, 1fr)
+      );
+  }
+
+  .resource-header {
+    padding-left: calc(
+      4.5rem +
+      env(safe-area-inset-left)
+    );
+
+    padding-right: calc(
+      4.5rem +
+      env(safe-area-inset-right)
+    );
+  }
+}
+
+/*
+ * Short landscape uses the smallest text control.
+ */
+@media
+  (orientation: landscape)
+  and
+  (max-height: 760px) {
+
+  .resource-header {
+    padding-left: calc(
+      4.25rem +
+      env(safe-area-inset-left)
+    );
+
+    padding-right: calc(
+      4.25rem +
+      env(safe-area-inset-right)
+    );
+  }
+}
+

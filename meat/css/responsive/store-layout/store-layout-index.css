@@ -1,0 +1,13 @@
+/* ==========================================================
+   STORE RESPONSIVE LAYOUT
+   ----------------------------------------------------------
+   Preserves the original store-layout.css cascade order while
+   keeping each responsive responsibility in a separate file.
+========================================================== */
+
+@import url("store-layout-base.css");
+@import url("store-layout-mobile.css");
+@import url("store-layout-desktop.css");
+@import url("store-layout-short-landscape.css");
+@import url("store-layout-header.css");
+@import url("store-layout-landscape-text.css");
