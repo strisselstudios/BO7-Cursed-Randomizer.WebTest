@@ -1,0 +1,131 @@
+        <!-- ==========================================================
+             SETTINGS VIEW
+             ----------------------------------------------------------
+             Save controls, sound options, and game reset actions.
+        ========================================================== -->
+
+        <section
+          id="settingsView"
+          class="panel-view"
+          data-view="settings"
+          hidden
+        >
+
+          <h2>SETTINGS</h2>
+
+          <div class="settings-list">
+
+            <label class="setting-row">
+              <span>Sound Effects</span>
+              <input
+                id="soundToggle"
+                type="checkbox"
+                checked
+              >
+            </label>
+
+            <label class="setting-row">
+  <span>Animations</span>
+
+  <input
+    id="animationToggle"
+    type="checkbox"
+    checked
+  >
+</label>
+
+<label
+  id="nachtRaidersBootSettingRow"
+  class="
+    setting-row
+    nacht-raiders-boot-setting-row
+  "
+  hidden
+>
+  <span>
+    Nacht Raiders Boot Screen
+  </span>
+
+  <input
+    id="nachtRaidersBootToggle"
+    type="checkbox"
+    checked
+  >
+</label>
+<button
+  id="saveGameButton"
+  class="settings-button"
+  type="button"
+>
+
+  <span
+    class="settings-icon-slot"
+    aria-hidden="true"
+  ></span>
+
+  <span id="saveGameButtonLabel">
+    SAVE GAME
+  </span>
+
+</button>
+
+            <button
+              id="exportSaveButton"
+              class="settings-button"
+              type="button"
+            >
+              <span class="settings-icon-slot" aria-hidden="true"></span>
+              <span>EXPORT SAVE</span>
+            </button>
+
+            <button
+              id="importSaveButton"
+              class="settings-button"
+              type="button"
+            >
+              <span class="settings-icon-slot" aria-hidden="true"></span>
+              <span>IMPORT SAVE</span>
+            </button>
+
+            <button
+  id="createTransferButton"
+  class="settings-button"
+  type="button"
+>
+  <span
+    class="settings-icon-slot"
+    aria-hidden="true"
+  ></span>
+
+  <span>
+    CREATE TRANSFER CODE
+  </span>
+</button>
+
+<button
+  id="receiveTransferButton"
+  class="settings-button"
+  type="button"
+>
+  <span
+    class="settings-icon-slot"
+    aria-hidden="true"
+  ></span>
+
+  <span>
+    RECEIVE TRANSFER
+  </span>
+</button>
+
+            <button
+              id="resetGameButton"
+              class="settings-button danger-button"
+              type="button"
+            >
+              <span class="settings-icon-slot" aria-hidden="true"></span>
+              <span>RESET GAME</span>
+            </button>
+
+          </div>
+
+        </section>
