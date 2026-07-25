@@ -1,20 +1,5 @@
 /* ==========================================================
-   1. NACHT RAIDERS FEATURE STATE ACCESS
-========================================================== */
-
-function ensureNachtRaidersFeatureState() {
-  if (!gameState.features || typeof gameState.features !== "object" || Array.isArray(gameState.features)) {
-    gameState.features = {};
-  }
-
-  const nachtRaidersState = migrateNachtRaidersState(gameState.features.nachtRaiders);
-  gameState.features.nachtRaiders = nachtRaidersState;
-
-  return nachtRaidersState;
-}
-
-/* ==========================================================
-   2. MENU DISPLAY
+   1. MENU DISPLAY
 ========================================================== */
 
 function updateNachtRaidersMenu() {
@@ -53,7 +38,7 @@ function updateNachtRaidersMenu() {
 }
 
 /* ==========================================================
-   3. START OR CONTINUE
+   2. START OR CONTINUE
    ----------------------------------------------------------
    Gameplay is deliberately not started here yet.
 
@@ -119,7 +104,7 @@ function enterNachtRaidersGameStage() {
 }
 
 /* ==========================================================
-   4. RETURN TO MENU
+   3. RETURN TO MENU
 ========================================================== */
 
 function returnToNachtRaidersMenu() {
@@ -142,7 +127,7 @@ function returnToNachtRaidersMenu() {
 }
 
 /* ==========================================================
-   5. EXIT TO MEAT.exe
+   4. EXIT TO MEAT.exe
 ========================================================== */
 
 function exitNachtRaidersToMeatExe() {
@@ -157,7 +142,7 @@ function exitNachtRaidersToMeatExe() {
 }
 
 /* ==========================================================
-   6. MENU INPUT
+   5. MENU INPUT
 ========================================================== */
 
 nachtRaidersPrimaryButton
@@ -194,7 +179,7 @@ nachtRaidersGameBackButton
   );
 
 /* ==========================================================
-   7. SCREEN-CHANGE INTEGRATION
+   6. SCREEN-CHANGE INTEGRATION
 ========================================================== */
 
 document.addEventListener(
