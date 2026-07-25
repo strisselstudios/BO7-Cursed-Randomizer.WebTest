@@ -1,0 +1,201 @@
+/* ==========================================================
+   12. PRODUCER INFO PURCHASE BANNER
+   ----------------------------------------------------------
+   Converts the producer identity banner into an explicit
+   purchase control without changing its existing layout.
+========================================================== */
+
+.producer-info-banner {
+  width: 100%;
+
+  appearance: none;
+
+  color:
+    var(--primary-text);
+
+  font: inherit;
+  text-align: left;
+
+  transform-origin:
+    center;
+
+  cursor: pointer;
+
+  touch-action:
+    manipulation;
+
+  user-select: none;
+
+  transition:
+    border-color 120ms ease,
+    background 120ms ease,
+    box-shadow 120ms ease,
+    filter 120ms ease,
+    transform 90ms ease;
+}
+
+@media
+  (hover: hover)
+  and
+  (pointer: fine) {
+
+  .producer-info-banner:hover {
+    border-color:
+      var(--primary-text);
+
+    filter:
+      brightness(1.12);
+
+    box-shadow:
+      inset 0 0 18px
+        rgba(255, 93, 93, 0.14),
+      0 0 18px
+        rgba(197, 44, 44, 0.35),
+      0 4px 14px
+        rgba(0, 0, 0, 0.45);
+  }
+}
+
+.producer-info-banner:active {
+  transform:
+    scale(0.982);
+}
+
+.producer-info-banner:focus-visible {
+  outline:
+    2px solid
+    var(--accent-bright);
+
+  outline-offset: 3px;
+}
+
+.producer-info-purchase-label {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 28px;
+
+  padding:
+    0.3rem
+    0.55rem;
+
+  background:
+    rgba(197, 44, 44, 0.18);
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-radius: 4px;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  line-height: 1;
+  letter-spacing: 0.035em;
+
+  text-align: center;
+  text-transform: uppercase;
+
+  white-space: normal;
+}
+
+.producer-info-banner
+.producer-info-purchase-label {
+  transition:
+    background 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+
+.producer-info-banner:hover
+.producer-info-purchase-label,
+
+.producer-info-banner:focus-visible
+.producer-info-purchase-label {
+  background:
+    rgba(197, 44, 44, 0.34);
+
+  color:
+    var(--primary-text);
+}
+
+.producer-info-banner
+.producer-info-purchase-unavailable {
+  color:
+    #c58a8a;
+
+  border-color:
+    #7f3a3a;
+
+  background:
+    rgba(80, 24, 24, 0.28);
+}
+
+/*
+ * Keep the full banner visible and clickable. Only its
+ * purchase badge is muted when the player cannot afford it.
+ */
+.producer-info-banner
+.producer-info-purchase-label {
+  opacity: 1;
+}
+
+.producer-info-banner.producer-info-purchase-unavailable {
+  cursor: not-allowed;
+}
+
+.producer-info-banner.producer-info-purchase-unavailable
+.producer-info-purchase-label {
+  color:
+    #bd8585;
+
+  border-color:
+    #7a3636;
+
+  background:
+    rgba(68, 20, 20, 0.32);
+}
+
+/* ==========================================================
+   12.1 COMPACT DESKTOP PURCHASE BADGE
+========================================================== */
+
+@media
+  (min-width: 901px)
+  and
+  (any-pointer: fine) {
+
+  .producer-info-purchase-label {
+    min-height: 22px;
+
+    padding:
+      0.2rem
+      0.4rem;
+
+    font-size: 0.61rem;
+  }
+}
+
+@media
+  (min-width: 901px)
+  and
+  (any-pointer: fine)
+  and
+  (max-height: 650px) {
+
+  .producer-info-purchase-label {
+    min-height: 20px;
+
+    padding:
+      0.17rem
+      0.35rem;
+
+    font-size: 0.56rem;
+  }
+  }

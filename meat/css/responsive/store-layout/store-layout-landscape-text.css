@@ -1,0 +1,193 @@
+/* ==========================================================
+   8. LANDSCAPE PRODUCER TEXT WIDTH REPAIR
+   ----------------------------------------------------------
+   Prevents the producer name and description column from
+   collapsing into a narrow vertical strip on certain tablet
+   and mobile desktop-mode displays.
+========================================================== */
+
+@media (
+  min-width: 761px
+) and (
+  orientation: landscape
+) {
+  .producer-card {
+    grid-template-columns:
+      56px
+      minmax(120px, 1fr)
+      116px;
+  }
+
+  .producer-information {
+    width: auto;
+    min-width: 120px;
+    max-width: 100%;
+
+    overflow: hidden;
+  }
+
+  .producer-information strong,
+  .producer-description {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    white-space: normal;
+
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  .producer-purchase {
+    width: auto;
+    min-width: 0;
+  }
+}
+
+
+/* ==========================================================
+   8.1 SHORT LANDSCAPE PRODUCER TEXT WIDTH
+   ----------------------------------------------------------
+   Uses slightly smaller minimum columns on short landscape
+   displays while still preventing vertical letter wrapping.
+========================================================== */
+
+@media (
+  min-width: 761px
+) and (
+  orientation: landscape
+) and (
+  max-height: 760px
+) {
+  .producer-card {
+    grid-template-columns:
+      50px
+      minmax(92px, 1fr)
+      104px;
+  }
+
+  .producer-information {
+    min-width: 92px;
+  }
+
+  .producer-purchase {
+    width: auto;
+    min-width: 0;
+  }
+}
+
+/* ==========================================================
+   9. NARROW LANDSCAPE PRODUCER TEXT REPAIR
+   ----------------------------------------------------------
+   Uses smaller fixed icon and transaction columns on phone-
+   sized landscape displays so building names and descriptions
+   retain enough horizontal space to wrap normally.
+========================================================== */
+
+@media (
+  max-width: 760px
+) and (
+  orientation: landscape
+) {
+  .producer-card {
+    min-height: 86px;
+
+    grid-template-columns:
+      42px
+      minmax(88px, 1fr)
+      80px;
+
+    align-items: center;
+
+    gap: 0.35rem;
+
+    padding: 0.45rem;
+  }
+
+  .producer-card
+  .producer-icon-slot {
+    width: 42px;
+    height: 42px;
+  }
+
+  .producer-information {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    overflow: hidden;
+  }
+
+  .producer-information strong,
+  .producer-description {
+    display: block;
+
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+
+    white-space: normal;
+
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  .producer-information strong {
+    font-size: 0.72rem;
+    line-height: 1.05;
+  }
+
+  .producer-description {
+    font-size: 0.58rem;
+    line-height: 1.12;
+  }
+
+  .producer-purchase {
+    width: auto;
+    min-width: 0;
+
+    align-items: flex-end;
+
+    text-align: right;
+    white-space: normal;
+  }
+
+  .producer-purchase > strong {
+    max-width: 100%;
+
+    font-size: 0.62rem;
+    line-height: 1.05;
+
+    text-align: right;
+    white-space: normal;
+  }
+
+  .producer-purchase > small {
+    max-width: 100%;
+
+    font-size: 0.56rem;
+    line-height: 1.05;
+
+    white-space: nowrap;
+  }
+
+  .producer-info-button {
+    min-width: 58px;
+    min-height: 22px;
+
+    padding:
+      0.18rem
+      0.3rem;
+
+    font-size: 0.58rem;
+  }
+}

@@ -1,0 +1,176 @@
+      <!-- ==========================================================
+
+  MEAT CLICK VIEW
+
+  ----------------------------------------------------------
+
+  Main clickable meat object and click-effect layer.
+
+========================================================== -->
+
+<section
+  id="meatView"
+  class="meat-view mobile-active-view"
+  data-view="meat"
+>
+
+  <div class="meat-button-wrapper">
+
+    <button
+      id="meatButton"
+      class="meat-button"
+      type="button"
+      aria-label="Generate meat"
+    >
+      <img
+        src="meat/images/ui/meatbutton.png"
+        alt="Click to generate meat"
+      >
+    </button>
+
+    <div
+      id="floatingTextLayer"
+      class="floating-text-layer"
+      aria-hidden="true"
+    ></div>
+
+  </div>
+
+  <!-- ========================================================
+
+    HARVESTER PLACEMENT LAYER
+
+    ----------------------------------------------------------
+    Covers the complete MEAT-side panel while placement mode
+    is active. The entire MEAT view is placeable.
+  ========================================================= -->
+
+  <div
+    id="harvesterPlacementLayer"
+    class="harvester-placement-layer"
+    aria-hidden="true"
+    hidden
+  >
+
+    <div
+      id="harvesterCursorPreview"
+      class="harvester-cursor-preview"
+      aria-hidden="true"
+      hidden
+    >
+      <img
+        src="meat/images/buildings/silver-spoon/spork-tier3.gif"
+        alt=""
+        draggable="false"
+      >
+    </div>
+
+  </div>
+
+  <!-- ========================================================
+
+    PLACED HARVESTER
+
+  ========================================================= -->
+
+<div
+  id="placedHarvester"
+  class="placed-harvester"
+  aria-label="Golden Spork Harvester. Drag to reposition."
+  title="Drag to reposition"
+  hidden
+>
+
+  <img
+    src="meat/images/buildings/silver-spoon/spork-tier3.gif"
+    alt=""
+    draggable="false"
+  >
+
+  <div
+    id="harvesterChargeGauge"
+    class="harvester-charge-gauge"
+    aria-hidden="true"
+    hidden
+  >
+
+    <div class="harvester-charge-track">
+
+      <span
+        id="harvesterChargeGaugeFill"
+        class="
+          harvester-charge-fill
+          harvester-charge-fill-green
+        "
+      ></span>
+
+    </div>
+
+    <span
+      id="harvesterChargeTime"
+      class="harvester-charge-time"
+    >
+      1:00
+    </span>
+
+  </div>
+
+</div>
+
+  <!-- ========================================================
+
+    PLACEMENT INSTRUCTION
+
+  ========================================================= -->
+
+  <div
+    id="harvesterPlacementBanner"
+    class="harvester-placement-banner"
+    role="status"
+    aria-live="polite"
+    hidden
+  >
+
+    <span>
+      TAP/CLICK TO PLACE HARVESTER (Drag to reposition)
+    </span>
+
+    <button
+      id="harvesterPlacementCancelButton"
+      class="harvester-placement-cancel-button"
+      type="button"
+    >
+      CANCEL
+    </button>
+
+  </div>
+
+  <!-- ========================================================
+
+  HARVESTER COLLECTION NOTICE
+
+  ----------------------------------------------------------
+  Non-blocking feedback shown when the deployed Harvester is
+  retracted and its stored MEAT is transferred to the player.
+========================================================= -->
+
+<div
+  id="harvesterCollectionNotice"
+  class="harvester-collection-notice"
+  role="status"
+  aria-live="polite"
+  hidden
+>
+
+  <strong>
+    HARVESTER RECOVERED
+  </strong>
+
+  <span id="harvesterCollectionAmount">
+    0 MEAT COLLECTED
+  </span>
+
+</div>
+
+</section>
+      

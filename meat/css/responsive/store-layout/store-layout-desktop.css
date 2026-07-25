@@ -1,0 +1,159 @@
+/* ==========================================================
+   4. DESKTOP AND TABLET SPLIT HEADER
+   ----------------------------------------------------------
+   Places the resource total above the meat area and raises the
+   Store, Stats, and Settings tabs into the matching right side
+   of the application header.
+
+   The side panel receives more width so descriptions do not
+   collapse into extremely narrow columns.
+========================================================== */
+
+@media (min-width: 761px) {
+  .meat-app {
+    --desktop-shell-header-height:
+      60px;
+
+    --desktop-side-panel-width:
+      clamp(
+        380px,
+        44vw,
+        620px
+      );
+
+    grid-template-rows:
+      var(
+        --desktop-shell-header-height
+      )
+      minmax(0, 1fr);
+  }
+
+  .resource-header {
+    width:
+      calc(
+        100% -
+        var(
+          --desktop-side-panel-width
+        )
+      );
+
+    height:
+      var(
+        --desktop-shell-header-height
+      );
+
+    min-height:
+      var(
+        --desktop-shell-header-height
+      );
+
+    justify-self: start;
+
+    padding:
+      calc(
+        0.25rem +
+        var(--safe-top)
+      )
+      0.75rem
+      0.25rem;
+
+    border-right:
+      2px solid
+      var(--border-color);
+
+    box-sizing: border-box;
+  }
+
+  .resource-total {
+    font-size:
+      clamp(
+        1.3rem,
+        2.4vw,
+        2.1rem
+      );
+  }
+
+  .resource-rate {
+    margin-top: 0.15rem;
+
+    font-size:
+      clamp(
+        0.68rem,
+        1vw,
+        0.84rem
+      );
+  }
+
+  .game-shell {
+    grid-template-columns:
+      minmax(0, 1fr)
+      var(
+        --desktop-side-panel-width
+      );
+  }
+
+  /*
+   * The game shell normally begins below the global resource
+   * header. Moving the side panel upward places its navigation
+   * in the right-hand portion of that same header row.
+   */
+  .side-panel {
+    height:
+      calc(
+        100% +
+        var(
+          --desktop-shell-header-height
+        )
+      );
+
+    margin-top:
+      calc(
+        var(
+          --desktop-shell-header-height
+        ) *
+        -1
+      );
+  }
+
+  .desktop-panel-tabs {
+    height:
+      var(
+        --desktop-shell-header-height
+      );
+
+    min-height:
+      var(
+        --desktop-shell-header-height
+      );
+  }
+
+  .desktop-tab {
+    min-height:
+      var(
+        --desktop-shell-header-height
+      );
+
+    gap: 0.12rem;
+
+    padding:
+      0.25rem;
+
+    font-size:
+      clamp(
+        0.68rem,
+        0.92vw,
+        0.86rem
+      );
+  }
+
+  .tab-icon-slot {
+    width: 25px;
+    height: 25px;
+  }
+
+  .panel-view {
+    padding: 0.65rem;
+  }
+}
+
+

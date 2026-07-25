@@ -1,0 +1,41 @@
+/* ==========================================================
+   MEAT.EXE STYLESHEET ENTRY
+   ----------------------------------------------------------
+   Loads every MEAT.exe stylesheet in its established cascade
+   order while keeping the document head compact.
+========================================================== */
+
+@import url("core/variables.css");
+@import url("core/reset.css");
+@import url("core/layout.css");
+
+@import url("components/save-transfer.css");
+@import url("components/offline-production.css");
+@import url("components/resource-header.css");
+@import url("components/meat-button.css");
+@import url("components/side-panel.css");
+@import url("components/navigation.css");
+@import url("components/store/store-index.css");
+
+@import url("../features/harvester/css/harvester-controls.css");
+@import url("../features/harvester/css/harvester-placement.css");
+@import url("components/producer-info/producer-info-index.css");
+@import url("../features/harvester/css/harvester-info.css");
+
+@import url("../features/nacht-raiders/css/nacht-raiders-launcher.css");
+@import url("../features/nacht-raiders/css/nacht-raiders-window.css");
+@import url("../features/nacht-raiders/css/nacht-raiders-menu.css");
+
+@import url("components/transaction-feedback.css");
+@import url("components/stats.css");
+@import url("components/settings.css");
+@import url("components/return-button.css");
+
+@import url("effects/meat-effects.css");
+@import url("effects/floating-feedback.css");
+@import url("effects/animations.css");
+
+@import url("responsive/tablet.css");
+@import url("responsive/mobile-portrait.css");
+@import url("responsive/short-landscape.css");
+@import url("responsive/store-layout/store-layout-index.css");

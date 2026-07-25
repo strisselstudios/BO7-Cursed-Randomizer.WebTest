@@ -1,0 +1,145 @@
+/* ==========================================================
+   1. PRODUCER INFO DIALOG
+   ----------------------------------------------------------
+   Transparent stationary container holding the sliding
+   dossier panel and its fixed navigation controls.
+========================================================== */
+
+.producer-info-dialog {
+  position: fixed;
+  inset: 0;
+
+  width: min(
+    calc(100vw - 2rem),
+    720px
+  );
+
+  height: fit-content;
+
+  max-height: calc(
+    100dvh - 1rem
+  );
+
+  margin: auto;
+  padding: 0;
+
+  overflow: visible;
+
+  background: transparent;
+  color: var(--primary-text);
+
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+.producer-info-dialog::backdrop {
+  background:
+    rgba(0, 0, 0, 0.88);
+
+  backdrop-filter:
+    blur(3px);
+}
+
+/*
+ * Native dialogs must remain completely absent from layout
+ * and hit testing unless explicitly opened.
+ */
+.producer-info-dialog:not([open]) {
+  display: none;
+}
+
+.producer-info-dialog:not([open])
+.producer-info-navigation-button {
+  display: none;
+}
+
+/* ==========================================================
+   1.1 SLIDING DOSSIER PANEL
+   ----------------------------------------------------------
+   Contains the visible Harvest Dossier. This is the element
+   moved during producer navigation.
+========================================================== */
+
+.producer-info-panel {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  min-height: 100%;
+  max-height: calc(
+    100dvh - 2rem
+  );
+
+  padding: 1.25rem;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  overscroll-behavior:
+    contain;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(116, 32, 32, 0.3) 0%,
+      transparent 48%
+    ),
+    repeating-linear-gradient(
+      135deg,
+      transparent 0,
+      transparent 8px,
+      rgba(255, 255, 255, 0.012) 9px
+    ),
+    linear-gradient(
+      180deg,
+      #160707 0%,
+      #090303 100%
+    );
+
+  color:
+    var(--primary-text);
+
+  border:
+    2px solid
+    var(--accent);
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 0 0 2px
+      rgba(255, 93, 93, 0.1),
+    0 0 32px
+      rgba(197, 44, 44, 0.4),
+    inset 0 0 24px
+      rgba(197, 44, 44, 0.08);
+
+  box-sizing: border-box;
+
+  will-change:
+    transform;
+}
+
+.producer-info-panel::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border:
+    1px solid
+    rgba(255, 93, 93, 0.14);
+
+  border-radius: 8px;
+
+  pointer-events: none;
+}
+
+.producer-info-panel > * {
+  position: relative;
+  z-index: 1;
+}
+

@@ -1,0 +1,29 @@
+/* ==========================================================
+   1. PRODUCER ARTWORK
+   ----------------------------------------------------------
+   Displays producer artwork without the generic placeholder
+   border.
+========================================================== */
+
+.producer-icon-slot-filled {
+  overflow: hidden;
+
+  background: transparent;
+  border: none;
+}
+
+.producer-icon-slot-filled img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  image-rendering: pixelated;
+}
+
+.producer-card.locked-producer
+.producer-icon-slot-filled {
+  background: transparent;
+  border: none;
+}
+

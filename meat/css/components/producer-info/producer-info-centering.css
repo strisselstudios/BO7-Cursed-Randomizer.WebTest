@@ -1,0 +1,13 @@
+/* ==========================================================
+   13. DESKTOP DOSSIER VERTICAL CENTERING
+   ----------------------------------------------------------
+   Prevents the desktop media query's automatic height from
+   stretching the transparent dialog container to the full
+   viewport height.
+========================================================== */
+
+@media (min-width: 901px) and (any-pointer: fine) {
+  .producer-info-dialog {
+    height: fit-content;
+  }
+}

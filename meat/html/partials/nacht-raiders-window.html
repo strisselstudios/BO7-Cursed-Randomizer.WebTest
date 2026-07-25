@@ -1,0 +1,293 @@
+  <!-- ==========================================================
+
+  2.0 NACHT RAIDERS WINDOW LAYER
+
+  ----------------------------------------------------------
+  Standalone DOS-style feature window opened through the
+  Tier III Aether Repairmen launcher.
+
+  Desktop:
+  - Centered window
+  - Blurred background
+  - Outside-click closing
+
+  Mobile:
+  - Full-screen window
+========================================================== -->
+
+<div
+  id="nachtRaidersOverlay"
+  class="nacht-raiders-overlay"
+  aria-hidden="true"
+  hidden
+>
+
+  <section
+    id="nachtRaidersWindow"
+    class="nacht-raiders-window"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="nachtRaidersWindowTitle"
+    tabindex="-1"
+  >
+
+    <!-- ======================================================
+
+      DOS WINDOW TITLE BAR
+
+    ======================================================= -->
+
+    <header class="nacht-raiders-title-bar">
+
+      <div class="nacht-raiders-window-identity">
+
+        <span
+          class="nacht-raiders-window-icon"
+          aria-hidden="true"
+        >
+          C:\&gt;_
+        </span>
+
+        <strong id="nachtRaidersWindowTitle">
+          Nacht-Raiders.exe - Command Prompt
+        </strong>
+
+      </div>
+
+      <button
+        id="nachtRaidersCloseButton"
+        class="nacht-raiders-close-button"
+        type="button"
+        aria-label="Close Nacht Raiders"
+        title="Close Nacht Raiders"
+      >
+        <span aria-hidden="true">
+          ×
+        </span>
+      </button>
+
+    </header>
+
+    <!-- ======================================================
+
+      DOS WINDOW CONTENT
+
+    ======================================================= -->
+
+    <div class="nacht-raiders-window-body">
+
+      <main
+        id="nachtRaidersScreen"
+        class="nacht-raiders-screen"
+      >
+
+        <!-- ==================================================
+
+          LOADING SCREEN
+
+          The real scrolling file sequence will replace this
+          temporary shell during the next step.
+        =================================================== -->
+
+        <section
+  id="nachtRaidersLoadingScreen"
+  class="
+    nacht-raiders-interface-screen
+    nacht-raiders-loading-screen
+  "
+  role="button"
+  tabindex="0"
+  aria-label="
+    Nacht Raiders loading screen.
+    Click or tap once to complete the boot text.
+    Click or tap again to proceed.
+  "
+>
+<div
+  id="nachtRaidersTerminalOutput"
+  class="nacht-raiders-terminal-output"
+  aria-live="off"
+  aria-atomic="false"
+  aria-label="Nacht Raiders boot diagnostics"
+>
+
+            <p>
+              MEAT OPERATING SYSTEM [Version 115.935]
+            </p>
+
+            <p>
+              (C) BROKEN ARROW SYSTEMS. ALL RIGHTS RESERVED.
+            </p>
+
+            <p class="nacht-raiders-terminal-spacer">
+              &nbsp;
+            </p>
+
+            <p>
+              C:\MEAT\AETHER&gt;NACHT-RAIDERS.EXE
+            </p>
+
+            <p class="nacht-raiders-terminal-status">
+              INTERFACE SHELL ONLINE_
+            </p>
+
+          </div>
+
+        </section>
+
+<!-- ========================================================
+
+  NACHT RAIDERS MAIN MENU
+
+  ----------------------------------------------------------
+  Real HTML controls are placed over a separate artwork layer.
+
+  A future PNG, GIF, or animated menu background can replace
+  the temporary artwork without changing the buttons.
+========================================================= -->
+
+<section
+  id="nachtRaidersMenuScreen"
+  class="
+    nacht-raiders-interface-screen
+    nacht-raiders-menu-screen
+  "
+  aria-labelledby="nachtRaidersMenuHeading"
+  hidden
+>
+
+  <div
+    id="nachtRaidersMenuArtwork"
+    class="nacht-raiders-menu-artwork"
+  >
+
+    <div
+      class="nacht-raiders-menu-background"
+      aria-hidden="true"
+    ></div>
+
+    <div class="nacht-raiders-menu-content">
+
+      <header class="nacht-raiders-menu-header">
+
+        <span class="nacht-raiders-menu-eyebrow">
+          AETHER REPAIRMEN FIELD PROGRAM
+        </span>
+
+        <h2 id="nachtRaidersMenuHeading">
+          NACHT RAIDERS
+        </h2>
+
+        <p>
+          MOBILE FIELD RECOVERY SYSTEM
+        </p>
+
+      </header>
+
+      <nav
+        class="nacht-raiders-menu-actions"
+        aria-label="Nacht Raiders menu"
+      >
+
+        <button
+          id="nachtRaidersPrimaryButton"
+          class="
+            nacht-raiders-menu-button
+            nacht-raiders-menu-button-primary
+          "
+          type="button"
+        >
+
+          <span
+            class="nacht-raiders-menu-cursor"
+            aria-hidden="true"
+          >
+            &gt;
+          </span>
+
+          <span id="nachtRaidersPrimaryButtonLabel">
+            START
+          </span>
+
+        </button>
+
+        <button
+          id="nachtRaidersExitButton"
+          class="nacht-raiders-menu-button"
+          type="button"
+        >
+          EXIT TO MEAT.exe
+        </button>
+
+      </nav>
+
+      <p
+        id="nachtRaidersMenuStatus"
+        class="nacht-raiders-menu-status"
+        role="status"
+        aria-live="polite"
+      >
+        NO FIELD RECORD DETECTED
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ========================================================
+
+  GAME STAGING SCREEN
+
+  ----------------------------------------------------------
+  Temporary destination for START and CONTINUE.
+
+  This proves that menu navigation works without beginning
+  actual gameplay development.
+========================================================= -->
+
+<section
+  id="nachtRaidersGameScreen"
+  class="
+    nacht-raiders-interface-screen
+    nacht-raiders-game-screen
+  "
+  aria-labelledby="nachtRaidersGameHeading"
+  hidden
+>
+
+  <div class="nacht-raiders-game-placeholder">
+
+    <span>
+      DEVELOPMENT INTERFACE
+    </span>
+
+    <h2 id="nachtRaidersGameHeading">
+      FIELD LINK ESTABLISHED
+    </h2>
+
+    <p>
+      NACHT RAIDERS GAMEPLAY MODULE NOT YET CONNECTED
+    </p>
+
+        <button
+      id="nachtRaidersGameBackButton"
+      class="nacht-raiders-menu-button"
+      type="button"
+    >
+      RETURN TO MENU
+    </button>
+
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+</section>
+
+</div>
+

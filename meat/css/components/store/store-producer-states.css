@@ -1,0 +1,123 @@
+/* ==========================================================
+   4. LOCKED AND UNAVAILABLE PRODUCERS
+   ----------------------------------------------------------
+   Keeps the next two unknown producer previews visible while
+   disabling transactions that cannot currently be performed.
+========================================================== */
+
+.producer-list:not(.store-ready)
+.producer-card {
+  visibility: hidden;
+}
+
+.producer-card[hidden] {
+  display: none;
+}
+
+.producer-card.locked-producer {
+  background: #050505;
+
+  color: #666666;
+
+  border-color: #000000;
+
+  opacity: 1;
+
+  cursor: not-allowed;
+}
+
+.producer-card.locked-producer:hover {
+  background: #050505;
+}
+
+.producer-card.locked-producer:active {
+  transform: none;
+}
+
+.producer-card.locked-producer
+.producer-icon-slot {
+  background: transparent;
+
+  border:
+    2px solid
+    #000000;
+
+  box-shadow: none;
+}
+
+.producer-card.locked-producer
+.producer-information strong,
+
+.producer-card.locked-producer
+.producer-description,
+
+.producer-card.locked-producer
+.producer-production,
+
+.producer-card.locked-producer
+.producer-purchase small {
+  color: #666666;
+}
+
+.producer-card.locked-producer
+.producer-purchase > strong {
+  color: #b8b8b8;
+}
+
+.producer-card.locked-producer
+.producer-info-button {
+  background: #080808;
+
+  color: #5f2525;
+
+  border-color: #3e1515;
+}
+
+.producer-card:not(:disabled):active {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.producer-card.producer-transaction-unavailable {
+  cursor: not-allowed;
+}
+
+.producer-card.producer-transaction-unavailable:hover {
+  background:
+    var(--button-background);
+}
+
+.producer-card.producer-transaction-unavailable:active {
+  transform: none;
+}
+
+/*
+ * Dim only the parts related to the unavailable transaction.
+ *
+ * Do not put opacity on the complete card. Parent opacity
+ * also dims the independently usable INFO control.
+ */
+.producer-card.producer-transaction-unavailable
+.producer-icon-slot,
+
+.producer-card.producer-transaction-unavailable
+.producer-information,
+
+.producer-card.producer-transaction-unavailable
+.producer-purchase > strong,
+
+.producer-card.producer-transaction-unavailable
+.producer-purchase > small {
+  opacity: 0.55;
+}
+
+/*
+ * INFO remains fully visible and interactive for every
+ * revealed producer, regardless of whether another building
+ * can currently be purchased.
+ */
+.producer-card.producer-transaction-unavailable
+.producer-info-button {
+  opacity: 1;
+  cursor: pointer;
+}

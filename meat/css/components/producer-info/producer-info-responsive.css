@@ -1,0 +1,333 @@
+/* ==========================================================
+   7. NARROW PRODUCER INFO LAYOUT
+   ----------------------------------------------------------
+   Keeps the dossier usable on phone displays.
+========================================================== */
+
+@media (max-width: 600px) {
+  .producer-info-dialog {
+    width:
+      calc(
+        100vw - 1rem
+      );
+
+    max-height:
+      calc(
+        100dvh - 1rem
+      );
+  }
+
+  .producer-info-panel {
+    padding: 0.8rem;
+  }
+
+  .producer-info-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .producer-info-header h2 {
+    margin-bottom: 0.75rem;
+  }
+
+  .producer-info-banner {
+    grid-template-columns:
+      76px
+      minmax(0, 1fr);
+
+    gap: 0.75rem;
+
+    padding: 0.7rem;
+  }
+
+  #producerInfoIconSlot {
+    width: 68px;
+    height: 68px;
+  }
+
+  .producer-info-identity {
+    gap: 0.4rem;
+  }
+
+  .producer-info-meta {
+    gap: 0.3rem;
+  }
+
+  #producerInfoTier,
+  #producerInfoOwned {
+    min-height: 24px;
+
+    padding:
+      0.25rem
+      0.4rem;
+
+    font-size: 0.65rem;
+  }
+
+  .producer-info-statistics {
+    gap: 0.55rem;
+
+    margin-top: 0.75rem;
+  }
+
+  .producer-info-stat {
+    min-height: 86px;
+
+    gap: 0.45rem;
+
+    padding: 0.65rem;
+
+    border-left-width: 3px;
+  }
+
+  #producerInfoDescription {
+    margin-top: 0.75rem;
+
+    padding: 0.75rem;
+    padding-left: 0.9rem;
+  }
+
+  #producerInfoCloseButton {
+    margin-top: 0.75rem;
+  }
+}
+
+
+/* ==========================================================
+   8. VERY NARROW PRODUCER INFO LAYOUT
+   ----------------------------------------------------------
+   Prevents the banner and statistics from becoming crushed.
+========================================================== */
+
+@media (max-width: 380px) {
+  .producer-info-banner {
+    grid-template-columns:
+      64px
+      minmax(0, 1fr);
+  }
+
+  #producerInfoIconSlot {
+    width: 58px;
+    height: 58px;
+  }
+
+  .producer-info-statistics {
+    grid-template-columns: 1fr;
+  }
+
+  .producer-info-stat {
+    min-height: 76px;
+  }
+}
+
+
+/* ==========================================================
+   9. SHORT LANDSCAPE PRODUCER INFO LAYOUT
+   ----------------------------------------------------------
+   Reduces vertical space usage on short landscape screens.
+========================================================== */
+
+@media (
+  orientation: landscape
+) and (
+  max-height: 520px
+) {
+  .producer-info-dialog {
+    width:
+      min(
+        calc(100vw - 1rem),
+        820px
+      );
+
+    max-height:
+      calc(
+        100dvh - 0.5rem
+      );
+  }
+
+  .producer-info-panel {
+    padding: 0.65rem;
+  }
+
+  .producer-info-header {
+    margin-bottom: 0.55rem;
+  }
+
+  .producer-info-header h2 {
+    margin-bottom: 0.5rem;
+
+    font-size: 1rem;
+  }
+
+  .producer-info-banner {
+    grid-template-columns:
+      62px
+      minmax(0, 1fr);
+
+    gap: 0.6rem;
+
+    padding: 0.55rem;
+  }
+
+  #producerInfoIconSlot {
+    width: 56px;
+    height: 56px;
+  }
+
+  #producerInfoName {
+    font-size: 1.05rem;
+  }
+
+  .producer-info-statistics {
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(0, 1fr)
+      );
+
+    gap: 0.45rem;
+
+    margin-top: 0.55rem;
+  }
+
+  .producer-info-stat {
+    min-height: 72px;
+
+    gap: 0.35rem;
+
+    padding: 0.5rem;
+  }
+
+  .producer-info-stat-label {
+    font-size: 0.6rem;
+  }
+
+  .producer-info-stat strong {
+    font-size: 0.88rem;
+  }
+
+  #producerInfoDescription {
+    margin-top: 0.55rem;
+
+    padding:
+      0.55rem
+      0.7rem;
+
+    font-size: 0.72rem;
+    line-height: 1.3;
+  }
+
+  #producerInfoDescription::before {
+    margin-bottom: 0.25rem;
+
+    font-size: 0.58rem;
+  }
+
+  #producerInfoCloseButton {
+    min-height: 36px;
+
+    margin-top: 0.55rem;
+
+    padding: 0.4rem;
+
+    font-size: 0.72rem;
+  }
+}
+
+/* ==========================================================
+   10. RESPONSIVE PRODUCER NAVIGATION
+   ----------------------------------------------------------
+   Keeps both side controls reachable without consuming
+   excessive space on narrow and short displays.
+========================================================== */
+
+@media (max-width: 600px) {
+
+  .producer-info-panel {
+    max-height:
+      calc(100dvh - 1rem);
+  }
+
+  .producer-info-navigation-button {
+    width: 46px;
+    height: 76px;
+  }
+
+  .producer-info-navigation-previous {
+    left: -18px;
+  }
+
+  .producer-info-navigation-next {
+    right: -18px;
+  }
+
+  .producer-info-navigation-arrow {
+    width: 13px;
+    height: 13px;
+
+    border-width:
+      0 3px 3px 0;
+  }
+
+  .producer-info-navigation-previous
+  .producer-info-navigation-arrow {
+    transform:
+      translateX(-4px)
+      rotate(135deg);
+  }
+
+  .producer-info-navigation-next
+  .producer-info-navigation-arrow {
+    transform:
+      translateX(4px)
+      rotate(-45deg);
+  }
+}
+
+@media (max-width: 380px) {
+
+  .producer-info-navigation-button {
+    width: 42px;
+    height: 68px;
+  }
+
+  .producer-info-navigation-previous {
+    left: -15px;
+  }
+
+  .producer-info-navigation-next {
+    right: -15px;
+  }
+}
+
+@media
+  (orientation: landscape)
+  and
+  (max-height: 520px) {
+
+  .producer-info-panel {
+    max-height:
+      calc(100dvh - 0.5rem);
+  }
+
+  .producer-info-navigation-button {
+    width: 44px;
+    height: 62px;
+  }
+
+  .producer-info-navigation-previous {
+    left: -18px;
+  }
+
+  .producer-info-navigation-next {
+    right: -18px;
+  }
+}
+
+@media
+  (prefers-reduced-motion: reduce) {
+
+     .producer-info-navigation-button {
+       transition: none;
+     }
+  }
+

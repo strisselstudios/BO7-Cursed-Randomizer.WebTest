@@ -1,0 +1,69 @@
+      <!-- ==========================================================
+           SHARED SIDE PANEL
+           ----------------------------------------------------------
+           Store, Stats, and Settings content used by every layout.
+      ========================================================== -->
+
+      <aside
+        id="sidePanel"
+        class="side-panel"
+      >
+
+
+        <!-- ==========================================================
+             DESKTOP PANEL TABS
+             ----------------------------------------------------------
+             Tablet and desktop navigation for the right-side panel.
+        ========================================================== -->
+
+        <nav
+          class="desktop-panel-tabs"
+          aria-label="MEAT.exe sections"
+        >
+
+          <button
+            class="desktop-tab active-tab"
+            type="button"
+            data-panel-target="store"
+          >
+            <span class="tab-icon-slot" aria-hidden="true"></span>
+            <span class="tab-label">MEAT MART</span>
+          </button>
+
+          <button
+            class="desktop-tab"
+            type="button"
+            data-panel-target="stats"
+          >
+            <span class="tab-icon-slot" aria-hidden="true"></span>
+            <span class="tab-label">STATS</span>
+          </button>
+
+          <button
+            class="desktop-tab"
+            type="button"
+            data-panel-target="settings"
+          >
+            <span class="tab-icon-slot" aria-hidden="true"></span>
+            <span class="tab-label">SETTINGS</span>
+          </button>
+
+        </nav>
+
+
+        <!-- ==========================================================
+
+  STORE VIEW
+
+  ----------------------------------------------------------
+
+  Automatic producers and future click upgrades.
+
+========================================================== -->
+
+<!-- @include "./side-panel/producer-info-dialog.html" -->
+<!-- @include "./side-panel/store-view.html" -->
+<!-- @include "./side-panel/stats-view.html" -->
+<!-- @include "./side-panel/settings-view.html" -->
+      </aside>
+

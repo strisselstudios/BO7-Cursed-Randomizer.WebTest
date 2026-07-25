@@ -1,0 +1,257 @@
+/* ==========================================================
+   1. COMPACT STORE HEADER
+   ----------------------------------------------------------
+   Reduces the height of the Meat Mart page tabs and the
+   Buy/Sell quantity controls so producer cards begin higher.
+========================================================== */
+
+.store-sticky-header {
+  top: -0.65rem;
+
+  margin:
+    -0.65rem
+    -0.65rem
+    0.55rem;
+
+  padding:
+    0.5rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 8, 8, 1) 0%,
+      rgba(20, 8, 8, 0.99) 88%,
+      rgba(20, 8, 8, 0.95) 100%
+    );
+}
+
+.store-page-tabs {
+  gap: 0.3rem;
+}
+
+.store-page-tab {
+  min-height: 38px;
+
+  padding:
+    0.35rem
+    0.45rem;
+
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.store-transaction-controls {
+  grid-template-columns:
+    minmax(0, 1fr);
+
+  gap: 0.3rem;
+
+  margin-top: 0.35rem;
+}
+
+.store-mode-controls {
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 0.3rem;
+}
+
+.store-quantity-controls {
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 0.3rem;
+}
+
+.store-control-button {
+  min-height: 32px;
+
+  padding:
+    0.25rem
+    0.3rem;
+
+  font-size: 0.76rem;
+  line-height: 1;
+}
+
+
+/* ==========================================================
+   2. COMPACT PRODUCER CARDS
+   ----------------------------------------------------------
+   Keeps producer artwork, description, and transaction
+   information in three usable columns.
+
+   The transaction column is ordered:
+   Cost
+   Owned
+   INFO
+========================================================== */
+
+.producer-list {
+  gap: 0.5rem;
+}
+
+.producer-card {
+  min-height: 94px;
+
+  grid-template-columns:
+    56px
+    minmax(0, 1fr)
+    132px;
+
+  align-items: center;
+
+  gap: 0.6rem;
+
+  padding: 0.6rem;
+}
+
+.producer-card
+.producer-icon-slot {
+  width: 56px;
+  height: 56px;
+}
+
+.producer-information {
+  min-width: 0;
+
+  gap: 0.2rem;
+
+  overflow: hidden;
+}
+
+.producer-information strong {
+  max-width: 100%;
+
+  font-size:
+    clamp(
+      0.9rem,
+      1.15vw,
+      1.12rem
+    );
+
+  line-height: 1.05;
+
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+.producer-description {
+  max-width: 100%;
+
+  font-size:
+    clamp(
+      0.7rem,
+      0.85vw,
+      0.84rem
+    );
+
+  line-height: 1.18;
+
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+}
+
+/*
+ * Production information will eventually be placed inside the
+ * INFO interface, so it is hidden on the producer card.
+ */
+.producer-production,
+
+.producer-information small {
+  display: none;
+}
+
+.producer-purchase {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+  justify-content: center;
+
+  gap: 0.2rem;
+
+  text-align: right;
+
+  white-space: normal;
+}
+
+.producer-purchase > strong {
+  max-width: 100%;
+
+  color:
+    var(--primary-text);
+
+  font-size:
+    clamp(
+      0.72rem,
+      1vw,
+      0.94rem
+    );
+
+  line-height: 1.05;
+
+  text-align: right;
+
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.producer-purchase > small {
+  display: block;
+
+  max-width: 100%;
+
+  color:
+    var(--secondary-text);
+
+  font-size:
+    clamp(
+      0.65rem,
+      0.82vw,
+      0.78rem
+    );
+
+  line-height: 1.05;
+
+  text-align: right;
+
+  white-space: nowrap;
+}
+
+.producer-info-button {
+  min-width: 76px;
+  min-height: 27px;
+
+  margin-top: 0.1rem;
+
+  padding:
+    0.25rem
+    0.55rem;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  font-size: 0.72rem;
+}
+
+
