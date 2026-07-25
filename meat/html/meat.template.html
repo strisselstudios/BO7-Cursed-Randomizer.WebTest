@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <!-- ==========================================================
+       1. DOCUMENT METADATA
+       ----------------------------------------------------------
+       Page metadata, favicon, stylesheet, and search information.
+  ========================================================== -->
+
+  <link
+  rel="icon"
+  href="shared/images/PeeksIcon.png"
+  type="image/png"
+>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="description"
+    content="MEAT.exe is a browser-based idle clicker game."
+  >
+
+  <title>MEAT.exe</title>
+
+  <link rel="canonical" href="https://github.com/strisselstudios/BO7-Cursed-Randomizer.WebTest/blob/main/meat.html">
+
+<!-- ==========================================================
+     1.1 STYLESHEETS
+     ----------------------------------------------------------
+     Complete MEAT.exe stylesheet bundle.
+========================================================== -->
+
+<link rel="stylesheet" href="meat/css/meat.css">
+
+</head>
+
+<body>
+<!-- @include "./partials/nacht-raiders-window.html" --><!-- ==========================================================
+
+  2. MAIN APPLICATION
+       ----------------------------------------------------------
+       Complete responsive MEAT.exe game interface.
+  ========================================================== -->
+
+  <div class="meat-app">
+
+
+<!-- ==========================================================
+     2.1 GLOBAL RESOURCE HEADER
+     ----------------------------------------------------------
+     Persistent return control, meat total, and production rate.
+========================================================== -->
+
+<header class="resource-header">
+
+  <a
+    id="randomizerReturnButton"
+    class="
+      header-corner-control
+      header-randomizer-button
+    "
+    href="index.html"
+    aria-label="Back to the Cursed Relic Randomizer"
+    title="Back to the Cursed Relic Randomizer"
+  >
+    <span>BACK TO</span>
+    <span>RANDOMIZER</span>
+  </a>
+
+  <button
+    id="menuBackButton"
+    class="
+      header-corner-control
+      header-menu-back-button
+    "
+    type="button"
+    aria-label="Return to the MEAT screen"
+    title="Return to the MEAT screen"
+    hidden
+  >
+    <img
+      src="meat/images/ui/back-arrow.png"
+      alt=""
+      aria-hidden="true"
+    >
+  </button>
+
+  <div
+    id="meatCount"
+    class="resource-total"
+  >
+    0 MEAT
+  </div>
+
+  <div
+    id="meatPerSecondDisplay"
+    class="resource-rate"
+  >
+    0 per second
+  </div>
+
+</header>
+
+    <!-- ==========================================================
+         2.2 RESPONSIVE GAME SHELL
+         ----------------------------------------------------------
+         Main click area and shared Store, Stats, and Settings panel.
+    ========================================================== -->
+
+    <main class="game-shell">
+
+
+<!-- @include "./partials/meat-click-view.html" --><!-- @include "./partials/side-panel.html" -->    </main>
+    <!-- ==========================================================
+         2.4 MOBILE BOTTOM NAVIGATION
+         ----------------------------------------------------------
+         Fixed mobile navigation with reserved icon positions.
+    ========================================================== -->
+
+    <nav
+      class="mobile-bottom-navigation"
+      aria-label="MEAT.exe mobile navigation"
+    >
+
+      <button
+        class="mobile-nav-button active-nav-button"
+        type="button"
+        data-mobile-target="meat"
+      >
+        <span class="mobile-nav-icon-slot" aria-hidden="true"></span>
+        <span class="mobile-nav-label">MEAT</span>
+      </button>
+
+      <button
+        class="mobile-nav-button"
+        type="button"
+        data-mobile-target="store"
+      >
+        <span class="mobile-nav-icon-slot" aria-hidden="true"></span>
+        <span class="mobile-nav-label">MEAT MART</span>
+      </button>
+
+      <button
+        class="mobile-nav-button"
+        type="button"
+        data-mobile-target="stats"
+      >
+        <span class="mobile-nav-icon-slot" aria-hidden="true"></span>
+        <span class="mobile-nav-label">STATS</span>
+      </button>
+
+      <button
+        class="mobile-nav-button"
+        type="button"
+        data-mobile-target="settings"
+      >
+        <span class="mobile-nav-icon-slot" aria-hidden="true"></span>
+        <span class="mobile-nav-label">SETTINGS</span>
+      </button>
+
+    </nav>
+
+  </div>
+
+  <!-- ==========================================================
+     2.5 RESET CONFIRMATION
+     ----------------------------------------------------------
+     Prevents accidental permanent deletion of game progress.
+========================================================== -->
+
+<div
+  id="resetConfirmationOverlay"
+  class="reset-confirmation-overlay"
+  hidden
+>
+  <div
+    class="reset-confirmation-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="resetConfirmationTitle"
+    aria-describedby="resetConfirmationMessage"
+  >
+    <h2 id="resetConfirmationTitle">
+      RESET GAME?
+    </h2>
+
+    <p id="resetConfirmationMessage">
+      Are you sure you want to reset MEAT.exe?
+      This is permanent. All MEAT, buildings,
+      upgrades, statistics, and saved progress
+      on this device will be lost.
+    </p>
+
+    <div class="reset-confirmation-actions">
+      <button
+        id="cancelResetButton"
+        class="reset-confirmation-button cancel-reset-button"
+        type="button"
+      >
+        NO
+      </button>
+
+      <button
+        id="confirmResetButton"
+        class="reset-confirmation-button confirm-reset-button"
+        type="button"
+      >
+        YES, RESET
+      </button>
+    </div>
+  </div>
+</div>
+
+
+  <dialog
+  id="saveTransferDialog"
+  class="save-transfer-dialog"
+>
+  <div class="save-transfer-dialog-inner">
+
+    <header class="save-transfer-header">
+
+      <h2 id="transferDialogTitle">
+        SAVE TRANSFER
+      </h2>
+
+      <button
+        id="closeSaveTransferDialogButton"
+        class="save-transfer-close-button"
+        type="button"
+        aria-label="Close save transfer"
+      >
+        ×
+      </button>
+
+    </header>
+
+    <section
+      id="transferCreatePanel"
+      class="save-transfer-panel"
+      hidden
+    >
+
+      <p>
+        Enter this code on the other device
+        within ten minutes.
+      </p>
+
+      <div
+        id="generatedTransferCode"
+        class="generated-transfer-code"
+        aria-live="polite"
+      >
+        -------
+      </div>
+
+      <p
+        id="transferCountdown"
+        class="transfer-countdown"
+      >
+      </p>
+
+      <p
+        id="transferCreateStatus"
+        class="transfer-status"
+        aria-live="polite"
+      >
+      </p>
+
+    </section>
+
+    <section
+      id="transferReceivePanel"
+      class="save-transfer-panel"
+      hidden
+    >
+
+      <label
+        for="transferCodeInput"
+        class="transfer-code-label"
+      >
+        TRANSFER CODE
+      </label>
+
+      <input
+        id="transferCodeInput"
+        class="transfer-code-input"
+        type="text"
+        maxlength="7"
+        autocomplete="one-time-code"
+        autocapitalize="characters"
+        spellcheck="false"
+        inputmode="text"
+        placeholder="K7M4Q2P"
+      >
+
+      <button
+        id="checkTransferCodeButton"
+        class="save-transfer-dialog-button"
+        type="button"
+      >
+        CHECK CODE
+      </button>
+
+      <div
+        id="transferPreview"
+        class="transfer-preview"
+        hidden
+      >
+
+        <h3>INCOMING SAVE</h3>
+
+        <dl>
+
+          <div>
+            <dt>Current Meat</dt>
+            <dd id="transferPreviewMeat">0</dd>
+          </div>
+
+          <div>
+            <dt>Lifetime Meat</dt>
+            <dd id="transferPreviewLifetimeMeat">
+              0
+            </dd>
+          </div>
+
+          <div>
+            <dt>Total Clicks</dt>
+            <dd id="transferPreviewClicks">0</dd>
+          </div>
+
+          <div>
+            <dt>Buildings Owned</dt>
+            <dd id="transferPreviewProducers">
+              0
+            </dd>
+          </div>
+
+          <div>
+            <dt>Save Date</dt>
+            <dd id="transferPreviewDate">
+              Unknown
+            </dd>
+          </div>
+
+        </dl>
+
+        <p class="transfer-overwrite-warning">
+          This will overwrite the current save
+          on this device.
+        </p>
+
+        <button
+          id="confirmTransferButton"
+          class="save-transfer-confirm-button"
+          type="button"
+        >
+          OVERWRITE WITH INCOMING SAVE
+        </button>
+
+      </div>
+
+      <p
+        id="transferReceiveStatus"
+        class="transfer-status"
+        aria-live="polite"
+      >
+      </p>
+
+    </section>
+
+  </div>
+</dialog>
+
+    <!-- ==========================================================
+    3. OFFLINE PRODUCTION REPORT
+    ----------------------------------------------------------
+    Displays MEAT produced while the game was closed,
+    suspended, or running in a background tab.
+
+    This dialog must remain a direct child of <body>.
+    Do not place it inside the Stats, Settings, side-panel,
+    main application, or meat-app elements.
+  ========================================================== -->
+
+  <dialog
+    id="offlineProductionDialog"
+    class="offline-production-dialog"
+  >
+    <div class="offline-production-dialog-inner">
+
+      <h2>THE MEAT NEVER STOPS</h2>
+
+      <div class="offline-production-total">
+
+        <strong id="offlineProductionAmount">
+          0 MEAT
+        </strong>
+
+        <span>
+          HARVESTED WHILE YOU WERE AWAY
+        </span>
+
+      </div>
+
+      <p
+        id="offlineProductionDuration"
+        class="offline-production-duration"
+      ></p>
+
+      <button
+        id="offlineProductionCloseButton"
+        class="offline-production-close-button"
+        type="button"
+      >
+        TAKE THE MEAT
+      </button>
+
+    </div>
+  </dialog>
+
+  <!-- ==========================================================
+     RANDOMIZER NAVIGATION CONFIRMATION
+     ----------------------------------------------------------
+     Confirms that the player wants to leave MEAT.exe and
+     return to the Cursed Relic Randomizer.
+========================================================== -->
+
+<div
+  id="randomizerNavigationOverlay"
+  class="randomizer-navigation-overlay"
+  hidden
+>
+  <section
+    class="randomizer-navigation-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="randomizerNavigationTitle"
+    aria-describedby="randomizerNavigationMessage"
+  >
+    <div
+      class="randomizer-navigation-status"
+      aria-hidden="true"
+    >
+      &gt; NAVIGATION REQUEST
+    </div>
+
+    <h2 id="randomizerNavigationTitle">
+      LEAVE MEAT.exe?
+    </h2>
+
+    <p id="randomizerNavigationMessage">
+      Would you like to navigate to the Cursed Relic Randomizer?
+    </p>
+
+    <div class="randomizer-navigation-actions">
+      <button
+        id="confirmRandomizerNavigationButton"
+        class="
+          randomizer-navigation-button
+          confirm-randomizer-navigation
+        "
+        type="button"
+      >
+        YES.
+      </button>
+
+      <button
+        id="cancelRandomizerNavigationButton"
+        class="
+          randomizer-navigation-button
+          cancel-randomizer-navigation
+        "
+        type="button"
+      >
+        NO, STAY HERE
+      </button>
+    </div>
+  </section>
+</div>
+
+<!-- ==========================================================
+     3. JAVASCRIPT
+     ----------------------------------------------------------
+     Loads the organized MEAT.exe JavaScript files in dependency
+     order, followed by the main game initializer.
+========================================================== -->
+
+
+<!-- ==========================================================
+     3.1 CORE GAME DATA AND DOM REFERENCES
+========================================================== -->
+
+<script src="meat/js/core/game-state.js"></script>
+
+<script src="meat/js/core/dom-elements.js"></script>
+
+<script src="meat/js/core/meat-number-system.js"></script>
+<!-- ==========================================================
+     3.2 CORE FORMATTING UTILITIES
+========================================================== -->
+
+<script src="meat/js/core/number-formatting.js"></script>
+
+<script src="meat/js/core/run-time-formatting.js"></script>
+
+
+<!-- ==========================================================
+     3.3 SAVE SYSTEMS
+========================================================== -->
+
+<script src="meat/js/core/save-system/save-migration.js"></script>
+<script src="meat/js/core/save-system/local-save.js"></script>
+<script src="meat/js/core/save-system/save-export.js"></script>
+<script src="meat/js/core/save-system/save-import.js"></script>
+<script src="meat/js/core/save-system/save-reset.js"></script>
+
+<script src="meat/js/core/save-transfer.js"></script>
+
+
+<!-- ==========================================================
+     3.4 PRODUCER SYSTEMS
+========================================================== -->
+
+<script src="meat/js/systems/producer-calculations.js"></script>
+
+<script src="meat/js/systems/producer-purchasing.js"></script>
+
+
+<!-- ==========================================================
+     3.5 GAMEPLAY SYSTEMS
+========================================================== -->
+
+<script src="meat/js/systems/audio.js"></script>
+
+<script src="meat/js/systems/manual-generation.js"></script>
+
+<script src="meat/js/systems/passive-production.js"></script>
+
+<script src="meat/js/systems/offline-production.js"></script>
+
+<script src="meat/js/systems/statistics-timer.js"></script>
+
+
+<!-- ==========================================================
+     3.6 GAME DISPLAY AND INTERFACE
+========================================================== -->
+
+<script src="meat/js/ui/game-display/game-display-core.js"></script>
+<script src="meat/js/ui/game-display/producer-store-display.js"></script>
+<script src="meat/js/ui/game-display/silver-spoon-tier-display.js"></script>
+<script src="meat/js/ui/game-display/aether-repairmen-tier-display.js"></script>
+<script src="meat/js/ui/game-display/producer-tier-descriptions.js"></script>
+
+<script src="meat/js/systems/producer-tier-history.js"></script>
+
+<script src="meat/js/ui/producer-info/producer-info-state.js"></script>
+<script src="meat/js/ui/producer-info/producer-info-presentation.js"></script>
+<script src="meat/js/ui/producer-info/producer-info-output.js"></script>
+<script src="meat/js/ui/producer-info/producer-info-navigation.js"></script>
+<script src="meat/js/ui/producer-info/producer-info-dialog.js"></script>
+<script src="meat/js/ui/producer-info/producer-info-events.js"></script>
+  
+<script src="meat/js/ui/store-controls.js"></script>
+
+<script src="meat/js/ui/navigation.js"></script>
+
+<script src="meat/js/ui/meat-feedback.js"></script>
+
+<script src="meat/js/ui/meat-pointer.js"></script>
+
+<script src="meat/js/core/zoom-prevention.js"></script>
+
+<!-- ==========================================================
+
+ HARVESTER FEATURE DATA
+
+========================================================== -->
+
+<script
+  src="meat/features/harvester/data/harvester-data.js"
+></script>
+
+<script
+  src="meat/features/harvester/js/harvester-state.js"
+></script>
+
+<script
+  src="meat/features/harvester/js/harvester-production.js"
+></script>
+
+<script
+  src="meat/features/harvester/js/harvester-controls.js"
+></script>
+
+<script
+  src="meat/features/harvester/js/harvester-placement.js"
+></script>
+
+<script
+  src="meat/features/harvester/js/harvester-duty-cycle.js"
+></script>
+
+<script
+  src="meat/features/harvester/js/harvester-info.js"
+></script>
+
+<!-- ==========================================================
+
+  NACHT RAIDERS FEATURE
+
+========================================================== -->
+
+<script
+  src="meat/features/nacht-raiders/data/nacht-raiders-boot-data.js"
+></script>
+
+<script
+  src="meat/features/nacht-raiders/js/nacht-raiders-launcher.js"
+></script>
+
+<script
+  src="meat/features/nacht-raiders/js/nacht-raiders-window.js"
+></script>
+
+<script
+  src="meat/features/nacht-raiders/js/nacht-raiders-boot-sequence.js"
+></script>
+
+<script
+  src="meat/features/nacht-raiders/js/nacht-raiders-menu.js"
+></script>
+
+<!-- ==========================================================
+     3.7 SETTINGS AND SAVE-TRANSFER INTERFACE
+========================================================== -->
+
+<script src="meat/js/ui/settings-control.js"></script>
+
+<script src="meat/js/ui/save-transfer-ui.js"></script>
+
+
+<!-- ==========================================================
+     3.8 AUTOMATIC SAVING
+========================================================== -->
+
+<script src="meat/js/core/autosave.js"></script>
+
+
+<!-- ==========================================================
+     3.9 MAIN INITIALIZATION AND DEBUG TOOLS
+========================================================== -->
+
+<script
+  src="meat/js/ui/randomizer-navigation.js"
+></script>
+
+<script src="meat/js/meat.js"></script>
+
+</body>
+
+</html>
