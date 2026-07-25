@@ -380,7 +380,7 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "File_path:-GATEWAY\MxS\.stf- IS INVALID",
+        "File_path:-GATEWAY\\MxS\\.stf- IS INVALID",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_ERROR,
