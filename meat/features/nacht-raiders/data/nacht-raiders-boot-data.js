@@ -645,7 +645,7 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "Mortality. Event. Anchor. Technology." DEPLOYMENT AUTHORIZED",
+        "Mortality. Event. Anchor. Technology. DEPLOYMENT AUTHORIZED",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_SUCCESS,
