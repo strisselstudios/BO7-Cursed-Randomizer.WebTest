@@ -1,0 +1,781 @@
+/* ==========================================================
+   1. PRODUCER ARTWORK
+   ----------------------------------------------------------
+   Displays producer artwork without the generic placeholder
+   border.
+========================================================== */
+
+.producer-icon-slot-filled {
+  overflow: hidden;
+
+  background: transparent;
+  border: none;
+}
+
+.producer-icon-slot-filled img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  image-rendering: pixelated;
+}
+
+.producer-card.locked-producer
+.producer-icon-slot-filled {
+  background: transparent;
+  border: none;
+}
+
+/* ==========================================================
+   2. STORE PAGE NAVIGATION
+   ----------------------------------------------------------
+   Meat Mart and Marlton's Schematics tabs and the Buy/Sell
+   transaction controls.
+========================================================== */
+
+.store-sticky-header {
+  position: sticky;
+
+  top: -1rem;
+
+  z-index: 12;
+
+  margin:
+    -1rem
+    -1rem
+    1rem;
+
+  padding:
+    1rem
+    1rem
+    0.8rem;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 8, 8, 1) 0%,
+      rgba(20, 8, 8, 0.98) 82%,
+      rgba(20, 8, 8, 0.92) 100%
+    );
+
+  border-bottom:
+    1px solid
+    var(--border-color);
+}
+
+.store-page-tabs {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 0.5rem;
+
+  align-items: stretch;
+}
+
+.store-page-tab {
+  min-width: 0;
+  min-height: 52px;
+
+  padding:
+    0.65rem
+    0.75rem;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--border-color);
+
+  border-radius:
+    7px 7px 2px 2px;
+
+  font: inherit;
+  font-weight: 700;
+
+  line-height: 1.05;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+}
+
+.store-page-tab:hover {
+  background:
+    var(--button-hover);
+}
+
+.store-page-tab.active-store-page-tab {
+  background:
+    var(--panel-background-light);
+
+  color:
+    var(--primary-text);
+
+  border-color:
+    var(--accent-bright);
+
+  box-shadow:
+    inset 0 -3px 0
+    var(--accent-bright);
+}
+
+.store-transaction-controls {
+  display: grid;
+
+  grid-template-columns:
+    minmax(84px, auto)
+    minmax(0, 1fr);
+
+  gap: 0.65rem;
+
+  margin-top: 0.65rem;
+}
+
+.store-transaction-controls[hidden] {
+  display: none;
+}
+
+.store-mode-controls {
+  display: grid;
+
+  grid-template-columns:
+    1fr;
+
+  gap: 0.35rem;
+}
+
+.store-quantity-controls {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 0.35rem;
+}
+
+.store-control-button {
+  min-width: 0;
+  min-height: 42px;
+
+  padding:
+    0.45rem
+    0.55rem;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--border-color);
+
+  border-radius: 7px;
+
+  font: inherit;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+}
+
+.store-control-button:hover {
+  background:
+    var(--button-hover);
+}
+
+.store-control-button.active-store-control {
+  background:
+    var(--accent);
+
+  color:
+    var(--primary-text);
+
+  border-color:
+    var(--accent-bright);
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(255, 255, 255, 0.08);
+}
+
+.store-page[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   3. PRODUCER CARDS
+   ----------------------------------------------------------
+   Producer artwork, tier description, production information,
+   selected transaction value, ownership count, and INFO area.
+========================================================== */
+
+.producer-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+}
+
+.producer-card {
+  width: 100%;
+  min-height: 116px;
+
+  display: grid;
+
+  grid-template-columns:
+    auto
+    minmax(0, 1fr)
+    minmax(126px, auto);
+
+  align-items: center;
+
+  gap: 0.85rem;
+
+  padding: 0.85rem;
+
+  appearance: none;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--primary-text);
+
+  border:
+    1px solid
+    var(--border-color);
+
+  border-radius: 9px;
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  touch-action: pan-y;
+}
+
+.producer-card
+.producer-icon-slot {
+  width: 64px;
+  height: 64px;
+}
+
+.producer-information {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+  justify-content: center;
+
+  gap: 0.35rem;
+}
+
+.producer-information strong {
+  color:
+    var(--accent-bright);
+
+  font-size:
+    clamp(
+      1rem,
+      1.8vw,
+      1.35rem
+    );
+
+  line-height: 1.1;
+}
+
+.producer-description {
+  display: block;
+
+  max-width: 100%;
+
+  color:
+    var(--primary-text);
+
+  font-size:
+    clamp(
+      0.78rem,
+      1.25vw,
+      0.95rem
+    );
+
+  font-style: italic;
+  font-weight: 400;
+
+  line-height: 1.35;
+
+  overflow-wrap: anywhere;
+}
+
+.producer-description:empty {
+  display: none;
+}
+
+.producer-production {
+  color:
+    var(--secondary-text);
+
+  font-size:
+    clamp(
+      0.72rem,
+      1.1vw,
+      0.88rem
+    );
+
+  line-height: 1.25;
+}
+
+.producer-purchase {
+  min-width: 126px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-end;
+  justify-content: center;
+
+  gap: 0.35rem;
+
+  text-align: right;
+  white-space: nowrap;
+}
+
+.producer-purchase > strong {
+  color:
+    var(--primary-text);
+
+  font-size:
+    clamp(
+      0.95rem,
+      1.65vw,
+      1.25rem
+    );
+}
+
+.producer-purchase > small {
+  color:
+    var(--secondary-text);
+}
+
+.producer-info-button {
+  min-width: 82px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 0.15rem;
+
+  padding:
+    0.35rem
+    0.75rem;
+
+  background:
+    var(--button-background);
+
+  color:
+    var(--accent-bright);
+
+  border:
+    1px solid
+    var(--accent-bright);
+
+  border-radius: 5px;
+
+  font-size:
+    0.82rem;
+
+  font-style: normal;
+  font-weight: 700;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+touch-action:
+  manipulation;
+
+  user-select: none;
+}
+
+.producer-info-button:hover,
+.producer-info-button:focus-visible {
+  background:
+    var(--button-hover);
+
+  color:
+    var(--primary-text);
+
+  outline: none;
+}
+
+.producer-info-button:focus-visible {
+  outline:
+    2px solid
+    var(--accent-bright);
+
+  outline-offset: 2px;
+}
+
+@media (
+  hover: hover
+) and (
+  pointer: fine
+) {
+  .producer-card:not(:disabled):hover {
+    background:
+      var(--button-hover);
+  }
+}
+
+.producer-card:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.producer-card:focus-visible {
+  outline:
+    2px solid
+    var(--accent-bright);
+
+  outline-offset: 2px;
+}
+
+.producer-card:not(:disabled):active {
+  background:
+    var(--button-hover);
+
+  transform:
+    scale(0.985);
+}
+
+/* ==========================================================
+   4. LOCKED AND UNAVAILABLE PRODUCERS
+   ----------------------------------------------------------
+   Keeps the next two unknown producer previews visible while
+   disabling transactions that cannot currently be performed.
+========================================================== */
+
+.producer-list:not(.store-ready)
+.producer-card {
+  visibility: hidden;
+}
+
+.producer-card[hidden] {
+  display: none;
+}
+
+.producer-card.locked-producer {
+  background: #050505;
+
+  color: #666666;
+
+  border-color: #000000;
+
+  opacity: 1;
+
+  cursor: not-allowed;
+}
+
+.producer-card.locked-producer:hover {
+  background: #050505;
+}
+
+.producer-card.locked-producer:active {
+  transform: none;
+}
+
+.producer-card.locked-producer
+.producer-icon-slot {
+  background: transparent;
+
+  border:
+    2px solid
+    #000000;
+
+  box-shadow: none;
+}
+
+.producer-card.locked-producer
+.producer-information strong,
+
+.producer-card.locked-producer
+.producer-description,
+
+.producer-card.locked-producer
+.producer-production,
+
+.producer-card.locked-producer
+.producer-purchase small {
+  color: #666666;
+}
+
+.producer-card.locked-producer
+.producer-purchase > strong {
+  color: #b8b8b8;
+}
+
+.producer-card.locked-producer
+.producer-info-button {
+  background: #080808;
+
+  color: #5f2525;
+
+  border-color: #3e1515;
+}
+
+.producer-card:not(:disabled):active)
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+.producer-card.producer-transaction-unavailable {
+  cursor: not-allowed;
+}
+
+.producer-card.producer-transaction-unavailable:hover {
+  background:
+    var(--button-background);
+}
+
+.producer-card.producer-transaction-unavailable:active {
+  transform: none;
+}
+
+/*
+ * Dim only the parts related to the unavailable transaction.
+ *
+ * Do not put opacity on the complete card. Parent opacity
+ * also dims the independently usable INFO control.
+ */
+.producer-card.producer-transaction-unavailable
+.producer-icon-slot,
+
+.producer-card.producer-transaction-unavailable
+.producer-information,
+
+.producer-card.producer-transaction-unavailable
+.producer-purchase > strong,
+
+.producer-card.producer-transaction-unavailable
+.producer-purchase > small {
+  opacity: 0.55;
+}
+
+/*
+ * INFO remains fully visible and interactive for every
+ * revealed producer, regardless of whether another building
+ * can currently be purchased.
+ */
+.producer-card.producer-transaction-unavailable
+.producer-info-button {
+  opacity: 1;
+  cursor: pointer;
+}
+/* ==========================================================
+   5. MARLTON'S SCHEMATICS PLACEHOLDER
+   ----------------------------------------------------------
+   Empty progression page reserved for the future schematics
+   system.
+========================================================== */
+
+.schematics-page {
+  min-height: 100%;
+}
+
+.schematics-placeholder {
+  min-height: 280px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.75rem;
+
+  padding: 2rem;
+
+  background:
+    var(--button-background);
+
+  border:
+    1px solid
+    var(--border-color);
+
+  border-radius: 9px;
+
+  text-align: center;
+}
+
+.schematics-placeholder h2 {
+  margin: 0;
+
+  color:
+    var(--accent-bright);
+}
+
+.schematics-placeholder p {
+  max-width: 460px;
+
+  margin: 0;
+
+  color:
+    var(--secondary-text);
+
+  line-height: 1.5;
+}
+
+/* ==========================================================
+   6. RESPONSIVE STORE LAYOUT
+   ----------------------------------------------------------
+   Stacks the transaction controls and reorganizes producer
+   information on narrow screens.
+========================================================== */
+
+@media (max-width: 760px) {
+  .store-sticky-header {
+    top: -1rem;
+
+    margin:
+      -1rem
+      -0.75rem
+      0.75rem;
+
+    padding:
+      0.75rem;
+  }
+
+  .store-transaction-controls {
+    grid-template-columns:
+      1fr;
+  }
+
+  .store-mode-controls {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .producer-card {
+    grid-template-columns:
+      auto
+      minmax(0, 1fr);
+
+    align-items: start;
+
+    gap: 0.7rem;
+
+    padding: 0.75rem;
+  }
+
+  .producer-card
+  .producer-icon-slot {
+    width: 58px;
+    height: 58px;
+  }
+
+  .producer-purchase {
+    grid-column:
+      1 / -1;
+
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      auto;
+
+    grid-template-rows:
+      auto
+      auto;
+
+    align-items: center;
+
+    column-gap: 0.65rem;
+    row-gap: 0.15rem;
+
+    text-align: left;
+  }
+
+  .producer-purchase > strong {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .producer-purchase > small {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .producer-info-button {
+    grid-column: 2;
+    grid-row:
+      1 / 3;
+
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 430px) {
+  .store-page-tab {
+    min-height: 48px;
+
+    padding:
+      0.5rem
+      0.35rem;
+
+    font-size: 0.74rem;
+  }
+
+  .store-control-button {
+    min-height: 40px;
+
+    padding:
+      0.4rem
+      0.3rem;
+
+    font-size: 0.78rem;
+  }
+
+  .producer-card
+  .producer-icon-slot {
+    width: 52px;
+    height: 52px;
+  }
+
+  .producer-description {
+    font-size: 0.76rem;
+  }
+
+  .producer-info-button {
+    min-width: 70px;
+
+    padding:
+      0.35rem
+      0.55rem;
+  }
+}
