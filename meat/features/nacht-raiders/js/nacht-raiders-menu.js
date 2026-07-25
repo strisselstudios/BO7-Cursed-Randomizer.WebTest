@@ -3,24 +3,12 @@
 ========================================================== */
 
 function ensureNachtRaidersFeatureState() {
-  if (
-    !gameState.features ||
-    typeof gameState.features !==
-      "object" ||
-    Array.isArray(
-      gameState.features
-    )
-  ) {
+  if (!gameState.features || typeof gameState.features !== "object" || Array.isArray(gameState.features)) {
     gameState.features = {};
   }
 
-  const nachtRaidersState =
-    migrateNachtRaidersState(
-      gameState.features.nachtRaiders
-    );
-
-  gameState.features.nachtRaiders =
-    nachtRaidersState;
+  const nachtRaidersState = migrateNachtRaidersState(gameState.features.nachtRaiders);
+  gameState.features.nachtRaiders = nachtRaidersState;
 
   return nachtRaidersState;
 }
@@ -97,18 +85,10 @@ function enterNachtRaidersGameStage() {
     !nachtRaidersState.hasStarted;
 
     if (isFirstStart) {
-    nachtRaidersState.hasStarted =
-      true;
-
-    nachtRaidersState.status =
-      NACHT_RAIDERS_STATUS_RUNNING;
-
-    nachtRaidersState.expedition.seed =
-      createNachtRaidersExpeditionSeed();
-
-    nachtRaidersState.expedition
-      .lastSimulationAt =
-        Date.now();
+    nachtRaidersState.hasStarted = true;
+    nachtRaidersState.status = NACHT_RAIDERS_STATUS_RUNNING;
+    nachtRaidersState.expedition.seed = createNachtRaidersExpeditionSeed();
+    nachtRaidersState.expedition.lastSimulationAt = Date.now();
 
     saveGame();
   }
