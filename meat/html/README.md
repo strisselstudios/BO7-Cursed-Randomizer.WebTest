@@ -1,12 +1,12 @@
 # MEAT.exe HTML Source
 
-`meat.html` is currently the deployed document.
+`meat.html` is the complete deployed document.
 
-`meat/html/meat.template.html` is the assembly source introduced during the
-HTML reorganization. At the end of Batch 11 it must be an exact copy of the
-current root-level `meat.html`.
+`meat/html/meat.template.html` and the files under `partials/` are the
+build-time assembly source. Recursive include directives are resolved relative
+to the file containing each directive.
 
-Future batches replace complete sections inside the template with directives:
+Complete sections in the template use directives such as:
 
 ```html
 <!-- @include "./partials/example.html" -->
@@ -28,7 +28,5 @@ node tools/reorganization/meat-html-build.js \
   --check-against meat.html
 ```
 
-Do not edit generated and source copies independently. After the first partial
-is extracted, edit the template or the relevant partial, rebuild, then replace
-the root `meat.html` with the generated output until deployment is moved to a
-build artifact.
+Do not edit deployed and source copies independently. Edit the template or the
+relevant partial, rebuild the root document, and run the verification command.
