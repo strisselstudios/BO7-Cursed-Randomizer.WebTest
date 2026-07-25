@@ -99,7 +99,7 @@ const NACHT_RAIDERS_BOOT_LINES =
   Object.freeze([
     {
       text:
-        "MEAT OPERATING SYSTEM [Version 115.935]",
+        "MEAT OPERATING SYSTEM [Version 1.15.9.35]",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_MUTED,
@@ -150,7 +150,7 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "INITIALIZING AETHER REPAIRMEN FIELD PROGRAM...",
+        "INITIALIZING AETHER PROTOCOL DEPLOYMENT...",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_DEFAULT,
@@ -231,7 +231,7 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "Raygun.data...LOADING...LOADING...LOADING...",
+        "RAYGUN.DAT...LOADING...LOADING...LOADING...",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_PATH,
@@ -244,7 +244,7 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "ERROR: Raygun.data deleted by USER:\\S.A.M._PROTOCOL",
+        "ERROR: RAYGUN.DAT deleted by USER:\\S.A.M._MxS",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_ERROR,
@@ -293,7 +293,7 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "WARNING: DRIVER VOICEPRINT CORRUPTED",
+        "WARNING: DRIVER VOICEPRINT CORRUPTED-ERROR",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_WARNING,
@@ -380,10 +380,10 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "File_path:-Secure the keys/Ascend from darkness/Rain fire/Unleash the horde/Skewer the winged beast/Wield a fist of iron/Raise hell/Freedom-",
+        "File_path:-GATEWAY\MxS\.stf- IS INVALID",
 
       tone:
-        NACHT_RAIDERS_BOOT_TONE_PATH,
+        NACHT_RAIDERS_BOOT_TONE_ERROR,
 
       mode:
         NACHT_RAIDERS_BOOT_MODE_CHARACTER,
@@ -393,7 +393,7 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "QUEST DIRECTIVE ARCHIVE LOCATED",
+        "DIRECTIVE ARCHIVE LOCATED",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_SUCCESS,
@@ -645,7 +645,7 @@ const NACHT_RAIDERS_BOOT_LINES =
 
     {
       text:
-        "AETHER REPAIRMEN DEPLOYMENT AUTHORIZED",
+        "Mortality. Event. Anchor. Technology." DEPLOYMENT AUTHORIZED",
 
       tone:
         NACHT_RAIDERS_BOOT_TONE_SUCCESS,
