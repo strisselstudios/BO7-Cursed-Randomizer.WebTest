@@ -33,9 +33,6 @@ function stopNachtRaidersVisualAnimation(visualElement) {
   );
 }
 
-  nachtRaidersVisualAnimationStates.delete(visualElement);
-}
-
 function clearNachtRaidersVisualAsset(visualElement) {
   if (!visualElement) return;
 
