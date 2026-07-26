@@ -481,7 +481,7 @@ function migrateNachtRaidersState(
         operativeSpeed
     },
 
-        resources:
+   resources:
       normalizeNachtRaidersResourceState(
         savedResources
       ),
@@ -520,7 +520,7 @@ function migrateNachtRaidersState(
       reconstructions:
         normalizeNachtRaidersInteger(
           savedStatistics.reconstructions
-        )
+        ),
 
       damageDealt:
         normalizeNachtRaidersNumber(
