@@ -5,7 +5,7 @@
    and window-state values.
 ========================================================== */
 
-const NACHT_RAIDERS_STATE_VERSION = 1;
+const NACHT_RAIDERS_STATE_VERSION = 2;
 
 const NACHT_RAIDERS_STATUS_INACTIVE = "inactive";
 const NACHT_RAIDERS_STATUS_RUNNING = "running";
@@ -138,8 +138,10 @@ function createDefaultNachtRaidersState() {
 
     cycleCount: 0,
 
-    expedition: {
+   expedition: {
       seed: 0,
+      rngState: 0,
+      eventSequence: 0,
 
       zoneId:
         NACHT_RAIDERS_STARTING_ZONE_ID,
@@ -289,7 +291,25 @@ function migrateNachtRaidersState(
     )
       ? createNachtRaidersExpeditionSeed()
       : savedSeed;
+  const savedRngState =
+    normalizeNachtRaidersInteger(
+      savedExpedition.rngState
+    );
 
+  const rngState =
+    hasStarted
+      ? (
+          savedRngState > 0
+            ? savedRngState
+            : expeditionSeed
+        )
+      : 0;
+
+  const eventSequence =
+    normalizeNachtRaidersInteger(
+      savedExpedition.eventSequence
+    );
+   
   const savedLastSimulationAt =
     normalizeNachtRaidersInteger(
       savedExpedition.lastSimulationAt
@@ -351,11 +371,15 @@ function migrateNachtRaidersState(
         sourceState.cycleCount
       ),
 
-    expedition: {
+   expedition: {
       seed:
         expeditionSeed,
 
+      rngState,
+      eventSequence,
+
       zoneId:
+         
         typeof savedExpedition.zoneId ===
           "string" &&
         savedExpedition.zoneId.trim()
