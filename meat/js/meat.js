@@ -7,6 +7,8 @@
 
 loadGame();
 
+initializeNachtRaidersSimulation();
+
 calculateMeatPerSecond();
 
 const initialOfflineProductionSummary =
