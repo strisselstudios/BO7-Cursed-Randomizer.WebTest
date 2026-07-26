@@ -271,7 +271,12 @@ function createNachtRaidersIncidentRecord(
   incident,
   zoneDepth,
   occurredAt,
-  rewards
+  rewards,
+  source:
+      typeof source === "string" &&
+      source
+        ? source
+        : "simulation",
 ) {
   nachtRaidersState.expedition.eventSequence +=
     1;
@@ -314,11 +319,28 @@ function createNachtRaidersIncidentRecord(
         )
       ),
 
-    eventType:
+   eventType:
       incident.type,
 
     eventId:
       incident.id,
+
+    source:
+      typeof arguments[5] === "string" &&
+      arguments[5]
+        ? arguments[5]
+        : "simulation",
+
+    presentation: {
+      title:
+        incident.title,
+
+      lines:
+        [...incident.lines]
+    },
+
+    tags:
+      [...incident.tags],
 
     rewards: {
       ...rewards
@@ -395,6 +417,12 @@ function generateNachtRaidersTravelIncidents(
       )
     );
 
+  const source =
+    typeof options.source === "string" &&
+    options.source
+      ? options.source
+      : NACHT_RAIDERS_REPORT_REASON_ACTIVE;  
+   
   const result = {
     incidentRolls: 0,
     incidentsGenerated: 0,
@@ -475,12 +503,26 @@ function generateNachtRaidersTravelIncidents(
         incident,
         zoneDepth,
         occurredAt,
-        rewards
+        rewards,
+        source
       );
 
     appendNachtRaidersPendingRecord(
       nachtRaidersState,
       record
+    );
+
+    finalizeNachtRaidersPendingReports(
+      nachtRaidersState,
+      {
+        force: false,
+        reason:
+          source ||
+          NACHT_RAIDERS_REPORT_REASON_AUTOMATIC_SEGMENT,
+
+        createdAt:
+          occurredAt
+      }
     );
 
     result.incidentsGenerated += 1;
