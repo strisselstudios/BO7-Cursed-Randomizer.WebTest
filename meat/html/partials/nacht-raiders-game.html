@@ -1,0 +1,301 @@
+<!-- ==========================================================
+     1. ACTIVE EXPEDITION SCREEN
+     ----------------------------------------------------------
+     Displays the current authoritative Nacht Raiders expedition
+     using placeholders until final sprite assets are installed.
+========================================================== -->
+
+<section
+  id="nachtRaidersGameScreen"
+  class="nacht-raiders-interface-screen nacht-raiders-game-screen"
+  aria-labelledby="nachtRaidersGameHeading"
+  hidden
+>
+
+  <!-- ========================================================
+       2. EXPEDITION HUD
+  ========================================================= -->
+
+  <header class="nacht-raiders-game-hud">
+
+    <div class="nacht-raiders-game-identity">
+
+      <span class="nacht-raiders-game-kicker">
+        LIVE FIELD LINK
+      </span>
+
+      <h2 id="nachtRaidersGameHeading">
+        NACHT
+      </h2>
+
+    </div>
+
+    <dl class="nacht-raiders-game-location">
+
+      <div>
+        <dt>ZONE</dt>
+        <dd id="nachtRaidersGameZone">NACHT</dd>
+      </div>
+
+      <div>
+        <dt>DEPTH</dt>
+        <dd id="nachtRaidersGameDepth">0</dd>
+      </div>
+
+      <div>
+        <dt>CYCLE</dt>
+        <dd id="nachtRaidersGameCycle">0</dd>
+      </div>
+
+      <div>
+        <dt>LEVEL</dt>
+        <dd id="nachtRaidersGameLevel">1</dd>
+      </div>
+
+    </dl>
+
+    <button
+      id="nachtRaidersGameBackButton"
+      class="nacht-raiders-menu-button nacht-raiders-game-back-button"
+      type="button"
+    >
+      RETURN TO MENU
+    </button>
+
+    <div class="nacht-raiders-game-vitals">
+
+      <div class="nacht-raiders-game-vital-row">
+
+        <span>
+          OPERATIVE INTEGRITY
+        </span>
+
+        <strong id="nachtRaidersGameHealthText">
+          100 / 100
+        </strong>
+
+      </div>
+
+      <div
+        class="nacht-raiders-game-meter"
+        role="progressbar"
+        aria-label="Operative integrity"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="100"
+      >
+        <span
+          id="nachtRaidersGameHealthFill"
+          class="nacht-raiders-game-meter-fill nacht-raiders-game-health-fill"
+        ></span>
+      </div>
+
+      <div class="nacht-raiders-game-vital-row">
+
+        <span>
+          EXPERIENCE
+        </span>
+
+        <strong id="nachtRaidersGameXpText">
+          0 / 50
+        </strong>
+
+      </div>
+
+      <div
+        class="nacht-raiders-game-meter"
+        role="progressbar"
+        aria-label="Operative experience"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <span
+          id="nachtRaidersGameXpFill"
+          class="nacht-raiders-game-meter-fill nacht-raiders-game-xp-fill"
+        ></span>
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- ========================================================
+       3. EXPEDITION VIEWPORT
+  ========================================================= -->
+
+  <div class="nacht-raiders-game-viewport">
+
+    <div
+      class="nacht-raiders-game-landscape nacht-raiders-game-landscape-far"
+      aria-hidden="true"
+    ></div>
+
+    <div
+      class="nacht-raiders-game-landscape nacht-raiders-game-landscape-near"
+      aria-hidden="true"
+    ></div>
+
+    <div
+      class="nacht-raiders-game-ground"
+      aria-hidden="true"
+    ></div>
+
+    <article
+      id="nachtRaidersOperativeEntity"
+      class="nacht-raiders-game-entity nacht-raiders-game-operative"
+    >
+
+      <div
+        id="nachtRaidersOperativeVisual"
+        class="nacht-raiders-game-entity-visual"
+        data-asset-key="operative"
+        data-animation="walk"
+      >
+        <span
+          id="nachtRaidersOperativePlaceholder"
+          class="nacht-raiders-game-entity-placeholder"
+          aria-hidden="true"
+        >
+          OP
+        </span>
+      </div>
+
+      <strong class="nacht-raiders-game-entity-name">
+        OPERATIVE
+      </strong>
+
+    </article>
+
+    <article
+      id="nachtRaidersEnemyEntity"
+      class="nacht-raiders-game-entity nacht-raiders-game-enemy"
+      hidden
+    >
+
+      <div
+        id="nachtRaidersEnemyVisual"
+        class="nacht-raiders-game-entity-visual"
+        data-animation="idle"
+      >
+        <span
+          id="nachtRaidersEnemyPlaceholder"
+          class="nacht-raiders-game-entity-placeholder"
+          aria-hidden="true"
+        >
+          ?
+        </span>
+      </div>
+
+      <strong
+        id="nachtRaidersEnemyName"
+        class="nacht-raiders-game-entity-name"
+      >
+        HOSTILE
+      </strong>
+
+      <div class="nacht-raiders-game-enemy-health">
+
+        <span id="nachtRaidersEnemyHealthText">
+          0 / 0
+        </span>
+
+        <div
+          class="nacht-raiders-game-meter"
+          role="progressbar"
+          aria-label="Hostile integrity"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <span
+            id="nachtRaidersEnemyHealthFill"
+            class="nacht-raiders-game-meter-fill nacht-raiders-game-enemy-health-fill"
+          ></span>
+        </div>
+
+      </div>
+
+    </article>
+
+    <div
+      class="nacht-raiders-game-event"
+      role="status"
+      aria-live="polite"
+    >
+
+      <span id="nachtRaidersGameEventType">
+        TRAVEL
+      </span>
+
+      <strong id="nachtRaidersGameEventText">
+        EXPEDITION LINK ACTIVE
+      </strong>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================
+       4. EXPEDITION STATUS
+  ========================================================= -->
+
+  <footer class="nacht-raiders-game-footer">
+
+    <div class="nacht-raiders-game-travel">
+
+      <div class="nacht-raiders-game-travel-heading">
+
+        <span>
+          NEXT DEPTH
+        </span>
+
+        <strong id="nachtRaidersGameTravelText">
+          0 / 6
+        </strong>
+
+      </div>
+
+      <div
+        class="nacht-raiders-game-meter"
+        role="progressbar"
+        aria-label="Travel progress to next depth"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+        <span
+          id="nachtRaidersGameTravelFill"
+          class="nacht-raiders-game-meter-fill nacht-raiders-game-travel-fill"
+        ></span>
+      </div>
+
+    </div>
+
+    <dl class="nacht-raiders-game-resources">
+
+      <div>
+        <dt>SALVAGE</dt>
+        <dd id="nachtRaidersGameSalvage">0</dd>
+      </div>
+
+      <div>
+        <dt>AETHER RESIDUE</dt>
+        <dd id="nachtRaidersGameAetherResidue">0</dd>
+      </div>
+
+      <div>
+        <dt>FIELD DATA</dt>
+        <dd id="nachtRaidersGameFieldData">0</dd>
+      </div>
+
+      <div>
+        <dt>RELIC FRAGMENTS</dt>
+        <dd id="nachtRaidersGameRelicFragments">0</dd>
+      </div>
+
+    </dl>
+
+  </footer>
+
+</section>
