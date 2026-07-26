@@ -14,7 +14,14 @@ const NACHT_RAIDERS_COMBAT_ACTOR_OPERATIVE = "operative";
 const NACHT_RAIDERS_COMBAT_ACTOR_ENEMY = "enemy";
 
 /* ==========================================================
-   3. COMBAT SETTINGS
+   3. COMBAT FIELD RECORDS
+========================================================== */
+
+const NACHT_RAIDERS_RECORD_TYPE_COMBAT = "combat";
+const NACHT_RAIDERS_COMBAT_RECORD_TAG = "hostile-contact";
+
+/* ==========================================================
+   4. COMBAT SETTINGS
    ----------------------------------------------------------
    Centralizes damage, action limits, level scaling, and enemy
    scaling. Future balancing should occur here.
