@@ -1,11 +1,5 @@
 /* ==========================================================
-   1. DISPLAY RUNTIME STATE
-========================================================== */
-
-let nachtRaidersEncounterPreviewTimeoutId = null;
-
-/* ==========================================================
-   2. DISPLAY UTILITIES
+   1. DISPLAY UTILITIES
 ========================================================== */
 
 function isNachtRaidersGameDisplayVisible() {
@@ -53,10 +47,7 @@ function updateNachtRaidersGameMeter(
     isCritical
   );
 
-  const meter =
-    fillElement.parentElement;
-
-  meter?.setAttribute(
+  fillElement.parentElement?.setAttribute(
     "aria-valuenow",
     String(
       Math.round(
@@ -67,84 +58,7 @@ function updateNachtRaidersGameMeter(
 }
 
 /* ==========================================================
-   3. VISUAL ASSET APPLICATION
-========================================================== */
-
-function clearNachtRaidersVisualAsset(visualElement) {
-  if (!visualElement) return;
-
-  visualElement.classList.remove("has-sprite");
-  visualElement.style.removeProperty("background-image");
-  visualElement.style.removeProperty("--nacht-raiders-frame-count");
-  visualElement.style.removeProperty("--nacht-raiders-frame-width");
-  visualElement.style.removeProperty("--nacht-raiders-frame-height");
-}
-
-function applyNachtRaidersVisualAsset(
-  visualElement,
-  placeholderElement,
-  assetId,
-  animationName
-) {
-  if (!visualElement) return false;
-
-  const asset =
-    getNachtRaidersAssetDefinition(
-      assetId
-    );
-
-  const animation =
-    getNachtRaidersAnimationDefinition(
-      assetId,
-      animationName
-    );
-
-  visualElement.dataset.assetKey =
-    assetId || "";
-
-  visualElement.dataset.animation =
-    animationName || "";
-
-  if (placeholderElement) {
-    placeholderElement.textContent =
-      asset?.placeholder || "?";
-  }
-
-  if (!asset || !animation?.src) {
-    clearNachtRaidersVisualAsset(
-      visualElement
-    );
-
-    return false;
-  }
-
-  visualElement.style.backgroundImage =
-    `url("${animation.src}")`;
-
-  visualElement.style.setProperty(
-    "--nacht-raiders-frame-count",
-    String(animation.frameCount)
-  );
-
-  visualElement.style.setProperty(
-    "--nacht-raiders-frame-width",
-    String(animation.frameWidth)
-  );
-
-  visualElement.style.setProperty(
-    "--nacht-raiders-frame-height",
-    String(animation.frameHeight)
-  );
-
-  visualElement.classList.add(
-    "has-sprite"
-  );
-
-  return true;
-}
-
-/* ==========================================================
-   4. EXPEDITION STATE DISPLAY
+   2. EXPEDITION STATE DISPLAY
 ========================================================== */
 
 function renderNachtRaidersGameState() {
@@ -182,8 +96,7 @@ function renderNachtRaidersGameState() {
   if (nachtRaidersGameZone) {
     nachtRaidersGameZone.textContent =
       String(
-        nachtRaidersState.expedition
-          .zoneId ||
+        nachtRaidersState.expedition.zoneId ||
         NACHT_RAIDERS_STARTING_ZONE_ID
       ).toUpperCase();
   }
@@ -191,8 +104,7 @@ function renderNachtRaidersGameState() {
   if (nachtRaidersGameDepth) {
     nachtRaidersGameDepth.textContent =
       formatNachtRaidersGameValue(
-        nachtRaidersState.expedition
-          .zoneDepth
+        nachtRaidersState.expedition.zoneDepth
       );
   }
 
@@ -258,192 +170,50 @@ function renderNachtRaidersGameState() {
   if (nachtRaidersGameSalvage) {
     nachtRaidersGameSalvage.textContent =
       formatNachtRaidersGameValue(
-        nachtRaidersState.resources
-          .salvage
+        nachtRaidersState.resources.salvage
       );
   }
 
   if (nachtRaidersGameAetherResidue) {
     nachtRaidersGameAetherResidue.textContent =
       formatNachtRaidersGameValue(
-        nachtRaidersState.resources
-          .aetherResidue
+        nachtRaidersState.resources.aetherResidue
       );
   }
 
   if (nachtRaidersGameFieldData) {
     nachtRaidersGameFieldData.textContent =
       formatNachtRaidersGameValue(
-        nachtRaidersState.resources
-          .fieldData
+        nachtRaidersState.resources.fieldData
       );
   }
 
   if (nachtRaidersGameRelicFragments) {
     nachtRaidersGameRelicFragments.textContent =
       formatNachtRaidersGameValue(
-        nachtRaidersState.resources
-          .relicFragments
+        nachtRaidersState.resources.relicFragments
       );
   }
 
-  applyNachtRaidersVisualAsset(
-    nachtRaidersOperativeVisual,
-    nachtRaidersOperativePlaceholder,
-    "operative",
-    NACHT_RAIDERS_ANIMATION_WALK
-  );
+  const combatPlaybackActive =
+    typeof isNachtRaidersCombatPlaybackActive ===
+      "function" &&
+    isNachtRaidersCombatPlaybackActive();
+
+  if (!combatPlaybackActive) {
+    applyNachtRaidersVisualAsset(
+      nachtRaidersOperativeVisual,
+      nachtRaidersOperativePlaceholder,
+      "operative",
+      NACHT_RAIDERS_ANIMATION_WALK
+    );
+  }
 
   return nachtRaidersState;
 }
 
 /* ==========================================================
-   5. ENCOUNTER PREVIEW
-========================================================== */
-
-function clearNachtRaidersEncounterPreview() {
-  if (
-    nachtRaidersEncounterPreviewTimeoutId !==
-    null
-  ) {
-    window.clearTimeout(
-      nachtRaidersEncounterPreviewTimeoutId
-    );
-
-    nachtRaidersEncounterPreviewTimeoutId =
-      null;
-  }
-
-  if (nachtRaidersEnemyEntity) {
-    nachtRaidersEnemyEntity.hidden = true;
-  }
-
-  applyNachtRaidersVisualAsset(
-    nachtRaidersOperativeVisual,
-    nachtRaidersOperativePlaceholder,
-    "operative",
-    NACHT_RAIDERS_ANIMATION_WALK
-  );
-}
-
-function showNachtRaidersEncounterPreview(
-  combatResult
-) {
-  if (!combatResult) return false;
-
-  clearNachtRaidersEncounterPreview();
-
-  const enemy =
-    combatResult.enemy;
-
-  if (!enemy) return false;
-
-  if (nachtRaidersEnemyEntity) {
-    nachtRaidersEnemyEntity.hidden = false;
-  }
-
-  if (nachtRaidersEnemyName) {
-    nachtRaidersEnemyName.textContent =
-      enemy.name ||
-      enemy.id ||
-      "HOSTILE";
-  }
-
-  if (nachtRaidersEnemyHealthText) {
-    nachtRaidersEnemyHealthText.textContent =
-      `${formatNachtRaidersGameValue(
-        enemy.endingHealth
-      )} / ${formatNachtRaidersGameValue(
-        enemy.maxHealth
-      )}`;
-  }
-
-  updateNachtRaidersGameMeter(
-    nachtRaidersEnemyHealthFill,
-    enemy.maxHealth > 0
-      ? enemy.endingHealth /
-        enemy.maxHealth
-      : 0
-  );
-
-  const enemyAnimation =
-    combatResult.outcome ===
-      NACHT_RAIDERS_COMBAT_OUTCOME_VICTORY
-      ? NACHT_RAIDERS_ANIMATION_DEATH
-      : NACHT_RAIDERS_ANIMATION_ATTACK;
-
-  const operativeAnimation =
-    combatResult.outcome ===
-      NACHT_RAIDERS_COMBAT_OUTCOME_OPERATIVE_DEATH
-      ? NACHT_RAIDERS_ANIMATION_DEATH
-      : NACHT_RAIDERS_ANIMATION_ATTACK;
-
-  applyNachtRaidersVisualAsset(
-    nachtRaidersEnemyVisual,
-    nachtRaidersEnemyPlaceholder,
-    enemy.assetKey || enemy.id,
-    enemyAnimation
-  );
-
-  applyNachtRaidersVisualAsset(
-    nachtRaidersOperativeVisual,
-    nachtRaidersOperativePlaceholder,
-    "operative",
-    operativeAnimation
-  );
-
-  if (
-    combatResult.outcome ===
-    NACHT_RAIDERS_COMBAT_OUTCOME_VICTORY
-  ) {
-    nachtRaidersGameEventType.textContent =
-      "HOSTILE CONTACT";
-
-    nachtRaidersGameEventText.textContent =
-      `${String(
-        enemy.name ||
-        enemy.id
-      ).toUpperCase()} TERMINATED`;
-  } else if (
-    combatResult.outcome ===
-    NACHT_RAIDERS_COMBAT_OUTCOME_OPERATIVE_DEATH
-  ) {
-    nachtRaidersGameEventType.textContent =
-      "TEMPORAL FAILURE";
-
-    nachtRaidersGameEventText.textContent =
-      "OPERATIVE RECONSTRUCTED // CYCLE CONTINUES";
-  } else {
-    nachtRaidersGameEventType.textContent =
-      "HOSTILE CONTACT";
-
-    nachtRaidersGameEventText.textContent =
-      "ENGAGEMENT TERMINATED WITHOUT RESOLUTION";
-  }
-
-  nachtRaidersEncounterPreviewTimeoutId =
-    window.setTimeout(
-      () => {
-        clearNachtRaidersEncounterPreview();
-
-        if (nachtRaidersGameEventType) {
-          nachtRaidersGameEventType.textContent =
-            "TRAVEL";
-        }
-
-        if (nachtRaidersGameEventText) {
-          nachtRaidersGameEventText.textContent =
-            "OPERATIVE ADVANCING";
-        }
-      },
-      4500
-    );
-
-  return true;
-}
-
-/* ==========================================================
-   6. SIMULATION STATUS
+   3. SIMULATION STATUS
 ========================================================== */
 
 function updateNachtRaidersGameSimulationStatus(
@@ -451,8 +221,12 @@ function updateNachtRaidersGameSimulationStatus(
 ) {
   if (!summary) return;
 
-  if (summary.lastEncounter) {
-    showNachtRaidersEncounterPreview(
+  if (
+    summary.lastEncounter &&
+    typeof playNachtRaidersCombatTimeline ===
+      "function"
+  ) {
+    playNachtRaidersCombatTimeline(
       summary.lastEncounter
     );
 
@@ -493,7 +267,7 @@ function updateNachtRaidersGameSimulationStatus(
 }
 
 /* ==========================================================
-   7. COMPLETE DISPLAY UPDATE
+   4. COMPLETE DISPLAY UPDATE
 ========================================================== */
 
 function renderNachtRaidersGameDisplay(
@@ -511,33 +285,33 @@ function renderNachtRaidersGameDisplay(
 }
 
 /* ==========================================================
-   8. DISPLAY EVENTS
+   5. DISPLAY EVENTS
 ========================================================== */
 
 document.addEventListener(
   "nacht-raiders:game-stage-entered",
   () => {
-    clearNachtRaidersEncounterPreview();
+    if (
+      typeof cancelNachtRaidersCombatPlayback ===
+      "function"
+    ) {
+      cancelNachtRaidersCombatPlayback(true);
+    }
+
     renderNachtRaidersGameDisplay();
 
-    if (nachtRaidersGameEventType) {
-      nachtRaidersGameEventType.textContent =
-        "TRAVEL";
-    }
+    nachtRaidersGameEventType.textContent =
+      "TRAVEL";
 
-    if (nachtRaidersGameEventText) {
-      nachtRaidersGameEventText.textContent =
-        "EXPEDITION LINK ACTIVE";
-    }
+    nachtRaidersGameEventText.textContent =
+      "EXPEDITION LINK ACTIVE";
   }
 );
 
 document.addEventListener(
   "nacht-raiders:simulation-completed",
   (event) => {
-    if (!isNachtRaidersGameDisplayVisible()) {
-      return;
-    }
+    if (!isNachtRaidersGameDisplayVisible()) return;
 
     renderNachtRaidersGameDisplay(
       event.detail
@@ -558,15 +332,22 @@ document.addEventListener(
     }
 
     if (
-      event.detail?.screen !==
-      NACHT_RAIDERS_SCREEN_GAME
+      typeof cancelNachtRaidersCombatPlayback ===
+      "function"
     ) {
-      clearNachtRaidersEncounterPreview();
+      cancelNachtRaidersCombatPlayback(true);
     }
   }
 );
 
 document.addEventListener(
   "nacht-raiders:closed",
-  clearNachtRaidersEncounterPreview
+  () => {
+    if (
+      typeof cancelNachtRaidersCombatPlayback ===
+      "function"
+    ) {
+      cancelNachtRaidersCombatPlayback(true);
+    }
+  }
 );
