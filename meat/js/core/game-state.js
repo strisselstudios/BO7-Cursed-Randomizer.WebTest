@@ -5,7 +5,7 @@
 ========================================================== */
 
 const MEAT_SAVE_KEY = "meatExeSave";
-const CURRENT_SAVE_VERSION = 13;
+const CURRENT_SAVE_VERSION = 14;
 
 /* ==========================================================
    2. DEFAULT GAME STATE
