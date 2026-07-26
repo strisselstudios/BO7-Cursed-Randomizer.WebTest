@@ -5,7 +5,7 @@
    and window-state values.
 ========================================================== */
 
-const NACHT_RAIDERS_STATE_VERSION = 2;
+const NACHT_RAIDERS_STATE_VERSION = 3;
 
 const NACHT_RAIDERS_STATUS_INACTIVE = "inactive";
 const NACHT_RAIDERS_STATUS_RUNNING = "running";
@@ -161,12 +161,8 @@ function createDefaultNachtRaidersState() {
       maxHealth: 100
     },
 
-    resources: {
-      salvage: 0,
-      aetherResidue: 0,
-      fieldData: 0,
-      relicFragments: 0
-    },
+    resources:
+      createDefaultNachtRaidersResourceState(),
 
     statistics: {
       totalSimulationMs: 0,
@@ -333,6 +329,33 @@ function migrateNachtRaidersState(
       )
     );
 
+  const savedOperativeXp =
+    normalizeNachtRaidersNumber(
+      savedOperative.xp
+    );
+
+  const savedOperativeLevel =
+    Math.max(
+      1,
+      normalizeNachtRaidersInteger(
+        savedOperative.level,
+        defaultState.operative.level
+      )
+    );
+
+  const operativeXp =
+    Math.max(
+      savedOperativeXp,
+      getNachtRaidersCumulativeXpForLevel(
+        savedOperativeLevel
+      )
+    );
+
+  const operativeLevel =
+    getNachtRaidersLevelFromXp(
+      operativeXp
+    );
+   
   const currentHealth =
     Math.min(
       maximumHealth,
@@ -401,19 +424,11 @@ function migrateNachtRaidersState(
     },
 
     operative: {
-      level:
-        Math.max(
-          1,
-          normalizeNachtRaidersInteger(
-            savedOperative.level,
-            defaultState.operative.level
-          )
-        ),
+            level:
+        operativeLevel,
 
       xp:
-        normalizeNachtRaidersNumber(
-          savedOperative.xp
-        ),
+        operativeXp,
 
       health:
         currentHealth,
@@ -422,27 +437,10 @@ function migrateNachtRaidersState(
         maximumHealth
     },
 
-    resources: {
-      salvage:
-        normalizeNachtRaidersNumber(
-          savedResources.salvage
-        ),
-
-      aetherResidue:
-        normalizeNachtRaidersNumber(
-          savedResources.aetherResidue
-        ),
-
-      fieldData:
-        normalizeNachtRaidersNumber(
-          savedResources.fieldData
-        ),
-
-      relicFragments:
-        normalizeNachtRaidersNumber(
-          savedResources.relicFragments
-        )
-    },
+        resources:
+      normalizeNachtRaidersResourceState(
+        savedResources
+      ),
 
     statistics: {
       totalSimulationMs:
