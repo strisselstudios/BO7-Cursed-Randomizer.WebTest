@@ -255,8 +255,66 @@
 
   </div>
 
+
+    <!-- ==========================================================
+       3.2 SAVE IMPORT ASSESSMENT
+       ----------------------------------------------------------
+       Displays trusted, untrusted, or rejected import results
+       before any selected save replaces active progress.
+  ========================================================== -->
+
+  <div
+    id="saveImportOverlay"
+    class="save-import-overlay"
+    hidden
+  >
+    <section
+      id="saveImportDialog"
+      class="save-import-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="saveImportTitle"
+      aria-describedby="saveImportMessage"
+      data-import-status="trusted"
+    >
+      <div
+        id="saveImportStatus"
+        class="save-import-status"
+        aria-live="polite"
+      >
+        &gt; SAVE VERIFIED
+      </div>
+
+      <h2 id="saveImportTitle">
+        IMPORT SAVE?
+      </h2>
+
+      <p id="saveImportMessage">
+        This verified save will replace your current progress on this device.
+      </p>
+
+      <div class="save-import-actions">
+        <button
+          id="cancelSaveImportButton"
+          class="save-import-button cancel-save-import-button"
+          type="button"
+        >
+          CANCEL
+        </button>
+
+        <button
+          id="confirmSaveImportButton"
+          class="save-import-button confirm-save-import-button"
+          type="button"
+        >
+          IMPORT SAVE
+        </button>
+      </div>
+    </section>
+  </div>
+
   <!-- ==========================================================
-       3.2 SAVE TRANSFER DIALOG
+       3.3 SAVE TRANSFER DIALOG
        ----------------------------------------------------------
        Creates transfer codes and imports saves from another device.
   ========================================================== -->
@@ -417,7 +475,7 @@
   </dialog>
 
   <!-- ==========================================================
-       3.3 OFFLINE PRODUCTION REPORT
+       3.4 OFFLINE PRODUCTION REPORT
        ----------------------------------------------------------
        Displays MEAT produced while the game was closed,
        suspended, or running in a background tab.
@@ -466,7 +524,7 @@
   </dialog>
 
   <!-- ==========================================================
-       3.4 RANDOMIZER NAVIGATION CONFIRMATION
+       3.5 RANDOMIZER NAVIGATION CONFIRMATION
        ----------------------------------------------------------
        Confirms that the player wants to leave MEAT.exe and return
        to the Cursed Relic Randomizer.
@@ -526,7 +584,7 @@
   </div>
 
   <!-- ==========================================================
-       3.5 NACHT RAIDERS WINDOW
+       3.6 NACHT RAIDERS WINDOW
        ----------------------------------------------------------
        Standalone Nacht Raiders interface opened from the Tier III
        Aether Repairmen launcher.
