@@ -1,534 +1,255 @@
 /* ==========================================================
-   1. DETERMINISTIC RANDOM GENERATOR
-   ----------------------------------------------------------
-   The generator state is saved with the expedition. Active and
-   offline simulation therefore use the same random sequence.
+   1. SIMULATION RUNTIME STATE
 ========================================================== */
 
-function getNextNachtRaidersRandom(
-  nachtRaidersState
-) {
-  const currentState =
-    normalizeNachtRaidersInteger(
-      nachtRaidersState.expedition.rngState,
-      nachtRaidersState.expedition.seed
-    ) || 1;
+let nachtRaidersSimulationInitialized = false;
+let nachtRaidersSimulationIntervalId = null;
 
-  const nextState = (
-    Math.imul(
-      currentState,
-      1664525
-    ) +
-    1013904223
-  ) >>> 0;
+/* ==========================================================
+   2. SIMULATION SUMMARY
+   ----------------------------------------------------------
+   Produces a stable result object for field records, visual
+   rendering, offline reports, and debugging.
+========================================================== */
 
-  nachtRaidersState.expedition.rngState =
-    nextState || 1;
-
-  return nextState / 4294967296;
+function createNachtRaidersSimulationSummary(currentTime, source) {
+  return {
+    source,
+    currentTime,
+    elapsedMs: 0,
+    processedMs: 0,
+    remainingMs: 0,
+    stepCount: 0,
+    distanceTravelled: 0,
+    depthGained: 0,
+    incidentsGenerated: 0,
+    levelsGained: 0,
+    reportsCreated: 0,
+    rewards: createEmptyNachtRaidersRewards(),
+    wasCapped: false
+  };
 }
 
-function rollNachtRaidersInteger(
-  nachtRaidersState,
-  minimum,
-  maximum
-) {
-  const normalizedMinimum =
-    Math.ceil(
-      Number(minimum) || 0
-    );
+/* ==========================================================
+   3. TRAVEL ADVANCEMENT
+   ----------------------------------------------------------
+   Converts completed simulation steps into travel distance,
+   zone-depth progression, and permanent statistics.
+========================================================== */
 
-  const normalizedMaximum =
-    Math.max(
-      normalizedMinimum,
-      Math.floor(
-        Number(maximum) ||
-        normalizedMinimum
-      )
-    );
+function advanceNachtRaidersTravel(nachtRaidersState, stepCount) {
+  const startingZoneDepth = nachtRaidersState.expedition.zoneDepth;
+  const distanceTravelled = stepCount * NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerStep;
+  const totalTravelProgress = nachtRaidersState.expedition.travelProgress + distanceTravelled;
+  const depthGained = Math.floor(totalTravelProgress / NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerDepth);
 
-  const range =
-    normalizedMaximum -
-    normalizedMinimum +
-    1;
+  nachtRaidersState.expedition.zoneDepth += depthGained;
+  nachtRaidersState.expedition.travelProgress = totalTravelProgress % NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerDepth;
+  nachtRaidersState.statistics.distanceTravelled += distanceTravelled;
 
-  return (
-    normalizedMinimum +
-    Math.floor(
-      getNextNachtRaidersRandom(
-        nachtRaidersState
-      ) * range
+  return {
+    startingZoneDepth,
+    distanceTravelled,
+    depthGained
+  };
+}
+
+/* ==========================================================
+   4. ELAPSED-TIME SIMULATION
+   ----------------------------------------------------------
+   Processes complete fixed simulation steps. Any partial
+   remainder remains in lastSimulationAt for the next update.
+
+   Offline elapsed time is capped at the configured maximum.
+========================================================== */
+
+function simulateNachtRaidersToTime(currentTime = Date.now(), source = "manual") {
+  const normalizedCurrentTime = Math.floor(Number(currentTime));
+  const summary = createNachtRaidersSimulationSummary(normalizedCurrentTime, source);
+
+  if (!Number.isFinite(normalizedCurrentTime) || normalizedCurrentTime <= 0) {
+    return summary;
+  }
+
+  const nachtRaidersState = ensureNachtRaidersFeatureState();
+
+  if (!nachtRaidersState.hasStarted || nachtRaidersState.status !== NACHT_RAIDERS_STATUS_RUNNING) {
+    return summary;
+  }
+
+  const savedSimulationTime = Number(nachtRaidersState.expedition.lastSimulationAt);
+
+  if (!Number.isFinite(savedSimulationTime) || savedSimulationTime <= 0 || savedSimulationTime > normalizedCurrentTime) {
+    nachtRaidersState.expedition.lastSimulationAt = normalizedCurrentTime;
+    return summary;
+  }
+
+  const elapsedMs = Math.max(0, normalizedCurrentTime - savedSimulationTime);
+  summary.elapsedMs = elapsedMs;
+
+  if (elapsedMs <= 0) {
+    return summary;
+  }
+
+  const earliestCreditedTime = Math.max(
+    savedSimulationTime,
+    normalizedCurrentTime - NACHT_RAIDERS_SIMULATION_SETTINGS.maximumOfflineMs
+  );
+
+  summary.wasCapped = earliestCreditedTime > savedSimulationTime;
+
+  const creditedElapsedMs = normalizedCurrentTime - earliestCreditedTime;
+  const stepCount = Math.floor(creditedElapsedMs / NACHT_RAIDERS_SIMULATION_SETTINGS.stepMs);
+
+  if (stepCount <= 0) {
+    if (summary.wasCapped) {
+      nachtRaidersState.expedition.lastSimulationAt = earliestCreditedTime;
+    }
+
+    summary.remainingMs = creditedElapsedMs;
+    return summary;
+  }
+
+  const processedMs = stepCount * NACHT_RAIDERS_SIMULATION_SETTINGS.stepMs;
+
+  nachtRaidersState.expedition.lastSimulationAt = earliestCreditedTime + processedMs;
+  nachtRaidersState.statistics.totalSimulationMs += processedMs;
+
+  const travelResult = advanceNachtRaidersTravel(nachtRaidersState, stepCount);
+
+  const incidentResult = generateNachtRaidersTravelIncidents(
+    nachtRaidersState,
+    {
+      completedDepthCount: travelResult.depthGained,
+      startingZoneDepth: travelResult.startingZoneDepth,
+      startTime: earliestCreditedTime,
+      endTime: nachtRaidersState.expedition.lastSimulationAt,
+      source
+    }
+  );
+
+  summary.processedMs = processedMs;
+  summary.remainingMs = normalizedCurrentTime - nachtRaidersState.expedition.lastSimulationAt;
+  summary.stepCount = stepCount;
+  summary.distanceTravelled = travelResult.distanceTravelled;
+  summary.depthGained = travelResult.depthGained;
+  summary.incidentsGenerated = incidentResult.incidentsGenerated;
+  summary.levelsGained = incidentResult.levelsGained;
+  summary.rewards = { ...incidentResult.rewards };
+
+  const shouldFinalizePartialReport =
+    source === NACHT_RAIDERS_REPORT_REASON_INITIAL_LOAD ||
+    source === NACHT_RAIDERS_REPORT_REASON_VISIBILITY_RETURN;
+
+  const reportResult = finalizeNachtRaidersPendingReports(
+    nachtRaidersState,
+    {
+      force: shouldFinalizePartialReport,
+      reason: source,
+      createdAt: normalizedCurrentTime
+    }
+  );
+
+  summary.reportsCreated = reportResult.reportsCreated;
+
+  document.dispatchEvent(
+    new CustomEvent(
+      "nacht-raiders:simulation-completed",
+      {
+        detail: {
+          ...summary
+        }
+      }
     )
   );
+
+  return summary;
 }
 
 /* ==========================================================
-   2. INCIDENT ELIGIBILITY AND WEIGHTED SELECTION
+   5. ACTIVE SIMULATION LOOP
+   ----------------------------------------------------------
+   Polls once per second while the page is active. Progress is
+   still resolved only in fixed ten-second simulation steps.
 ========================================================== */
 
-function isNachtRaidersTravelIncidentEligible(
-  nachtRaidersState,
-  incident,
-  zoneDepth
-) {
-  if (incident.pool !== NACHT_RAIDERS_INCIDENT_POOL_TRAVEL) {
+function startNachtRaidersSimulationLoop() {
+  if (nachtRaidersSimulationIntervalId !== null) {
     return false;
   }
 
-  if (
-    zoneDepth < incident.minimumDepth ||
-    zoneDepth > incident.maximumDepth
-  ) {
-    return false;
-  }
-
-  if (
-    nachtRaidersState.cycleCount < incident.minimumCycle ||
-    nachtRaidersState.cycleCount > incident.maximumCycle
-  ) {
-    return false;
-  }
-
-  if (
-    incident.zoneIds.length > 0 &&
-    !incident.zoneIds.includes(
-      nachtRaidersState.expedition.zoneId
-    )
-  ) {
-    return false;
-  }
-
-  if (
-    incident.doctrines.length > 0 &&
-    !incident.doctrines.includes(
-      nachtRaidersState.doctrine
-    )
-  ) {
-    return false;
-  }
-
-  return incident.weight > 0;
-}
-
-function selectNachtRaidersTravelIncident(
-  nachtRaidersState,
-  zoneDepth
-) {
-  const eligibleIncidents =
-    getNachtRaidersIncidentDefinitions(
-      NACHT_RAIDERS_INCIDENT_POOL_TRAVEL
-    ).filter(
-      (incident) =>
-        isNachtRaidersTravelIncidentEligible(
-          nachtRaidersState,
-          incident,
-          zoneDepth
-        )
-    );
-
-  const totalWeight =
-    eligibleIncidents.reduce(
-      (accumulatedWeight, incident) =>
-        accumulatedWeight + incident.weight,
-      0
-    );
-
-  if (totalWeight <= 0) {
-    return null;
-  }
-
-  let remainingRoll =
-    getNextNachtRaidersRandom(
-      nachtRaidersState
-    ) * totalWeight;
-
-  for (const incident of eligibleIncidents) {
-    remainingRoll -= incident.weight;
-
-    if (remainingRoll < 0) {
-      return incident;
-    }
-  }
-
-  return eligibleIncidents.at(-1) || null;
-}
-
-/* ==========================================================
-   3. INCIDENT REWARDS
-========================================================== */
-
-function rollNachtRaidersIncidentRewards(
-  nachtRaidersState,
-  incident
-) {
-  const rolledRewards =
-    createEmptyNachtRaidersRewards();
-
-  for (const rewardKey of NACHT_RAIDERS_REWARD_KEYS) {
-    const rewardRange =
-      incident.rewards?.[rewardKey];
-
-    if (!rewardRange) {
-      continue;
-    }
-
-    rolledRewards[rewardKey] =
-      rollNachtRaidersInteger(
-        nachtRaidersState,
-        rewardRange.minimum,
-        rewardRange.maximum
+  nachtRaidersSimulationIntervalId = window.setInterval(
+    () => {
+      simulateNachtRaidersToTime(
+        Date.now(),
+        NACHT_RAIDERS_REPORT_REASON_ACTIVE
       );
-  }
-
-  return rolledRewards;
-}
-
-function applyNachtRaidersRewardValue(
-  nachtRaidersState,
-  rewardKey,
-  rewardAmount
-) {
-  const definition =
-    getNachtRaidersRewardDefinition(
-      rewardKey
-    );
-
-  if (!definition) {
-    return false;
-  }
-
-  const targetState =
-    nachtRaidersState[definition.target];
-
-  if (!targetState || typeof targetState !== "object" || Array.isArray(targetState)) {
-    return false;
-  }
-
-  const normalizedAmount =
-    Math.max(
-      0,
-      Math.floor(
-        Number(rewardAmount) || 0
-      )
-    );
-
-  const currentValue =
-    Math.max(
-      0,
-      Number(
-        targetState[definition.property]
-      ) || 0
-    );
-
-  targetState[definition.property] =
-    currentValue + normalizedAmount;
+    },
+    NACHT_RAIDERS_SIMULATION_SETTINGS.activePollMs
+  );
 
   return true;
 }
 
-function applyNachtRaidersIncidentRewards(
-  nachtRaidersState,
-  rewards
-) {
-  for (const rewardKey of NACHT_RAIDERS_REWARD_KEYS) {
-    applyNachtRaidersRewardValue(
-      nachtRaidersState,
-      rewardKey,
-      rewards[rewardKey]
-    );
+function initializeNachtRaidersSimulation() {
+  if (nachtRaidersSimulationInitialized) {
+    return null;
   }
 
-  return synchronizeNachtRaidersOperativeLevel(
-    nachtRaidersState
+  nachtRaidersSimulationInitialized = true;
+
+  const initialSummary = simulateNachtRaidersToTime(
+    Date.now(),
+    NACHT_RAIDERS_REPORT_REASON_INITIAL_LOAD
   );
-}
 
-function combineNachtRaidersRewards(
-  totalRewards,
-  addedRewards
-) {
-  for (const rewardKey of NACHT_RAIDERS_REWARD_KEYS) {
-    totalRewards[rewardKey] =
-      Math.max(
-        0,
-        Number(totalRewards[rewardKey]) || 0
-      ) +
-      Math.max(
-        0,
-        Number(addedRewards[rewardKey]) || 0
-      );
-  }
+  startNachtRaidersSimulationLoop();
 
-  return totalRewards;
+  return initialSummary;
 }
 
 /* ==========================================================
-   4. FIELD RECORD CREATION
-========================================================== */
-
-function createNachtRaidersIncidentRecord(
-  nachtRaidersState,
-  incident,
-  zoneDepth,
-  occurredAt,
-  rewards,
-  source:
-      typeof source === "string" &&
-      source
-        ? source
-        : "simulation",
-) {
-  nachtRaidersState.expedition.eventSequence +=
-    1;
-
-  const eventSequence =
-    nachtRaidersState.expedition.eventSequence;
-
-  return {
-    recordId:
-      `NR-${String(
-        eventSequence
-      ).padStart(
-        8,
-        "0"
-      )}`,
-
-    sequence:
-      eventSequence,
-
-    occurredAt:
-      Math.max(
-        0,
-        Math.floor(
-          Number(occurredAt) ||
-          Date.now()
-        )
-      ),
-
-    cycle:
-      nachtRaidersState.cycleCount,
-
-    zoneId:
-      nachtRaidersState.expedition.zoneId,
-
-    zoneDepth:
-      Math.max(
-        0,
-        Math.floor(
-          Number(zoneDepth) || 0
-        )
-      ),
-
-   eventType:
-      incident.type,
-
-    eventId:
-      incident.id,
-
-    source:
-      typeof arguments[5] === "string" &&
-      arguments[5]
-        ? arguments[5]
-        : "simulation",
-
-    presentation: {
-      title:
-        incident.title,
-
-      lines:
-        [...incident.lines]
-    },
-
-    tags:
-      [...incident.tags],
-
-    rewards: {
-      ...rewards
-    }
-  };
-}
-
-function appendNachtRaidersPendingRecord(
-  nachtRaidersState,
-  record
-) {
-  const pendingEntries =
-    nachtRaidersState.fieldRecords
-      .pendingEntries;
-
-  pendingEntries.push(record);
-
-  const excessEntryCount =
-    pendingEntries.length -
-    NACHT_RAIDERS_PENDING_RECORD_LIMIT;
-
-  if (excessEntryCount > 0) {
-    pendingEntries.splice(
-      0,
-      excessEntryCount
-    );
-  }
-}
-
-/* ==========================================================
-   5. TRAVEL INCIDENT GENERATION
+   6. PAGE-LIFECYCLE INTEGRATION
    ----------------------------------------------------------
-   Each completed depth performs one deterministic incident
-   roll. The global chance determines whether an incident
-   occurs. Eligible definitions then compete by weight.
+   Captures progress before suspension and processes elapsed
+   time when the browser becomes visible again.
 ========================================================== */
 
-function generateNachtRaidersTravelIncidents(
-  nachtRaidersState,
-  options = {}
-) {
-  const completedDepthCount =
-    Math.max(
-      0,
-      Math.floor(
-        Number(
-          options.completedDepthCount ??
-          options.incidentCount
-        ) || 0
-      )
+document.addEventListener(
+  "visibilitychange",
+  () => {
+    const source =
+      document.visibilityState === "hidden"
+        ? "visibility-hidden"
+        : NACHT_RAIDERS_REPORT_REASON_VISIBILITY_RETURN;
+
+    const summary = simulateNachtRaidersToTime(
+      Date.now(),
+      source
     );
 
-  const startingZoneDepth =
-    Math.max(
-      0,
-      Math.floor(
-        Number(options.startingZoneDepth) || 0
-      )
-    );
-
-  const startTime =
-    Math.max(
-      0,
-      Math.floor(
-        Number(options.startTime) || 0
-      )
-    );
-
-  const endTime =
-    Math.max(
-      startTime,
-      Math.floor(
-        Number(options.endTime) || startTime
-      )
-    );
-
-  const source =
-    typeof options.source === "string" &&
-    options.source
-      ? options.source
-      : NACHT_RAIDERS_REPORT_REASON_ACTIVE;  
-   
-  const result = {
-    incidentRolls: 0,
-    incidentsGenerated: 0,
-    levelsGained: 0,
-    rewards: createEmptyNachtRaidersRewards()
-  };
-
-  if (completedDepthCount <= 0) {
-    return result;
-  }
-
-  const timestampSpacing =
-    (endTime - startTime) /
-    (completedDepthCount + 1);
-
-  for (
-    let depthIndex = 0;
-    depthIndex < completedDepthCount;
-    depthIndex += 1
-  ) {
-    const zoneDepth =
-      startingZoneDepth +
-      depthIndex +
-      1;
-
-    result.incidentRolls += 1;
-
-    const occurrenceRoll =
-      getNextNachtRaidersRandom(
-        nachtRaidersState
-      );
-
-    if (
-      occurrenceRoll >=
-      NACHT_RAIDERS_INCIDENT_SETTINGS
-        .chancePerCompletedDepth
-    ) {
-      continue;
+    if (document.visibilityState === "visible" && summary.processedMs > 0) {
+      saveGame();
     }
-
-    const incident =
-      selectNachtRaidersTravelIncident(
-        nachtRaidersState,
-        zoneDepth
-      );
-
-    if (!incident) {
-      continue;
-    }
-
-    const rewards =
-      rollNachtRaidersIncidentRewards(
-        nachtRaidersState,
-        incident
-      );
-
-    const levelResult =
-      applyNachtRaidersIncidentRewards(
-        nachtRaidersState,
-        rewards
-      );
-
-    combineNachtRaidersRewards(
-      result.rewards,
-      rewards
-    );
-
-    const occurredAt =
-      Math.floor(
-        startTime +
-        timestampSpacing *
-        (depthIndex + 1)
-      );
-
-    const record =
-      createNachtRaidersIncidentRecord(
-        nachtRaidersState,
-        incident,
-        zoneDepth,
-        occurredAt,
-        rewards,
-        source
-      );
-
-    appendNachtRaidersPendingRecord(
-      nachtRaidersState,
-      record
-    );
-
-    finalizeNachtRaidersPendingReports(
-      nachtRaidersState,
-      {
-        force: false,
-        reason:
-          source ||
-          NACHT_RAIDERS_REPORT_REASON_AUTOMATIC_SEGMENT,
-
-        createdAt:
-          occurredAt
-      }
-    );
-
-    result.incidentsGenerated += 1;
-    result.levelsGained +=
-      levelResult.levelsGained;
   }
+);
 
-  return result;
-}
+window.addEventListener(
+  "pagehide",
+  () => {
+    simulateNachtRaidersToTime(
+      Date.now(),
+      "pagehide"
+    );
+  }
+);
+
+window.addEventListener(
+  "beforeunload",
+  () => {
+    simulateNachtRaidersToTime(
+      Date.now(),
+      "beforeunload"
+    );
+  }
+);
