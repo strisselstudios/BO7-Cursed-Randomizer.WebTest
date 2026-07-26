@@ -1,14 +1,19 @@
 /* ==========================================================
-   SAVE MIGRATION
+   1. SAVE MIGRATION
    ----------------------------------------------------------
    Repairs missing fields, preserves producer ownership,
    restores permanent producer reveal progress, records the
-   highest producer tier, and migrates Harvester unlock data.
+   highest producer tier, migrates Harvester unlock data, and
+   preserves permanent save-integrity trust records.
 ========================================================== */
 
 function migrateGameState(savedState) {
   const defaultState = createDefaultGameState();
   const savedVersion = Number.isInteger(savedState.saveVersion) ? savedState.saveVersion : 0;
+  const savedModifiedSave = savedState.modifiedSave === true;
+  const savedModifiedSaveReasons = savedModifiedSave
+    ? normalizeModifiedSaveReasons(savedState.modifiedSaveReasons)
+    : [];
   const savedProducers = savedState.producers && typeof savedState.producers === "object" && !Array.isArray(savedState.producers) ? savedState.producers : {};
   const savedProducerLifetimeMeat = savedState.producerLifetimeMeat && typeof savedState.producerLifetimeMeat === "object" && !Array.isArray(savedState.producerLifetimeMeat) ? savedState.producerLifetimeMeat : {};
   const savedProducerHighestTier = savedState.producerHighestTier && typeof savedState.producerHighestTier === "object" && !Array.isArray(savedState.producerHighestTier) ? savedState.producerHighestTier : {};
@@ -90,6 +95,9 @@ function migrateGameState(savedState) {
   const migratedState = {
     ...defaultState,
     ...savedState,
+    saveIntegrityVersion: CURRENT_SAVE_INTEGRITY_VERSION,
+    modifiedSave: savedModifiedSave,
+    modifiedSaveReasons: savedModifiedSaveReasons,
     meat: clampMeatAmount(savedState.meat),
     totalMeat: clampMeatAmount(savedState.totalMeat),
     infiniteMeat: savedState.infiniteMeat === true || savedMeatValue > MEAT_DISPLAY_LIMIT,
