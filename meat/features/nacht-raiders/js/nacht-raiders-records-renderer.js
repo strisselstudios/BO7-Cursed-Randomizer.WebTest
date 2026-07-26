@@ -241,16 +241,21 @@ function renderNachtRaidersReportEntries(report) {
       )
     );
 
-    for (const line of lines) {
+   for (const line of lines) {
+      const lineClassName =
+        typeof line === "string" &&
+        line.trim().startsWith(">>")
+          ? "nacht-raiders-report-entry-output"
+          : "nacht-raiders-report-entry-line";
+
       entry.append(
         createNachtRaidersRecordElement(
           "p",
-          "nacht-raiders-report-entry-line",
+          lineClassName,
           line
         )
       );
     }
-
     for (const reward of getNachtRaidersPositiveRewards(record.rewards)) {
       entry.append(
         createNachtRaidersRecordElement(
