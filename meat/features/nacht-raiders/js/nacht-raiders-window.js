@@ -3,9 +3,10 @@
 ========================================================== */
 
 const NACHT_RAIDERS_SCREEN_LOADING = "loading";
+const NACHT_RAIDERS_SCREEN_TITLE = "title";
 const NACHT_RAIDERS_SCREEN_MENU = "menu";
 const NACHT_RAIDERS_SCREEN_RECORDS = "records";
-const NACHT_RAIDERS_SCREEN_GAME = "game";
+const NACHT_RAIDERS_SCREEN_GAME = "game";;
 
 let nachtRaidersWindowIsOpen = false;
 let nachtRaidersPreviouslyFocusedElement = null;
@@ -16,11 +17,12 @@ let nachtRaidersPreviouslyFocusedElement = null;
 
 function getNachtRaidersScreenElements() {
   return new Map([
-    [NACHT_RAIDERS_SCREEN_LOADING, nachtRaidersLoadingScreen],
-    [NACHT_RAIDERS_SCREEN_MENU, nachtRaidersMenuScreen],
-    [NACHT_RAIDERS_SCREEN_RECORDS, nachtRaidersRecordsScreen],
-    [NACHT_RAIDERS_SCREEN_GAME, nachtRaidersGameScreen]
-  ]);
+  [NACHT_RAIDERS_SCREEN_LOADING, nachtRaidersLoadingScreen],
+  [NACHT_RAIDERS_SCREEN_TITLE, nachtRaidersTitleScreen],
+  [NACHT_RAIDERS_SCREEN_MENU, nachtRaidersMenuScreen],
+  [NACHT_RAIDERS_SCREEN_RECORDS, nachtRaidersRecordsScreen],
+  [NACHT_RAIDERS_SCREEN_GAME, nachtRaidersGameScreen]
+]);
 }
 
 function showNachtRaidersScreen(screenName) {
@@ -51,6 +53,10 @@ function showNachtRaidersScreen(screenName) {
 
 function showNachtRaidersLoadingScreen() {
   return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_LOADING);
+}
+
+function showNachtRaidersTitleScreen() {
+  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_TITLE);
 }
 
 function showNachtRaidersMenuScreen() {
