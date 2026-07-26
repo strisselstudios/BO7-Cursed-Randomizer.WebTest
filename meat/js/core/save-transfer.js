@@ -67,9 +67,9 @@ function validateTransferSavePackage(
     );
   }
 
-  validateImportedGameState(
-    transferPackage.saveData
-  );
+  validateGameStateStructure(
+  transferPackage.saveData
+);
 }
 
 /* ==========================================================
