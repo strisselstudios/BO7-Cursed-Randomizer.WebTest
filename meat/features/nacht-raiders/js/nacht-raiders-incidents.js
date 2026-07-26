@@ -63,23 +63,73 @@ function rollNachtRaidersInteger(
 }
 
 /* ==========================================================
-   2. WEIGHTED INCIDENT SELECTION
+   2. INCIDENT ELIGIBILITY AND WEIGHTED SELECTION
 ========================================================== */
 
-function selectNachtRaidersTravelIncident(
-  nachtRaidersState
+function isNachtRaidersTravelIncidentEligible(
+  nachtRaidersState,
+  incident,
+  zoneDepth
 ) {
+  if (incident.pool !== NACHT_RAIDERS_INCIDENT_POOL_TRAVEL) {
+    return false;
+  }
+
+  if (
+    zoneDepth < incident.minimumDepth ||
+    zoneDepth > incident.maximumDepth
+  ) {
+    return false;
+  }
+
+  if (
+    nachtRaidersState.cycleCount < incident.minimumCycle ||
+    nachtRaidersState.cycleCount > incident.maximumCycle
+  ) {
+    return false;
+  }
+
+  if (
+    incident.zoneIds.length > 0 &&
+    !incident.zoneIds.includes(
+      nachtRaidersState.expedition.zoneId
+    )
+  ) {
+    return false;
+  }
+
+  if (
+    incident.doctrines.length > 0 &&
+    !incident.doctrines.includes(
+      nachtRaidersState.doctrine
+    )
+  ) {
+    return false;
+  }
+
+  return incident.weight > 0;
+}
+
+function selectNachtRaidersTravelIncident(
+  nachtRaidersState,
+  zoneDepth
+) {
+  const eligibleIncidents =
+    getNachtRaidersIncidentDefinitions(
+      NACHT_RAIDERS_INCIDENT_POOL_TRAVEL
+    ).filter(
+      (incident) =>
+        isNachtRaidersTravelIncidentEligible(
+          nachtRaidersState,
+          incident,
+          zoneDepth
+        )
+    );
+
   const totalWeight =
-    NACHT_RAIDERS_TRAVEL_INCIDENTS.reduce(
-      (
-        accumulatedWeight,
-        incident
-      ) =>
-        accumulatedWeight +
-        Math.max(
-          0,
-          Number(incident.weight) || 0
-        ),
+    eligibleIncidents.reduce(
+      (accumulatedWeight, incident) =>
+        accumulatedWeight + incident.weight,
       0
     );
 
@@ -92,39 +142,20 @@ function selectNachtRaidersTravelIncident(
       nachtRaidersState
     ) * totalWeight;
 
-  for (
-    const incident of
-    NACHT_RAIDERS_TRAVEL_INCIDENTS
-  ) {
-    remainingRoll -= Math.max(
-      0,
-      Number(incident.weight) || 0
-    );
+  for (const incident of eligibleIncidents) {
+    remainingRoll -= incident.weight;
 
     if (remainingRoll < 0) {
       return incident;
     }
   }
 
-  return (
-    NACHT_RAIDERS_TRAVEL_INCIDENTS.at(-1) ||
-    null
-  );
+  return eligibleIncidents.at(-1) || null;
 }
 
 /* ==========================================================
    3. INCIDENT REWARDS
 ========================================================== */
-
-function createEmptyNachtRaidersRewards() {
-  return {
-    xp: 0,
-    salvage: 0,
-    aetherResidue: 0,
-    fieldData: 0,
-    relicFragments: 0
-  };
-}
 
 function rollNachtRaidersIncidentRewards(
   nachtRaidersState,
@@ -133,10 +164,7 @@ function rollNachtRaidersIncidentRewards(
   const rolledRewards =
     createEmptyNachtRaidersRewards();
 
-  for (
-    const rewardKey of
-    NACHT_RAIDERS_REWARD_KEYS
-  ) {
+  for (const rewardKey of NACHT_RAIDERS_REWARD_KEYS) {
     const rewardRange =
       incident.rewards?.[rewardKey];
 
@@ -155,38 +183,80 @@ function rollNachtRaidersIncidentRewards(
   return rolledRewards;
 }
 
+function applyNachtRaidersRewardValue(
+  nachtRaidersState,
+  rewardKey,
+  rewardAmount
+) {
+  const definition =
+    getNachtRaidersRewardDefinition(
+      rewardKey
+    );
+
+  if (!definition) {
+    return false;
+  }
+
+  const targetState =
+    nachtRaidersState[definition.target];
+
+  if (!targetState || typeof targetState !== "object" || Array.isArray(targetState)) {
+    return false;
+  }
+
+  const normalizedAmount =
+    Math.max(
+      0,
+      Math.floor(
+        Number(rewardAmount) || 0
+      )
+    );
+
+  const currentValue =
+    Math.max(
+      0,
+      Number(
+        targetState[definition.property]
+      ) || 0
+    );
+
+  targetState[definition.property] =
+    currentValue + normalizedAmount;
+
+  return true;
+}
+
 function applyNachtRaidersIncidentRewards(
   nachtRaidersState,
   rewards
 ) {
-  nachtRaidersState.operative.xp +=
-    rewards.xp;
+  for (const rewardKey of NACHT_RAIDERS_REWARD_KEYS) {
+    applyNachtRaidersRewardValue(
+      nachtRaidersState,
+      rewardKey,
+      rewards[rewardKey]
+    );
+  }
 
-  nachtRaidersState.resources.salvage +=
-    rewards.salvage;
-
-  nachtRaidersState.resources
-    .aetherResidue +=
-      rewards.aetherResidue;
-
-  nachtRaidersState.resources.fieldData +=
-    rewards.fieldData;
-
-  nachtRaidersState.resources
-    .relicFragments +=
-      rewards.relicFragments;
+  return synchronizeNachtRaidersOperativeLevel(
+    nachtRaidersState
+  );
 }
 
 function combineNachtRaidersRewards(
   totalRewards,
   addedRewards
 ) {
-  for (
-    const rewardKey of
-    NACHT_RAIDERS_REWARD_KEYS
-  ) {
-    totalRewards[rewardKey] +=
-      addedRewards[rewardKey];
+  for (const rewardKey of NACHT_RAIDERS_REWARD_KEYS) {
+    totalRewards[rewardKey] =
+      Math.max(
+        0,
+        Number(totalRewards[rewardKey]) || 0
+      ) +
+      Math.max(
+        0,
+        Number(addedRewards[rewardKey]) || 0
+      );
   }
 
   return totalRewards;
@@ -281,72 +351,94 @@ function appendNachtRaidersPendingRecord(
 /* ==========================================================
    5. TRAVEL INCIDENT GENERATION
    ----------------------------------------------------------
-   One incident is generated for every newly completed depth.
-   Incident timestamps are distributed across the processed
-   simulation interval.
+   Each completed depth performs one deterministic incident
+   roll. The global chance determines whether an incident
+   occurs. Eligible definitions then compete by weight.
 ========================================================== */
 
 function generateNachtRaidersTravelIncidents(
   nachtRaidersState,
   options = {}
 ) {
-  const incidentCount = Math.max(
-    0,
-    Math.floor(
-      Number(options.incidentCount) || 0
-    )
-  );
+  const completedDepthCount =
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          options.completedDepthCount ??
+          options.incidentCount
+        ) || 0
+      )
+    );
 
-  const startingZoneDepth = Math.max(
-    0,
-    Math.floor(
-      Number(options.startingZoneDepth) || 0
-    )
-  );
+  const startingZoneDepth =
+    Math.max(
+      0,
+      Math.floor(
+        Number(options.startingZoneDepth) || 0
+      )
+    );
 
-  const startTime = Math.max(
-    0,
-    Math.floor(
-      Number(options.startTime) || 0
-    )
-  );
+  const startTime =
+    Math.max(
+      0,
+      Math.floor(
+        Number(options.startTime) || 0
+      )
+    );
 
-  const endTime = Math.max(
-    startTime,
-    Math.floor(
-      Number(options.endTime) ||
-      startTime
-    )
-  );
+  const endTime =
+    Math.max(
+      startTime,
+      Math.floor(
+        Number(options.endTime) || startTime
+      )
+    );
 
   const result = {
+    incidentRolls: 0,
     incidentsGenerated: 0,
-    rewards:
-      createEmptyNachtRaidersRewards()
+    levelsGained: 0,
+    rewards: createEmptyNachtRaidersRewards()
   };
 
-  if (incidentCount <= 0) {
+  if (completedDepthCount <= 0) {
     return result;
   }
 
   const timestampSpacing =
-    (
-      endTime -
-      startTime
-    ) /
-    (
-      incidentCount +
-      1
-    );
+    (endTime - startTime) /
+    (completedDepthCount + 1);
 
   for (
-    let incidentIndex = 0;
-    incidentIndex < incidentCount;
-    incidentIndex += 1
+    let depthIndex = 0;
+    depthIndex < completedDepthCount;
+    depthIndex += 1
   ) {
+    const zoneDepth =
+      startingZoneDepth +
+      depthIndex +
+      1;
+
+    result.incidentRolls += 1;
+
+    const occurrenceRoll =
+      getNextNachtRaidersRandom(
+        nachtRaidersState
+      );
+
+    if (
+      occurrenceRoll >=
+      NACHT_RAIDERS_INCIDENT_SETTINGS
+        .chancePerCompletedDepth
+    ) {
+      continue;
+    }
+
     const incident =
       selectNachtRaidersTravelIncident(
-        nachtRaidersState
+        nachtRaidersState,
+        zoneDepth
       );
 
     if (!incident) {
@@ -359,32 +451,29 @@ function generateNachtRaidersTravelIncidents(
         incident
       );
 
-    applyNachtRaidersIncidentRewards(
-      nachtRaidersState,
-      rewards
-    );
+    const levelResult =
+      applyNachtRaidersIncidentRewards(
+        nachtRaidersState,
+        rewards
+      );
 
     combineNachtRaidersRewards(
       result.rewards,
       rewards
     );
 
-    const occurredAt = Math.floor(
-      startTime +
-      timestampSpacing *
-        (
-          incidentIndex +
-          1
-        )
-    );
+    const occurredAt =
+      Math.floor(
+        startTime +
+        timestampSpacing *
+        (depthIndex + 1)
+      );
 
     const record =
       createNachtRaidersIncidentRecord(
         nachtRaidersState,
         incident,
-        startingZoneDepth +
-          incidentIndex +
-          1,
+        zoneDepth,
         occurredAt,
         rewards
       );
@@ -395,6 +484,8 @@ function generateNachtRaidersTravelIncidents(
     );
 
     result.incidentsGenerated += 1;
+    result.levelsGained +=
+      levelResult.levelsGained;
   }
 
   return result;
