@@ -7,6 +7,7 @@
 ========================================================== */
 
 registerNachtRaidersAssets([
+   
   {
     id: "operative",
     type: NACHT_RAIDERS_ASSET_TYPE_OPERATIVE,
@@ -19,13 +20,24 @@ registerNachtRaidersAssets([
       y: 0.92
     },
 
-    animations:
-      createNachtRaidersPlaceholderAnimationSet(
+    animations: {
+      ...createNachtRaidersPlaceholderAnimationSet(
         96,
         96
-      )
-  },
+      ),
 
+      walk: {
+        src: "meat/images/nacht-raiders/operative/Raider-Walking-Spritesheet.png",
+        frameWidth: 96,
+        frameHeight: 96,
+        frameCount: 1,
+        frameDurationMs: 110,
+        loop: true,
+        autoFrameCount: true,
+        impactFrame: null
+      }
+    }
+  },
   {
     id: "reanimate",
     type: NACHT_RAIDERS_ASSET_TYPE_ENEMY,
