@@ -13,11 +13,25 @@ let nachtRaidersVisualAnimationToken = 0;
 function stopNachtRaidersVisualAnimation(visualElement) {
   if (!visualElement) return;
 
-  const animationState = nachtRaidersVisualAnimationStates.get(visualElement);
+  const animationState =
+    nachtRaidersVisualAnimationStates.get(
+      visualElement
+    );
 
-  if (animationState?.timeoutId !== null) {
-    window.clearTimeout(animationState.timeoutId);
+  if (!animationState) {
+    return;
   }
+
+  if (animationState.timeoutId !== null) {
+    window.clearTimeout(
+      animationState.timeoutId
+    );
+  }
+
+  nachtRaidersVisualAnimationStates.delete(
+    visualElement
+  );
+}
 
   nachtRaidersVisualAnimationStates.delete(visualElement);
 }
