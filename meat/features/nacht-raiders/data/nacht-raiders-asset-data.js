@@ -139,6 +139,7 @@ function normalizeNachtRaidersAnimationDefinition(
     frameCount,
     frameDurationMs,
     loop: source.loop !== false,
+    autoFrameCount: source.autoFrameCount === true,
 
     impactFrame: Number.isFinite(impactFrameValue)
       ? Math.min(
