@@ -252,6 +252,8 @@ const nachtRaidersScreen = document.getElementById("nachtRaidersScreen");
 
 const nachtRaidersLoadingScreen = document.getElementById("nachtRaidersLoadingScreen");
 const nachtRaidersTerminalOutput = document.getElementById("nachtRaidersTerminalOutput");
+const nachtRaidersTitleScreen = document.getElementById("nachtRaidersTitleScreen");
+const nachtRaidersTitleButton = document.getElementById("nachtRaidersTitleButton");
 const nachtRaidersMenuScreen = document.getElementById("nachtRaidersMenuScreen");
 const nachtRaidersMenuArtwork = document.getElementById("nachtRaidersMenuArtwork");
 const nachtRaidersPrimaryButton = document.getElementById("nachtRaidersPrimaryButton");
