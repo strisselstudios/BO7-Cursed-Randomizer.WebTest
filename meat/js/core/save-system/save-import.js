@@ -1,5 +1,15 @@
 /* ==========================================================
-   1. IMPORT FILE READING
+   1. SAVE IMPORT STATUS
+   ----------------------------------------------------------
+   Defines the three possible results of pre-import inspection.
+========================================================== */
+
+const SAVE_IMPORT_STATUS_TRUSTED = "trusted";
+const SAVE_IMPORT_STATUS_UNTRUSTED = "untrusted";
+const SAVE_IMPORT_STATUS_REJECTED = "rejected";
+
+/* ==========================================================
+   2. IMPORT FILE READING
    ----------------------------------------------------------
    Reads one bounded save file before parsing its contents.
 ========================================================== */
@@ -17,10 +27,10 @@ async function readImportedSaveFile(file) {
 }
 
 /* ==========================================================
-   2. LEGACY JSON PACKAGE VALIDATION
+   3. LEGACY JSON PACKAGE VALIDATION
    ----------------------------------------------------------
-   Keeps old version-1 backups usable, but classifies them as
-   unsigned and therefore untrusted after import.
+   Keeps version-1 JSON backups usable while classifying them
+   as unsigned and therefore permanently untrusted.
 ========================================================== */
 
 function parseLegacyJsonSavePackage(fileContents) {
@@ -32,15 +42,8 @@ function parseLegacyJsonSavePackage(fileContents) {
     throw new Error("The selected file does not contain valid MEAT.exe save data.");
   }
 
-  requirePlainSaveObject(
-    importPackage,
-    "The imported save package"
-  );
-
-  validateSaveDataSafety(
-    importPackage,
-    "importPackage"
-  );
+  requirePlainSaveObject(importPackage, "The imported save package");
+  validateSaveDataSafety(importPackage, "importPackage");
 
   rejectUnknownObjectKeys(
     importPackage,
@@ -72,25 +75,19 @@ function parseLegacyJsonSavePackage(fileContents) {
   );
 
   validateGameStateStructure(importPackage.saveData);
+
   return importPackage;
 }
 
 /* ==========================================================
-   3. ENCRYPTED PACKAGE VALIDATION
+   4. ENCRYPTED PACKAGE VALIDATION
 ========================================================== */
 
 async function parseEncryptedSavePackage(fileContents) {
   const importPackage = await decodeEncryptedSaveExportString(fileContents);
 
-  requirePlainSaveObject(
-    importPackage,
-    "The decrypted save package"
-  );
-
-  validateSaveDataSafety(
-    importPackage,
-    "importPackage"
-  );
+  requirePlainSaveObject(importPackage, "The decrypted save package");
+  validateSaveDataSafety(importPackage, "importPackage");
 
   rejectUnknownObjectKeys(
     importPackage,
@@ -124,11 +121,12 @@ async function parseEncryptedSavePackage(fileContents) {
   );
 
   validateGameStateStructure(importPackage.saveData);
+
   return importPackage;
 }
 
 /* ==========================================================
-   4. IMPORT FORMAT SELECTION
+   5. IMPORT FORMAT SELECTION
 ========================================================== */
 
 async function parseImportedSavePackage(fileContents) {
@@ -139,12 +137,14 @@ async function parseImportedSavePackage(fileContents) {
   if (trimmedContents.startsWith(SAVE_EXPORT_MAGIC)) {
     return {
       importPackage: await parseEncryptedSavePackage(trimmedContents),
+      sourceFormat: "encrypted",
       trustReasons: []
     };
   }
 
   return {
     importPackage: parseLegacyJsonSavePackage(trimmedContents),
+    sourceFormat: "legacy-json",
     trustReasons: [
       "Imported from an unsigned legacy JSON export."
     ]
@@ -152,16 +152,121 @@ async function parseImportedSavePackage(fileContents) {
 }
 
 /* ==========================================================
-   5. IMPORTED STATE ACCEPTANCE
+   6. TRUST REASON COLLECTION
    ----------------------------------------------------------
-   Preserves imported trust records, impossible-state findings,
-   and any modified status already attached to this installation.
+   Combines file-format warnings, imported trust records,
+   impossible progression, and the current installation state.
 ========================================================== */
 
-function acceptImportedGameState(
+function collectSaveImportTrustReasons(
   importedState,
-  additionalReasons = []
+  initialReasons = []
 ) {
+  const reasons = [
+    ...initialReasons
+  ];
+
+  const importedTrustState = getSaveTrustState(importedState);
+
+  if (importedState.modifiedSave === true) {
+    if (importedTrustState.reasons.length > 0) {
+      reasons.push(...importedTrustState.reasons);
+    } else {
+      reasons.push("The imported save is already marked as modified.");
+    }
+  }
+
+  if (
+    importedTrustState.integrityVersion !==
+    CURRENT_SAVE_INTEGRITY_VERSION
+  ) {
+    reasons.push("The imported save has no verifiable integrity record.");
+  }
+
+  reasons.push(
+    ...inspectGameStateForImpossibleProgress(importedState)
+  );
+
+  const currentTrustState = getSaveTrustState(gameState);
+
+  if (currentTrustState.modified) {
+    if (currentTrustState.reasons.length > 0) {
+      reasons.push(...currentTrustState.reasons);
+    } else {
+      reasons.push("The current game is already marked as modified.");
+    }
+  }
+
+  return normalizeModifiedSaveReasons(reasons);
+}
+
+/* ==========================================================
+   7. REJECTED ASSESSMENT CREATION
+========================================================== */
+
+function createRejectedSaveImportAssessment(error) {
+  return {
+    status: SAVE_IMPORT_STATUS_REJECTED,
+    sourceFormat: "unknown",
+    importPackage: null,
+    importedState: null,
+    trustReasons: [],
+    errorMessage: error instanceof Error
+      ? error.message
+      : "Unknown save import error."
+  };
+}
+
+/* ==========================================================
+   8. PRE-IMPORT INSPECTION
+   ----------------------------------------------------------
+   Reads, decrypts, parses, validates, and classifies a save
+   without changing the active game or localStorage.
+========================================================== */
+
+async function inspectSaveImport(file) {
+  try {
+    const fileContents = await readImportedSaveFile(file);
+
+    const {
+      importPackage,
+      sourceFormat,
+      trustReasons
+    } = await parseImportedSavePackage(fileContents);
+
+    const importedState = importPackage.saveData;
+
+    const combinedTrustReasons = collectSaveImportTrustReasons(
+      importedState,
+      trustReasons
+    );
+
+    return {
+      status: combinedTrustReasons.length > 0
+        ? SAVE_IMPORT_STATUS_UNTRUSTED
+        : SAVE_IMPORT_STATUS_TRUSTED,
+      sourceFormat,
+      importPackage,
+      importedState,
+      trustReasons: combinedTrustReasons,
+      errorMessage: ""
+    };
+  } catch (error) {
+    console.error("MEAT.exe save inspection failed:", error);
+    return createRejectedSaveImportAssessment(error);
+  }
+}
+
+/* ==========================================================
+   9. IMPORTED STATE PREPARATION
+   ----------------------------------------------------------
+   Revalidates the inspected state immediately before commitment
+   and merges every permanent trust record.
+========================================================== */
+
+function prepareInspectedSaveState(assessment) {
+  validateGameStateStructure(assessment.importedState);
+
   const existingTrustState = {
     saveIntegrityVersion: gameState.saveIntegrityVersion,
     modifiedSave: gameState.modifiedSave === true,
@@ -170,20 +275,21 @@ function acceptImportedGameState(
     )
   };
 
-  const impossibleStateReasons = inspectGameStateForImpossibleProgress(
-    importedState
-  );
+  const finalInspectionReasons =
+    inspectGameStateForImpossibleProgress(
+      assessment.importedState
+    );
 
   const migratedState = migrateGameState(
-    importedState
+    assessment.importedState
   );
 
   mergeSaveTrustState(
     migratedState,
-    importedState,
+    assessment.importedState,
     [
-      ...additionalReasons,
-      ...impossibleStateReasons
+      ...assessment.trustReasons,
+      ...finalInspectionReasons
     ]
   );
 
@@ -192,39 +298,44 @@ function acceptImportedGameState(
     existingTrustState
   );
 
-  validateGameStateStructure(
-    migratedState
-  );
+  validateGameStateStructure(migratedState);
 
-  gameState = migratedState;
-  calculateMeatPerSecond();
-
-  if (!saveGame()) {
-    throw new Error("The imported save could not be stored.");
-  }
-
-  return true;
+  return migratedState;
 }
 
 /* ==========================================================
-   6. SAVE IMPORT
+   10. INSPECTED SAVE COMMITMENT
+   ----------------------------------------------------------
+   Replaces the active game only after the interface receives
+   explicit confirmation. Failed storage restores the old state.
 ========================================================== */
 
-async function importGameSave(file) {
+function commitInspectedSaveImport(assessment) {
+  const importableStatus = assessment?.status === SAVE_IMPORT_STATUS_TRUSTED ||
+    assessment?.status === SAVE_IMPORT_STATUS_UNTRUSTED;
+
+  if (!importableStatus || !assessment.importedState) {
+    return false;
+  }
+
+  const previousGameState = gameState;
+
   try {
-    const fileContents = await readImportedSaveFile(file);
+    const importedGameState = prepareInspectedSaveState(assessment);
 
-    const {
-      importPackage,
-      trustReasons
-    } = await parseImportedSavePackage(fileContents);
+    gameState = importedGameState;
+    calculateMeatPerSecond();
 
-    return acceptImportedGameState(
-      importPackage.saveData,
-      trustReasons
-    );
+    if (!saveGame()) {
+      throw new Error("The imported save could not be stored.");
+    }
+
+    return true;
   } catch (error) {
-    console.error("MEAT.exe save could not be imported:", error);
+    gameState = previousGameState;
+    calculateMeatPerSecond();
+
+    console.error("MEAT.exe inspected save could not be imported:", error);
     return false;
   }
 }
