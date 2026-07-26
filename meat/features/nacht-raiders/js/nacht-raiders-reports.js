@@ -39,10 +39,19 @@ function cloneNachtRaidersFieldRecord(record) {
           lines: []
         };
 
-  clonedRecord.tags =
+    clonedRecord.tags =
     Array.isArray(record.tags)
       ? [...record.tags]
       : [];
+
+  clonedRecord.combat =
+    record.combat &&
+    typeof record.combat === "object" &&
+    !Array.isArray(record.combat)
+      ? {
+          ...record.combat
+        }
+      : null;
 
   return clonedRecord;
 }
