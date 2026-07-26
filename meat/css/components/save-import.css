@@ -1,0 +1,174 @@
+/* ==========================================================
+   1. SAVE IMPORT OVERLAY
+   ----------------------------------------------------------
+   Blocks interaction with the game while an inspected save is
+   awaiting confirmation or displaying a rejection.
+========================================================== */
+
+.save-import-overlay[hidden] {
+  display: none !important;
+}
+
+.save-import-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+
+  display: grid;
+  place-items: center;
+
+  padding: 1rem;
+
+  background: rgba(0, 0, 0, 0.86);
+}
+
+/* ==========================================================
+   2. SAVE IMPORT DIALOG
+========================================================== */
+
+.save-import-dialog {
+  width: min(100%, 520px);
+
+  padding: 1.5rem;
+
+  background: #0b100d;
+  color: var(--primary-text);
+
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.85);
+
+  text-align: center;
+}
+
+.save-import-status {
+  margin-bottom: 0.75rem;
+
+  color: var(--secondary-text);
+
+  font-size: 0.78rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+}
+
+.save-import-dialog h2 {
+  margin: 0 0 1rem;
+}
+
+.save-import-dialog p {
+  margin: 0;
+
+  line-height: 1.6;
+}
+
+/* ==========================================================
+   3. IMPORT STATUS PRESENTATION
+========================================================== */
+
+.save-import-dialog[data-import-status="trusted"] h2 {
+  color: var(--primary-text);
+}
+
+.save-import-dialog[data-import-status="untrusted"] {
+  border-color: #d5a72e;
+}
+
+.save-import-dialog[data-import-status="untrusted"] h2,
+.save-import-dialog[data-import-status="untrusted"] .save-import-status {
+  color: #f1c75b;
+}
+
+.save-import-dialog[data-import-status="rejected"] {
+  border-color: var(--accent);
+}
+
+.save-import-dialog[data-import-status="rejected"] h2,
+.save-import-dialog[data-import-status="rejected"] .save-import-status {
+  color: var(--accent-bright);
+}
+
+/* ==========================================================
+   4. SAVE IMPORT ACTIONS
+========================================================== */
+
+.save-import-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 0.75rem;
+
+  margin-top: 1.5rem;
+}
+
+.save-import-button {
+  min-height: 46px;
+
+  padding: 0.75rem;
+
+  border-radius: 6px;
+
+  font-family: inherit;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.save-import-button[hidden] {
+  display: none;
+}
+
+.save-import-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.cancel-save-import-button {
+  background: var(--button-background);
+  color: var(--primary-text);
+
+  border: 1px solid var(--border-color);
+}
+
+.cancel-save-import-button:hover:not(:disabled) {
+  background: var(--button-hover);
+}
+
+.confirm-save-import-button {
+  background: var(--accent);
+  color: #ffffff;
+
+  border: 1px solid var(--accent-bright);
+}
+
+.confirm-save-import-button:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.save-import-dialog[data-import-status="untrusted"]
+.confirm-save-import-button {
+  background: #9b6e00;
+  border-color: #f1c75b;
+}
+
+/* ==========================================================
+   5. DIALOG PAGE STATE
+========================================================== */
+
+body.save-import-dialog-open {
+  overflow: hidden;
+}
+
+/* ==========================================================
+   6. MOBILE LAYOUT
+========================================================== */
+
+@media (max-width: 520px) {
+  .save-import-dialog {
+    padding: 1.25rem;
+  }
+
+  .save-import-actions {
+    grid-template-columns: 1fr;
+  }
+}
