@@ -186,7 +186,7 @@ const importSaveFileInput =
 
 importSaveFileInput.type = "file";
 importSaveFileInput.accept =
-  ".json,application/json";
+  ".meat,.json,application/x-meat-save,application/json,application/octet-stream,text/plain";
 
 importSaveFileInput.hidden = true;
 
