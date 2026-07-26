@@ -1,42 +1,5 @@
 /* ==========================================================
-   1. DETERMINISTIC RANDOM GENERATOR
-   ----------------------------------------------------------
-   The generator state is saved with the expedition. Active and
-   offline simulation therefore use the same random sequence.
-========================================================== */
-
-function getNextNachtRaidersRandom(nachtRaidersState) {
-  const currentState = normalizeNachtRaidersInteger(
-    nachtRaidersState.expedition.rngState,
-    nachtRaidersState.expedition.seed
-  ) || 1;
-
-  const nextState = (
-    Math.imul(currentState, 1664525) +
-    1013904223
-  ) >>> 0;
-
-  nachtRaidersState.expedition.rngState = nextState || 1;
-
-  return nextState / 4294967296;
-}
-
-function rollNachtRaidersInteger(nachtRaidersState, minimum, maximum) {
-  const normalizedMinimum = Math.ceil(Number(minimum) || 0);
-  const normalizedMaximum = Math.max(
-    normalizedMinimum,
-    Math.floor(Number(maximum) || normalizedMinimum)
-  );
-
-  const range = normalizedMaximum - normalizedMinimum + 1;
-
-  return normalizedMinimum + Math.floor(
-    getNextNachtRaidersRandom(nachtRaidersState) * range
-  );
-}
-
-/* ==========================================================
-   2. INCIDENT ELIGIBILITY AND WEIGHTED SELECTION
+   1. INCIDENT ELIGIBILITY AND WEIGHTED SELECTION
 ========================================================== */
 
 function isNachtRaidersTravelIncidentEligible(nachtRaidersState, incident, zoneDepth) {
@@ -90,7 +53,7 @@ function selectNachtRaidersTravelIncident(nachtRaidersState, zoneDepth) {
 }
 
 /* ==========================================================
-   3. INCIDENT REWARDS
+   2. INCIDENT REWARDS
 ========================================================== */
 
 function rollNachtRaidersIncidentRewards(nachtRaidersState, incident) {
@@ -151,7 +114,7 @@ function combineNachtRaidersRewards(totalRewards, addedRewards) {
 }
 
 /* ==========================================================
-   4. FIELD RECORD CREATION
+   3. FIELD RECORD CREATION
 ========================================================== */
 
 function createNachtRaidersIncidentRecord(
@@ -203,7 +166,7 @@ function appendNachtRaidersPendingRecord(nachtRaidersState, record) {
 }
 
 /* ==========================================================
-   5. TRAVEL INCIDENT GENERATION
+   4. TRAVEL INCIDENT GENERATION
    ----------------------------------------------------------
    Each completed depth performs one deterministic incident
    roll. The global chance determines whether an incident
