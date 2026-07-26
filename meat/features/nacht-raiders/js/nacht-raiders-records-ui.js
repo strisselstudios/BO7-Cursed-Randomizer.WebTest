@@ -57,10 +57,10 @@ function openNachtRaidersFieldRecords() {
 
   let shouldSave = finalizationResult.reportsCreated > 0;
 
-  if (selectedReport?.isRead !== true) {
-    markNachtRaidersReportRead(selectedReport.reportId);
-    shouldSave = true;
-  }
+  if (selectedReport && selectedReport.isRead !== true) {
+  markNachtRaidersReportRead(selectedReport.reportId);
+  shouldSave = true;
+}
 
   if (shouldSave) {
     saveGame();
