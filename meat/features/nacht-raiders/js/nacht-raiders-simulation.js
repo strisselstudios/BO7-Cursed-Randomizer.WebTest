@@ -28,6 +28,7 @@ function createNachtRaidersSimulationSummary(
 
     incidentsGenerated: 0,
     levelsGained: 0,
+    reportsCreated: 0,
 
     rewards:
       createEmptyNachtRaidersRewards(),
@@ -210,6 +211,8 @@ function simulateNachtRaidersToTime(
         endTime:
           nachtRaidersState.expedition
             .lastSimulationAt
+
+                 source,
       }
     );
 
@@ -234,6 +237,30 @@ function simulateNachtRaidersToTime(
   summary.rewards = {
     ...incidentResult.rewards
   };
+
+  const shouldFinalizePartialReport =
+    source ===
+      NACHT_RAIDERS_REPORT_REASON_INITIAL_LOAD ||
+    source ===
+      NACHT_RAIDERS_REPORT_REASON_VISIBILITY_RETURN;
+
+  const reportResult =
+    finalizeNachtRaidersPendingReports(
+      nachtRaidersState,
+      {
+        force:
+          shouldFinalizePartialReport,
+
+        reason:
+          source,
+
+        createdAt:
+          normalizedCurrentTime
+      }
+    );
+
+  summary.reportsCreated =
+    reportResult.reportsCreated;
 
   document.dispatchEvent(
     new CustomEvent(
