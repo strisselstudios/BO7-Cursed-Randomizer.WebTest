@@ -1,0 +1,620 @@
+/* ==========================================================
+   1. ACTIVE EXPEDITION SCREEN
+========================================================== */
+
+.nacht-raiders-game-screen {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  place-items: stretch;
+  padding: 0;
+  background: #010401;
+  overflow: hidden;
+}
+
+.nacht-raiders-game-screen[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   2. EXPEDITION HUD
+========================================================== */
+
+.nacht-raiders-game-hud {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(280px, 1fr) auto;
+  grid-template-areas:
+    "identity location back"
+    "vitals vitals vitals";
+  align-items: center;
+  gap: 0.55rem 1rem;
+  padding: 0.65rem 0.8rem;
+  background: rgba(1, 6, 1, 0.97);
+  border-bottom: 1px solid rgba(155, 188, 15, 0.48);
+}
+
+.nacht-raiders-game-identity {
+  grid-area: identity;
+  min-width: 0;
+}
+
+.nacht-raiders-game-kicker {
+  display: block;
+  color: rgba(202, 220, 159, 0.5);
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.nacht-raiders-game-identity h2 {
+  margin: 0.12rem 0 0;
+  color: #cadc9f;
+  font-size: clamp(1.05rem, 3vw, 1.55rem);
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.nacht-raiders-game-location {
+  grid-area: location;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid rgba(155, 188, 15, 0.25);
+}
+
+.nacht-raiders-game-location div {
+  min-width: 0;
+  padding: 0.38rem 0.45rem;
+  border-right: 1px solid rgba(155, 188, 15, 0.2);
+  text-align: center;
+}
+
+.nacht-raiders-game-location div:last-child {
+  border-right: 0;
+}
+
+.nacht-raiders-game-location dt {
+  color: rgba(202, 220, 159, 0.48);
+  font-size: 0.48rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.nacht-raiders-game-location dd {
+  margin: 0.18rem 0 0;
+  color: #cadc9f;
+  font-size: 0.68rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.nacht-raiders-game-back-button {
+  grid-area: back;
+  width: auto;
+  min-width: 150px;
+  min-height: 38px;
+  padding: 0.45rem 0.65rem;
+}
+
+.nacht-raiders-game-vitals {
+  grid-area: vitals;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(120px, 1fr) auto minmax(120px, 1fr);
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+}
+
+.nacht-raiders-game-vital-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(202, 220, 159, 0.64);
+  font-size: 0.52rem;
+  white-space: nowrap;
+}
+
+.nacht-raiders-game-vital-row strong {
+  color: #cadc9f;
+}
+
+/* ==========================================================
+   3. PROGRESS METERS
+========================================================== */
+
+.nacht-raiders-game-meter {
+  height: 8px;
+  position: relative;
+  overflow: hidden;
+  background: rgba(1, 4, 1, 0.9);
+  border: 1px solid rgba(155, 188, 15, 0.35);
+}
+
+.nacht-raiders-game-meter-fill {
+  width: 0%;
+  height: 100%;
+  display: block;
+  background: #9bbc0f;
+  box-shadow: 0 0 8px rgba(155, 188, 15, 0.45);
+  transition: width 180ms linear;
+}
+
+.nacht-raiders-game-health-fill {
+  background: #cadc9f;
+}
+
+.nacht-raiders-game-health-fill.is-critical {
+  background: #df9a3a;
+  box-shadow: 0 0 8px rgba(223, 154, 58, 0.52);
+}
+
+.nacht-raiders-game-xp-fill {
+  background: #7f9d32;
+}
+
+.nacht-raiders-game-travel-fill {
+  background: #8bac0f;
+}
+
+.nacht-raiders-game-enemy-health-fill {
+  background: #df9a3a;
+  box-shadow: 0 0 8px rgba(223, 154, 58, 0.4);
+}
+
+/* ==========================================================
+   4. EXPEDITION VIEWPORT
+========================================================== */
+
+.nacht-raiders-game-viewport {
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 36%, rgba(111, 135, 53, 0.12), transparent 24%),
+    linear-gradient(#071006 0%, #030803 62%, #010301 100%);
+}
+
+.nacht-raiders-game-landscape,
+.nacht-raiders-game-ground {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.nacht-raiders-game-landscape-far {
+  z-index: 0;
+  opacity: 0.42;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 120px,
+      rgba(105, 125, 75, 0.18) 121px,
+      rgba(105, 125, 75, 0.04) 150px,
+      transparent 151px,
+      transparent 240px
+    );
+  animation: nacht-raiders-landscape-far 22s linear infinite;
+}
+
+.nacht-raiders-game-landscape-near {
+  z-index: 1;
+  top: 28%;
+  opacity: 0.58;
+  background:
+    repeating-linear-gradient(
+      100deg,
+      transparent 0,
+      transparent 68px,
+      rgba(31, 52, 15, 0.48) 69px,
+      rgba(31, 52, 15, 0.08) 100px,
+      transparent 101px,
+      transparent 170px
+    );
+  animation: nacht-raiders-landscape-near 9s linear infinite;
+}
+
+.nacht-raiders-game-ground {
+  z-index: 2;
+  top: auto;
+  height: 26%;
+  background:
+    linear-gradient(rgba(155, 188, 15, 0.12), transparent 2px),
+    repeating-linear-gradient(
+      100deg,
+      #020702 0,
+      #020702 34px,
+      #071006 35px,
+      #071006 66px
+    );
+  border-top: 1px solid rgba(155, 188, 15, 0.28);
+  animation: nacht-raiders-ground 2.8s linear infinite;
+}
+
+@keyframes nacht-raiders-landscape-far {
+  from {
+    background-position-x: 0;
+  }
+
+  to {
+    background-position-x: -240px;
+  }
+}
+
+@keyframes nacht-raiders-landscape-near {
+  from {
+    background-position-x: 0;
+  }
+
+  to {
+    background-position-x: -170px;
+  }
+}
+
+@keyframes nacht-raiders-ground {
+  from {
+    background-position-x: 0;
+  }
+
+  to {
+    background-position-x: -66px;
+  }
+}
+
+/* ==========================================================
+   5. EXPEDITION ENTITIES
+========================================================== */
+
+.nacht-raiders-game-entity {
+  position: absolute;
+  z-index: 4;
+  bottom: 14%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.nacht-raiders-game-entity[hidden] {
+  display: none;
+}
+
+.nacht-raiders-game-operative {
+  left: clamp(8%, 15vw, 18%);
+}
+
+.nacht-raiders-game-enemy {
+  right: clamp(8%, 16vw, 20%);
+}
+
+.nacht-raiders-game-entity-visual {
+  --nacht-raiders-frame-count: 1;
+  --nacht-raiders-frame-width: 96;
+  --nacht-raiders-frame-height: 96;
+
+  width: clamp(70px, 14vh, 112px);
+  aspect-ratio:
+    var(--nacht-raiders-frame-width) /
+    var(--nacht-raiders-frame-height);
+
+  display: grid;
+  place-items: center;
+  background-repeat: no-repeat;
+  background-position: left top;
+  background-size:
+    calc(var(--nacht-raiders-frame-count) * 100%)
+    100%;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 8px rgba(155, 188, 15, 0.22));
+}
+
+.nacht-raiders-game-entity-visual.has-sprite
+.nacht-raiders-game-entity-placeholder {
+  display: none;
+}
+
+.nacht-raiders-game-entity-placeholder {
+  width: 72%;
+  height: 88%;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(202, 220, 159, 0.8),
+      rgba(31, 52, 15, 0.85)
+    );
+  color: #020602;
+  border: 2px solid #9bbc0f;
+  clip-path:
+    polygon(
+      34% 0,
+      66% 0,
+      76% 18%,
+      72% 42%,
+      91% 100%,
+      58% 100%,
+      50% 72%,
+      42% 100%,
+      9% 100%,
+      28% 42%,
+      24% 18%
+    );
+  font-size: clamp(0.65rem, 2vw, 1rem);
+  font-weight: 900;
+  text-shadow: none;
+}
+
+.nacht-raiders-game-enemy
+.nacht-raiders-game-entity-placeholder {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(223, 154, 58, 0.85),
+      rgba(66, 38, 9, 0.9)
+    );
+  border-color: #df9a3a;
+}
+
+.nacht-raiders-game-operative
+.nacht-raiders-game-entity-visual {
+  animation: nacht-raiders-operative-walk 620ms steps(2, end) infinite;
+}
+
+@keyframes nacht-raiders-operative-walk {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.nacht-raiders-game-entity-name {
+  max-width: 160px;
+  color: #cadc9f;
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.nacht-raiders-game-enemy
+.nacht-raiders-game-entity-name {
+  color: #df9a3a;
+}
+
+.nacht-raiders-game-enemy-health {
+  width: min(130px, 24vw);
+  color: rgba(223, 154, 58, 0.82);
+  font-size: 0.48rem;
+  text-align: center;
+}
+
+/* ==========================================================
+   6. EXPEDITION EVENT
+========================================================== */
+
+.nacht-raiders-game-event {
+  max-width: min(560px, calc(100% - 2rem));
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+  padding: 0.52rem 0.75rem;
+  background: rgba(1, 6, 1, 0.88);
+  border: 1px solid rgba(155, 188, 15, 0.36);
+  text-align: center;
+}
+
+.nacht-raiders-game-event span {
+  color: #8bac0f;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.nacht-raiders-game-event strong {
+  color: #cadc9f;
+  font-size: clamp(0.58rem, 1.8vw, 0.78rem);
+  line-height: 1.35;
+}
+
+/* ==========================================================
+   7. EXPEDITION FOOTER
+========================================================== */
+
+.nacht-raiders-game-footer {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(360px, 1.4fr);
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.55rem 0.8rem;
+  background: rgba(1, 6, 1, 0.97);
+  border-top: 1px solid rgba(155, 188, 15, 0.42);
+}
+
+.nacht-raiders-game-travel {
+  min-width: 0;
+}
+
+.nacht-raiders-game-travel-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.28rem;
+  color: rgba(202, 220, 159, 0.62);
+  font-size: 0.52rem;
+}
+
+.nacht-raiders-game-travel-heading strong {
+  color: #cadc9f;
+}
+
+.nacht-raiders-game-resources {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid rgba(155, 188, 15, 0.24);
+}
+
+.nacht-raiders-game-resources div {
+  min-width: 0;
+  padding: 0.35rem 0.42rem;
+  border-right: 1px solid rgba(155, 188, 15, 0.18);
+  text-align: center;
+}
+
+.nacht-raiders-game-resources div:last-child {
+  border-right: 0;
+}
+
+.nacht-raiders-game-resources dt {
+  color: rgba(202, 220, 159, 0.46);
+  font-size: 0.44rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.nacht-raiders-game-resources dd {
+  margin: 0.16rem 0 0;
+  color: #cadc9f;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+/* ==========================================================
+   8. MOBILE PORTRAIT
+========================================================== */
+
+@media (orientation: portrait) and (max-width: 760px) {
+  .nacht-raiders-game-hud {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "identity back"
+      "location location"
+      "vitals vitals";
+    gap: 0.42rem;
+    padding: 0.5rem;
+  }
+
+  .nacht-raiders-game-back-button {
+    min-width: 128px;
+    min-height: 34px;
+    padding: 0.38rem 0.48rem;
+    font-size: 0.58rem;
+  }
+
+  .nacht-raiders-game-vitals {
+    grid-template-columns: auto minmax(80px, 1fr);
+  }
+
+  .nacht-raiders-game-viewport {
+    min-height: 250px;
+  }
+
+  .nacht-raiders-game-operative {
+    left: 7%;
+  }
+
+  .nacht-raiders-game-enemy {
+    right: 7%;
+  }
+
+  .nacht-raiders-game-entity-visual {
+    width: clamp(62px, 18vw, 88px);
+  }
+
+  .nacht-raiders-game-footer {
+    grid-template-columns: 1fr;
+    gap: 0.48rem;
+    padding: 0.48rem;
+  }
+
+  .nacht-raiders-game-resources dt {
+    font-size: 0.38rem;
+  }
+
+  .nacht-raiders-game-event {
+    bottom: 3%;
+  }
+}
+
+/* ==========================================================
+   9. SHORT LANDSCAPE
+========================================================== */
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .nacht-raiders-game-hud {
+    grid-template-columns: auto minmax(260px, 1fr) auto;
+    grid-template-areas:
+      "identity location back"
+      "vitals vitals vitals";
+    padding: 0.36rem 0.55rem;
+  }
+
+  .nacht-raiders-game-kicker {
+    display: none;
+  }
+
+  .nacht-raiders-game-back-button {
+    min-width: 135px;
+    min-height: 30px;
+    padding: 0.28rem 0.45rem;
+    font-size: 0.56rem;
+  }
+
+  .nacht-raiders-game-entity-visual {
+    width: clamp(54px, 20vh, 84px);
+  }
+
+  .nacht-raiders-game-footer {
+    padding: 0.35rem 0.55rem;
+  }
+
+  .nacht-raiders-game-event {
+    bottom: 2%;
+    padding: 0.35rem 0.55rem;
+  }
+}
+
+/* ==========================================================
+   10. REDUCED ANIMATION
+========================================================== */
+
+body.animations-disabled
+.nacht-raiders-game-landscape,
+body.animations-disabled
+.nacht-raiders-game-ground,
+body.animations-disabled
+.nacht-raiders-game-operative
+.nacht-raiders-game-entity-visual {
+  animation: none;
+}
+
+body.animations-disabled
+.nacht-raiders-game-meter-fill {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nacht-raiders-game-landscape,
+  .nacht-raiders-game-ground,
+  .nacht-raiders-game-operative
+  .nacht-raiders-game-entity-visual {
+    animation: none;
+  }
+
+  .nacht-raiders-game-meter-fill {
+    transition: none;
+  }
+}
