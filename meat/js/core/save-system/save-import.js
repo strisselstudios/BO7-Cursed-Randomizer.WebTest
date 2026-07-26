@@ -1,190 +1,154 @@
 /* ==========================================================
-   SAVE IMPORT
+   1. IMPORT FILE READING
    ----------------------------------------------------------
-   Reads, validates, migrates, and stores an exported MEAT.exe
-   save file.
+   Reads one bounded save file before parsing its contents.
 ========================================================== */
 
-function isValidImportedNumber(value, allowZero = true) {
-  return typeof value === "number" && Number.isFinite(value) && (allowZero ? value >= 0 : value > 0);
+async function readImportedSaveFile(
+  file
+) {
+  if (
+    !(file instanceof File)
+  ) {
+    throw new Error(
+      "No save file was selected."
+    );
+  }
+
+  if (
+    file.size <= 0 ||
+    file.size >
+      MAX_SAVE_FILE_SIZE_BYTES
+  ) {
+    throw new Error(
+      "The selected save file is empty or too large."
+    );
+  }
+
+  return file.text();
 }
 
-function validateImportedGameState(importedState) {
-  if (!importedState || typeof importedState !== "object" || Array.isArray(importedState)) {
-    throw new Error("The imported save data is invalid.");
+/* ==========================================================
+   2. LEGACY JSON PACKAGE VALIDATION
+   ----------------------------------------------------------
+   Accepts the current version-1 JSON export until encrypted
+   version-2 exports replace it in the next implementation step.
+========================================================== */
+
+function parseLegacyJsonSavePackage(
+  fileContents
+) {
+  let importPackage;
+
+  try {
+    importPackage =
+      JSON.parse(
+        fileContents
+      );
+  } catch (error) {
+    throw new Error(
+      "The selected file does not contain valid JSON."
+    );
   }
 
-  const requiredNumbers = ["meat", "totalMeat", "totalClicks", "meatPerClick", "runStartedAt"];
+  requirePlainSaveObject(
+    importPackage,
+    "The imported save package"
+  );
 
-  requiredNumbers.forEach((propertyName) => {
-    if (!isValidImportedNumber(importedState[propertyName])) {
-      throw new Error(`Invalid save value: ${propertyName}`);
-    }
-  });
+  validateSaveDataSafety(
+    importPackage,
+    "importPackage"
+  );
 
-  if (importedState.lastSavedAt !== undefined && !isValidImportedNumber(importedState.lastSavedAt)) {
-    throw new Error("Invalid save value: lastSavedAt");
+  if (
+    importPackage.game !==
+      "MEAT.exe" ||
+    importPackage.exportVersion !==
+      1 ||
+    !importPackage.saveData
+  ) {
+    throw new Error(
+      "This is not a valid MEAT.exe save export."
+    );
   }
 
-  if (!Number.isInteger(importedState.totalClicks)) {
-    throw new Error("The imported click count is invalid.");
-  }
+  validateGameStateStructure(
+    importPackage.saveData
+  );
 
-  if (!importedState.producers || typeof importedState.producers !== "object" || Array.isArray(importedState.producers)) {
-    throw new Error("The imported producer data is invalid.");
-  }
+  return importPackage;
+}
 
-  producerOrder.forEach((producerKey) => {
-    const ownedAmount = importedState.producers[producerKey] ?? 0;
-    if (!Number.isInteger(ownedAmount) || ownedAmount < 0) {
-      throw new Error(`Invalid producer amount: ${producerKey}`);
-    }
-  });
+/* ==========================================================
+   3. IMPORTED STATE ACCEPTANCE
+   ----------------------------------------------------------
+   Migrates validated data, preserves existing trust records,
+   and permanently records impossible-state findings.
+========================================================== */
 
-  if (importedState.producerLifetimeMeat !== undefined) {
-    if (!importedState.producerLifetimeMeat || typeof importedState.producerLifetimeMeat !== "object" || Array.isArray(importedState.producerLifetimeMeat)) {
-      throw new Error("The imported producer lifetime data is invalid.");
-    }
+function acceptImportedGameState(
+  importedState
+) {
+  const impossibleStateReasons =
+    inspectGameStateForImpossibleProgress(
+      importedState
+    );
 
-    producerOrder.forEach((producerKey) => {
-      const lifetimeAmount = importedState.producerLifetimeMeat[producerKey] ?? 0;
-      if (typeof lifetimeAmount !== "number" || !Number.isFinite(lifetimeAmount) || lifetimeAmount < 0) {
-        throw new Error(`Invalid producer lifetime amount: ${producerKey}`);
-      }
-    });
-  }
+  const migratedState =
+    migrateGameState(
+      importedState
+    );
 
-  if (importedState.producerHighestTier !== undefined) {
-    if (!importedState.producerHighestTier || typeof importedState.producerHighestTier !== "object" || Array.isArray(importedState.producerHighestTier)) {
-      throw new Error("The imported producer tier history is invalid.");
-    }
+  mergeSaveTrustState(
+    migratedState,
+    importedState,
+    impossibleStateReasons
+  );
 
-    producerOrder.forEach((producerKey) => {
-      const highestTier = importedState.producerHighestTier[producerKey] ?? 0;
-      if (!Number.isInteger(highestTier) || highestTier < 0 || highestTier > 3) {
-        throw new Error(`Invalid highest producer tier: ${producerKey}`);
-      }
-    });
-  }
+  gameState =
+    migratedState;
 
-  if (importedState.features !== undefined) {
-    if (!importedState.features || typeof importedState.features !== "object" || Array.isArray(importedState.features)) {
-      throw new Error("The imported feature data is invalid.");
-    }
+  calculateMeatPerSecond();
 
-    const importedHarvesterState = importedState.features.harvester;
-
-    if (importedHarvesterState !== undefined && (!importedHarvesterState || typeof importedHarvesterState !== "object" || Array.isArray(importedHarvesterState))) {
-      throw new Error("The imported Harvester data is invalid.");
-    }
-
-    if (importedHarvesterState !== undefined) {
-      if (importedHarvesterState.unlocked !== undefined && typeof importedHarvesterState.unlocked !== "boolean") {
-        throw new Error("The imported Harvester unlock state is invalid.");
-      }
-
-      if (importedHarvesterState.legacyGrandfathered !== undefined && typeof importedHarvesterState.legacyGrandfathered !== "boolean") {
-        throw new Error("The imported Harvester legacy state is invalid.");
-      }
-
-      if (importedHarvesterState.deployed !== undefined && typeof importedHarvesterState.deployed !== "boolean") {
-        throw new Error("The imported Harvester deployment state is invalid.");
-      }
-
-      if (importedHarvesterState.position !== undefined) {
-        const importedPosition = importedHarvesterState.position;
-
-        if (!importedPosition || typeof importedPosition !== "object" || Array.isArray(importedPosition)) {
-          throw new Error("The imported Harvester position is invalid.");
-        }
-
-        ["x", "y"].forEach((axis) => {
-          const coordinate = importedPosition[axis];
-          if (typeof coordinate !== "number" || !Number.isFinite(coordinate) || coordinate < 0 || coordinate > 1) {
-            throw new Error(`Invalid Harvester position: ${axis}`);
-          }
-        });
-
-        const importedNachtRaidersState = importedState.features.nachtRaiders;
-
-        if (importedNachtRaidersState !== undefined && (!importedNachtRaidersState || typeof importedNachtRaidersState !== "object" || Array.isArray(importedNachtRaidersState))) {
-          throw new Error("The imported Nacht Raiders data is invalid.");
-        }
-
-        if (importedNachtRaidersState?.hasStarted !== undefined && typeof importedNachtRaidersState.hasStarted !== "boolean") {
-          throw new Error("The imported Nacht Raiders start state is invalid.");
-        }
-      }
-
-      [
-        "activeStartedAt",
-        "lastProcessedAt",
-        "passiveMpsSnapshot",
-        "outputPerSecondSnapshot",
-        "cooldownStartedAt",
-        "cooldownEndsAt",
-        "storedMeat",
-        "lifetimeMeat"
-      ].forEach((propertyName) => {
-        const propertyValue = importedHarvesterState[propertyName];
-        if (propertyValue === undefined) {
-          return;
-        }
-        if (typeof propertyValue !== "number" || !Number.isFinite(propertyValue) || propertyValue < 0) {
-          throw new Error(`Invalid Harvester value: ${propertyName}`);
-        }
-      });
-
-      if (importedHarvesterState.ownedBuildingSnapshot !== undefined && (!Number.isInteger(importedHarvesterState.ownedBuildingSnapshot) || importedHarvesterState.ownedBuildingSnapshot < 0)) {
-        throw new Error("The imported Harvester ownership snapshot is invalid.");
-      }
-    }
-  }
-
-  if (importedState.settings !== undefined && (!importedState.settings || typeof importedState.settings !== "object" || Array.isArray(importedState.settings))) {
-    throw new Error("The imported settings are invalid.");
-  }
-
-  if (importedState.settings?.sound !== undefined && typeof importedState.settings.sound !== "boolean") {
-    throw new Error("The imported sound setting is invalid.");
-  }
-
-  if (importedState.settings?.animations !== undefined && typeof importedState.settings.animations !== "boolean") {
-    throw new Error("The imported animation setting is invalid.");
-  }
-
-  if (importedState.settings?.nachtRaidersBootScreen !== undefined && typeof importedState.settings.nachtRaidersBootScreen !== "boolean") {
-    throw new Error("The imported Nacht Raiders boot-screen setting is invalid.");
+  if (
+    !saveGame()
+  ) {
+    throw new Error(
+      "The imported save could not be stored."
+    );
   }
 
   return true;
 }
 
-async function importGameSave(file) {
+/* ==========================================================
+   4. SAVE IMPORT
+========================================================== */
+
+async function importGameSave(
+  file
+) {
   try {
-    if (!(file instanceof File)) {
-      throw new Error("No save file was selected.");
-    }
+    const fileContents =
+      await readImportedSaveFile(
+        file
+      );
 
-    const fileContents = await file.text();
-    const importPackage = JSON.parse(fileContents);
+    const importPackage =
+      parseLegacyJsonSavePackage(
+        fileContents
+      );
 
-    if (!importPackage || typeof importPackage !== "object" || importPackage.game !== "MEAT.exe" || importPackage.exportVersion !== 1 || !importPackage.saveData) {
-      throw new Error("This is not a valid MEAT.exe save export.");
-    }
-
-    validateImportedGameState(importPackage.saveData);
-    gameState = migrateGameState(importPackage.saveData);
-    calculateMeatPerSecond();
-
-    const saveSucceeded = saveGame();
-    if (!saveSucceeded) {
-      throw new Error("The imported save could not be stored.");
-    }
-
-    return true;
+    return acceptImportedGameState(
+      importPackage.saveData
+    );
   } catch (error) {
-    console.error("MEAT.exe save could not be imported:", error);
+    console.error(
+      "MEAT.exe save could not be imported:",
+      error
+    );
+
     return false;
   }
 }
