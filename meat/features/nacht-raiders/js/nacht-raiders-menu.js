@@ -70,10 +70,24 @@ function enterNachtRaidersGameStage() {
     !nachtRaidersState.hasStarted;
 
     if (isFirstStart) {
-    nachtRaidersState.hasStarted = true;
-    nachtRaidersState.status = NACHT_RAIDERS_STATUS_RUNNING;
-    nachtRaidersState.expedition.seed = createNachtRaidersExpeditionSeed();
-    nachtRaidersState.expedition.lastSimulationAt = Date.now();
+    nachtRaidersState.hasStarted = 
+       
+       true;
+    nachtRaidersState.status = 
+       NACHT_RAIDERS_STATUS_RUNNING;
+
+        nachtRaidersState.expedition.seed =
+      createNachtRaidersExpeditionSeed();
+
+    nachtRaidersState.expedition.rngState =
+      nachtRaidersState.expedition.seed;
+
+    nachtRaidersState.expedition.eventSequence =
+      0;
+
+    nachtRaidersState.expedition
+      .lastSimulationAt =
+        Date.now();
 
     saveGame();
   }
