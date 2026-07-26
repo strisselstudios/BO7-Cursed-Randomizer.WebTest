@@ -588,7 +588,77 @@
 }
 
 /* ==========================================================
-   10. REDUCED ANIMATION
+   10. COMBAT PLAYBACK
+========================================================== */
+
+.nacht-raiders-game-screen.is-combat-active
+.nacht-raiders-game-operative
+.nacht-raiders-game-entity-visual {
+  animation-play-state: paused;
+}
+
+.nacht-raiders-game-entity.is-attacking {
+  animation: nacht-raiders-combat-lunge 180ms ease-out;
+}
+
+.nacht-raiders-game-entity.is-hit
+.nacht-raiders-game-entity-visual {
+  animation: nacht-raiders-combat-hit 180ms steps(2, end);
+}
+
+.nacht-raiders-game-entity.is-defeated
+.nacht-raiders-game-entity-visual {
+  opacity: 0.42;
+  transform: translateY(8px) rotate(7deg);
+  filter: grayscale(1);
+  transition:
+    opacity 240ms linear,
+    transform 240ms ease-out,
+    filter 240ms linear;
+}
+
+.nacht-raiders-game-operative.is-attacking {
+  transform: translateX(14px);
+}
+
+.nacht-raiders-game-enemy.is-attacking {
+  transform: translateX(-14px);
+}
+
+@keyframes nacht-raiders-combat-lunge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(
+      var(--nacht-raiders-combat-direction, 12px)
+    );
+  }
+}
+
+@keyframes nacht-raiders-combat-hit {
+  0%,
+  100% {
+    filter:
+      drop-shadow(
+        0 0 8px rgba(155, 188, 15, 0.22)
+      );
+  }
+
+  50% {
+    filter:
+      brightness(2)
+      contrast(1.4)
+      drop-shadow(
+        0 0 11px rgba(223, 154, 58, 0.82)
+      );
+  }
+}
+
+/* ==========================================================
+   11. REDUCED ANIMATION
 ========================================================== */
 
 body.animations-disabled
@@ -597,9 +667,16 @@ body.animations-disabled
 .nacht-raiders-game-ground,
 body.animations-disabled
 .nacht-raiders-game-operative
+body.animations-disabled
+.nacht-raiders-game-entity.is-attacking,
+
+body.animations-disabled
+.nacht-raiders-game-entity.is-hit
 .nacht-raiders-game-entity-visual {
   animation: none;
 }
+
+
 
 body.animations-disabled
 .nacht-raiders-game-meter-fill {
