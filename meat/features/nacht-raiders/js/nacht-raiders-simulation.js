@@ -8,14 +8,11 @@ let nachtRaidersSimulationIntervalId = null;
 /* ==========================================================
    2. SIMULATION SUMMARY
    ----------------------------------------------------------
-   Produces a stable result object for future field records,
-   visual rendering, offline reports, and debugging.
+   Produces a stable result object for field records, visual
+   rendering, offline reports, and debugging.
 ========================================================== */
 
-function createNachtRaidersSimulationSummary(
-  currentTime,
-  source
-) {
+function createNachtRaidersSimulationSummary(currentTime, source) {
   return {
     source,
     currentTime,
@@ -25,14 +22,10 @@ function createNachtRaidersSimulationSummary(
     stepCount: 0,
     distanceTravelled: 0,
     depthGained: 0,
-
     incidentsGenerated: 0,
     levelsGained: 0,
     reportsCreated: 0,
-
-    rewards:
-      createEmptyNachtRaidersRewards(),
-   
+    rewards: createEmptyNachtRaidersRewards(),
     wasCapped: false
   };
 }
@@ -44,37 +37,17 @@ function createNachtRaidersSimulationSummary(
    zone-depth progression, and permanent statistics.
 ========================================================== */
 
-function advanceNachtRaidersTravel(
-  nachtRaidersState,
-  stepCount
-) {
-  const startingZoneDepth =
-    nachtRaidersState.expedition.zoneDepth;
-   
-  const distanceTravelled =
-    stepCount *
-    NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerStep;
+function advanceNachtRaidersTravel(nachtRaidersState, stepCount) {
+  const startingZoneDepth = nachtRaidersState.expedition.zoneDepth;
+  const distanceTravelled = stepCount * NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerStep;
+  const totalTravelProgress = nachtRaidersState.expedition.travelProgress + distanceTravelled;
+  const depthGained = Math.floor(totalTravelProgress / NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerDepth);
 
-  const totalTravelProgress =
-    nachtRaidersState.expedition.travelProgress +
-    distanceTravelled;
+  nachtRaidersState.expedition.zoneDepth += depthGained;
+  nachtRaidersState.expedition.travelProgress = totalTravelProgress % NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerDepth;
+  nachtRaidersState.statistics.distanceTravelled += distanceTravelled;
 
-  const depthGained = Math.floor(
-    totalTravelProgress /
-    NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerDepth
-  );
-
-  nachtRaidersState.expedition.zoneDepth +=
-    depthGained;
-
-  nachtRaidersState.expedition.travelProgress =
-    totalTravelProgress %
-    NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerDepth;
-
-  nachtRaidersState.statistics.distanceTravelled +=
-    distanceTravelled;
-
-    return {
+  return {
     startingZoneDepth,
     distanceTravelled,
     depthGained
@@ -84,65 +57,34 @@ function advanceNachtRaidersTravel(
 /* ==========================================================
    4. ELAPSED-TIME SIMULATION
    ----------------------------------------------------------
-   Processes only complete fixed simulation steps. Any partial
-   remainder is retained through lastSimulationAt and credited
-   during a later update.
+   Processes complete fixed simulation steps. Any partial
+   remainder remains in lastSimulationAt for the next update.
 
    Offline elapsed time is capped at the configured maximum.
 ========================================================== */
 
-function simulateNachtRaidersToTime(
-  currentTime = Date.now(),
-  source = "manual"
-) {
-  const normalizedCurrentTime = Math.floor(
-    Number(currentTime)
-  );
+function simulateNachtRaidersToTime(currentTime = Date.now(), source = "manual") {
+  const normalizedCurrentTime = Math.floor(Number(currentTime));
+  const summary = createNachtRaidersSimulationSummary(normalizedCurrentTime, source);
 
-  const summary =
-    createNachtRaidersSimulationSummary(
-      normalizedCurrentTime,
-      source
-    );
-
-  if (
-    !Number.isFinite(normalizedCurrentTime) ||
-    normalizedCurrentTime <= 0
-  ) {
+  if (!Number.isFinite(normalizedCurrentTime) || normalizedCurrentTime <= 0) {
     return summary;
   }
 
-  const nachtRaidersState =
-    ensureNachtRaidersFeatureState();
+  const nachtRaidersState = ensureNachtRaidersFeatureState();
 
-  if (
-    !nachtRaidersState.hasStarted ||
-    nachtRaidersState.status !==
-      NACHT_RAIDERS_STATUS_RUNNING
-  ) {
+  if (!nachtRaidersState.hasStarted || nachtRaidersState.status !== NACHT_RAIDERS_STATUS_RUNNING) {
     return summary;
   }
 
-  const savedSimulationTime = Number(
-    nachtRaidersState.expedition.lastSimulationAt
-  );
+  const savedSimulationTime = Number(nachtRaidersState.expedition.lastSimulationAt);
 
-  if (
-    !Number.isFinite(savedSimulationTime) ||
-    savedSimulationTime <= 0 ||
-    savedSimulationTime > normalizedCurrentTime
-  ) {
-    nachtRaidersState.expedition.lastSimulationAt =
-      normalizedCurrentTime;
-
+  if (!Number.isFinite(savedSimulationTime) || savedSimulationTime <= 0 || savedSimulationTime > normalizedCurrentTime) {
+    nachtRaidersState.expedition.lastSimulationAt = normalizedCurrentTime;
     return summary;
   }
 
-  const elapsedMs = Math.max(
-    0,
-    normalizedCurrentTime - savedSimulationTime
-  );
-
+  const elapsedMs = Math.max(0, normalizedCurrentTime - savedSimulationTime);
   summary.elapsedMs = elapsedMs;
 
   if (elapsedMs <= 0) {
@@ -151,116 +93,64 @@ function simulateNachtRaidersToTime(
 
   const earliestCreditedTime = Math.max(
     savedSimulationTime,
-    normalizedCurrentTime -
-      NACHT_RAIDERS_SIMULATION_SETTINGS
-        .maximumOfflineMs
+    normalizedCurrentTime - NACHT_RAIDERS_SIMULATION_SETTINGS.maximumOfflineMs
   );
 
-  summary.wasCapped =
-    earliestCreditedTime > savedSimulationTime;
+  summary.wasCapped = earliestCreditedTime > savedSimulationTime;
 
-  const creditedElapsedMs =
-    normalizedCurrentTime - earliestCreditedTime;
-
-  const stepCount = Math.floor(
-    creditedElapsedMs /
-    NACHT_RAIDERS_SIMULATION_SETTINGS.stepMs
-  );
+  const creditedElapsedMs = normalizedCurrentTime - earliestCreditedTime;
+  const stepCount = Math.floor(creditedElapsedMs / NACHT_RAIDERS_SIMULATION_SETTINGS.stepMs);
 
   if (stepCount <= 0) {
     if (summary.wasCapped) {
-      nachtRaidersState.expedition.lastSimulationAt =
-        earliestCreditedTime;
+      nachtRaidersState.expedition.lastSimulationAt = earliestCreditedTime;
     }
 
-    summary.remainingMs =
-      creditedElapsedMs;
-
+    summary.remainingMs = creditedElapsedMs;
     return summary;
   }
 
-  const processedMs =
-    stepCount *
-    NACHT_RAIDERS_SIMULATION_SETTINGS.stepMs;
+  const processedMs = stepCount * NACHT_RAIDERS_SIMULATION_SETTINGS.stepMs;
 
-  nachtRaidersState.expedition.lastSimulationAt =
-    earliestCreditedTime + processedMs;
+  nachtRaidersState.expedition.lastSimulationAt = earliestCreditedTime + processedMs;
+  nachtRaidersState.statistics.totalSimulationMs += processedMs;
 
-  nachtRaidersState.statistics.totalSimulationMs +=
-    processedMs;
+  const travelResult = advanceNachtRaidersTravel(nachtRaidersState, stepCount);
 
-  const travelResult =
-    advanceNachtRaidersTravel(
-      nachtRaidersState,
-      stepCount
-    );
-
-  const incidentResult =
-    generateNachtRaidersTravelIncidents(
-      nachtRaidersState,
-      {
-         completedDepthCount:
-          travelResult.depthGained,
-
-        startingZoneDepth:
-          travelResult.startingZoneDepth,
-
-        startTime:
-          earliestCreditedTime,
-
-        endTime:
-          nachtRaidersState.expedition
-            .lastSimulationAt
-
-                 source,
-      }
-    );
+  const incidentResult = generateNachtRaidersTravelIncidents(
+    nachtRaidersState,
+    {
+      completedDepthCount: travelResult.depthGained,
+      startingZoneDepth: travelResult.startingZoneDepth,
+      startTime: earliestCreditedTime,
+      endTime: nachtRaidersState.expedition.lastSimulationAt,
+      source
+    }
+  );
 
   summary.processedMs = processedMs;
-  summary.remainingMs =
-    normalizedCurrentTime -
-    nachtRaidersState.expedition.lastSimulationAt;
-
+  summary.remainingMs = normalizedCurrentTime - nachtRaidersState.expedition.lastSimulationAt;
   summary.stepCount = stepCount;
-  summary.distanceTravelled =
-    travelResult.distanceTravelled;
-   
-  summary.depthGained =
-    travelResult.depthGained;
-
-  summary.incidentsGenerated =
-    incidentResult.incidentsGenerated;
-
-  summary.levelsGained =
-    incidentResult.levelsGained;
-
-  summary.rewards = {
-    ...incidentResult.rewards
-  };
+  summary.distanceTravelled = travelResult.distanceTravelled;
+  summary.depthGained = travelResult.depthGained;
+  summary.incidentsGenerated = incidentResult.incidentsGenerated;
+  summary.levelsGained = incidentResult.levelsGained;
+  summary.rewards = { ...incidentResult.rewards };
 
   const shouldFinalizePartialReport =
-    source ===
-      NACHT_RAIDERS_REPORT_REASON_INITIAL_LOAD ||
-    source ===
-      NACHT_RAIDERS_REPORT_REASON_VISIBILITY_RETURN;
+    source === NACHT_RAIDERS_REPORT_REASON_INITIAL_LOAD ||
+    source === NACHT_RAIDERS_REPORT_REASON_VISIBILITY_RETURN;
 
-  const reportResult =
-    finalizeNachtRaidersPendingReports(
-      nachtRaidersState,
-      {
-        force:
-          shouldFinalizePartialReport,
+  const reportResult = finalizeNachtRaidersPendingReports(
+    nachtRaidersState,
+    {
+      force: shouldFinalizePartialReport,
+      reason: source,
+      createdAt: normalizedCurrentTime
+    }
+  );
 
-        reason:
-          source,
-
-        createdAt:
-          normalizedCurrentTime
-      }
-    );
-
-  summary.reportsCreated =
-    reportResult.reportsCreated;
+  summary.reportsCreated = reportResult.reportsCreated;
 
   document.dispatchEvent(
     new CustomEvent(
@@ -288,16 +178,15 @@ function startNachtRaidersSimulationLoop() {
     return false;
   }
 
-  nachtRaidersSimulationIntervalId =
-    window.setInterval(
-      () => {
-        simulateNachtRaidersToTime(
-          Date.now(),
-          "active"
-        );
-      },
-      NACHT_RAIDERS_SIMULATION_SETTINGS.activePollMs
-    );
+  nachtRaidersSimulationIntervalId = window.setInterval(
+    () => {
+      simulateNachtRaidersToTime(
+        Date.now(),
+        NACHT_RAIDERS_REPORT_REASON_ACTIVE
+      );
+    },
+    NACHT_RAIDERS_SIMULATION_SETTINGS.activePollMs
+  );
 
   return true;
 }
@@ -309,11 +198,10 @@ function initializeNachtRaidersSimulation() {
 
   nachtRaidersSimulationInitialized = true;
 
-  const initialSummary =
-    simulateNachtRaidersToTime(
-      Date.now(),
-      "initial-load"
-    );
+  const initialSummary = simulateNachtRaidersToTime(
+    Date.now(),
+    NACHT_RAIDERS_REPORT_REASON_INITIAL_LOAD
+  );
 
   startNachtRaidersSimulationLoop();
 
@@ -333,18 +221,14 @@ document.addEventListener(
     const source =
       document.visibilityState === "hidden"
         ? "visibility-hidden"
-        : "visibility-return";
+        : NACHT_RAIDERS_REPORT_REASON_VISIBILITY_RETURN;
 
-    const summary =
-      simulateNachtRaidersToTime(
-        Date.now(),
-        source
-      );
+    const summary = simulateNachtRaidersToTime(
+      Date.now(),
+      source
+    );
 
-    if (
-      document.visibilityState === "visible" &&
-      summary.processedMs > 0
-    ) {
+    if (document.visibilityState === "visible" && summary.processedMs > 0) {
       saveGame();
     }
   }
