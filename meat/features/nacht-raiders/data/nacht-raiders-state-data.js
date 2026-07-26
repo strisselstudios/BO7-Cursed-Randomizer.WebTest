@@ -5,7 +5,7 @@
    and window-state values.
 ========================================================== */
 
-const NACHT_RAIDERS_STATE_VERSION = 4;
+const NACHT_RAIDERS_STATE_VERSION = 5;
 
 const NACHT_RAIDERS_STATUS_INACTIVE = "inactive";
 const NACHT_RAIDERS_STATUS_RUNNING = "running";
@@ -153,26 +153,34 @@ function createDefaultNachtRaidersState() {
       currentEncounter: null
     },
 
-    operative: {
+        operative: {
       level: 1,
       xp: 0,
 
       health: 100,
-      maxHealth: 100
+      maxHealth: 100,
+
+      attack: 10,
+      defense: 2,
+      speed: 1
     },
 
     resources:
       createDefaultNachtRaidersResourceState(),
 
-    statistics: {
+        statistics: {
       totalSimulationMs: 0,
       distanceTravelled: 0,
 
       encounters: 0,
       victories: 0,
+      stalemates: 0,
 
       deaths: 0,
-      reconstructions: 0
+      reconstructions: 0,
+
+      damageDealt: 0,
+      damageTaken: 0
     },
 
         fieldRecords: {
@@ -371,6 +379,27 @@ function migrateNachtRaidersState(
       )
     );
 
+  const operativeAttack = Math.max(
+    1,
+    normalizeNachtRaidersNumber(
+      savedOperative.attack,
+      defaultState.operative.attack
+    )
+  );
+
+  const operativeDefense = normalizeNachtRaidersNumber(
+    savedOperative.defense,
+    defaultState.operative.defense
+  );
+
+  const operativeSpeed = Math.max(
+    0.1,
+    normalizeNachtRaidersNumber(
+      savedOperative.speed,
+      defaultState.operative.speed
+    )
+  );
+
   const currentEncounter =
     isNachtRaidersPlainObject(
       savedExpedition.currentEncounter
@@ -440,7 +469,16 @@ function migrateNachtRaidersState(
         currentHealth,
 
       maxHealth:
-        maximumHealth
+        maximumHealth,
+
+      attack:
+        operativeAttack,
+
+      defense:
+        operativeDefense,
+
+      speed:
+        operativeSpeed
     },
 
         resources:
@@ -469,6 +507,11 @@ function migrateNachtRaidersState(
           savedStatistics.victories
         ),
 
+      stalemates:
+        normalizeNachtRaidersInteger(
+          savedStatistics.stalemates
+        ),
+
       deaths:
         normalizeNachtRaidersInteger(
           savedStatistics.deaths
@@ -477,6 +520,16 @@ function migrateNachtRaidersState(
       reconstructions:
         normalizeNachtRaidersInteger(
           savedStatistics.reconstructions
+        )
+
+      damageDealt:
+        normalizeNachtRaidersNumber(
+          savedStatistics.damageDealt
+        ),
+
+      damageTaken:
+        normalizeNachtRaidersNumber(
+          savedStatistics.damageTaken
         )
     },
 
