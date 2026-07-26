@@ -199,10 +199,11 @@ function generateNachtRaidersTravelIncidents(nachtRaidersState, options = {}) {
       ? options.source
       : NACHT_RAIDERS_REPORT_REASON_ACTIVE;
 
-  const result = {
+    const result = {
     incidentRolls: 0,
     incidentsGenerated: 0,
     levelsGained: 0,
+    reportsCreated: 0,
     rewards: createEmptyNachtRaidersRewards()
   };
 
@@ -257,7 +258,7 @@ function generateNachtRaidersTravelIncidents(nachtRaidersState, options = {}) {
 
     appendNachtRaidersPendingRecord(nachtRaidersState, record);
 
-    finalizeNachtRaidersPendingReports(
+   const reportResult = finalizeNachtRaidersPendingReports(
       nachtRaidersState,
       {
         force: false,
@@ -265,6 +266,8 @@ function generateNachtRaidersTravelIncidents(nachtRaidersState, options = {}) {
         createdAt: occurredAt
       }
     );
+
+    result.reportsCreated += reportResult.reportsCreated;
 
     result.incidentsGenerated += 1;
     result.levelsGained += levelResult.levelsGained;
