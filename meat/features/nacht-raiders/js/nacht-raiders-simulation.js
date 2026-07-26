@@ -25,6 +25,17 @@ function createNachtRaidersSimulationSummary(
     stepCount: 0,
     distanceTravelled: 0,
     depthGained: 0,
+
+    incidentsGenerated: 0,
+
+    rewards: {
+      xp: 0,
+      salvage: 0,
+      aetherResidue: 0,
+      fieldData: 0,
+      relicFragments: 0
+    },
+
     wasCapped: false
   };
 }
@@ -40,6 +51,9 @@ function advanceNachtRaidersTravel(
   nachtRaidersState,
   stepCount
 ) {
+  const startingZoneDepth =
+    nachtRaidersState.expedition.zoneDepth;
+   
   const distanceTravelled =
     stepCount *
     NACHT_RAIDERS_TRAVEL_SETTINGS.unitsPerStep;
@@ -63,7 +77,8 @@ function advanceNachtRaidersTravel(
   nachtRaidersState.statistics.distanceTravelled +=
     distanceTravelled;
 
-  return {
+    return {
+    startingZoneDepth,
     distanceTravelled,
     depthGained
   };
@@ -183,6 +198,25 @@ function simulateNachtRaidersToTime(
       stepCount
     );
 
+  const incidentResult =
+    generateNachtRaidersTravelIncidents(
+      nachtRaidersState,
+      {
+        incidentCount:
+          travelResult.depthGained,
+
+        startingZoneDepth:
+          travelResult.startingZoneDepth,
+
+        startTime:
+          earliestCreditedTime,
+
+        endTime:
+          nachtRaidersState.expedition
+            .lastSimulationAt
+      }
+    );
+
   summary.processedMs = processedMs;
   summary.remainingMs =
     normalizedCurrentTime -
@@ -191,8 +225,16 @@ function simulateNachtRaidersToTime(
   summary.stepCount = stepCount;
   summary.distanceTravelled =
     travelResult.distanceTravelled;
+   
   summary.depthGained =
     travelResult.depthGained;
+
+  summary.incidentsGenerated =
+    incidentResult.incidentsGenerated;
+
+  summary.rewards = {
+    ...incidentResult.rewards
+  };
 
   document.dispatchEvent(
     new CustomEvent(
