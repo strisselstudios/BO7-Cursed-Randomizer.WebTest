@@ -2,88 +2,68 @@
    1. NACHT RAIDERS WINDOW STATE
 ========================================================== */
 
-const NACHT_RAIDERS_SCREEN_LOADING =
-  "loading";
+const NACHT_RAIDERS_SCREEN_LOADING = "loading";
+const NACHT_RAIDERS_SCREEN_MENU = "menu";
+const NACHT_RAIDERS_SCREEN_RECORDS = "records";
+const NACHT_RAIDERS_SCREEN_GAME = "game";
 
-const NACHT_RAIDERS_SCREEN_MENU =
-  "menu";
-
-const NACHT_RAIDERS_SCREEN_GAME =
-  "game";
-
-let nachtRaidersWindowIsOpen =
-  false;
-
-let nachtRaidersPreviouslyFocusedElement =
-  null;
+let nachtRaidersWindowIsOpen = false;
+let nachtRaidersPreviouslyFocusedElement = null;
 
 /* ==========================================================
    2. INTERFACE SCREEN SWITCHING
-   ----------------------------------------------------------
-   Controls the boot screen, main menu, and future gameplay
-   stage without closing the DOS window.
 ========================================================== */
 
-function showNachtRaidersScreen(
-  screenName
-) {
-  if (
-    !nachtRaidersLoadingScreen ||
-    !nachtRaidersMenuScreen ||
-    !nachtRaidersGameScreen ||
-    !nachtRaidersWindow
-  ) {
+function getNachtRaidersScreenElements() {
+  return new Map([
+    [NACHT_RAIDERS_SCREEN_LOADING, nachtRaidersLoadingScreen],
+    [NACHT_RAIDERS_SCREEN_MENU, nachtRaidersMenuScreen],
+    [NACHT_RAIDERS_SCREEN_RECORDS, nachtRaidersRecordsScreen],
+    [NACHT_RAIDERS_SCREEN_GAME, nachtRaidersGameScreen]
+  ]);
+}
+
+function showNachtRaidersScreen(screenName) {
+  if (!nachtRaidersWindow) return false;
+
+  const screens = getNachtRaidersScreenElements();
+
+  if (!screens.has(screenName) || [...screens.values()].some((screen) => !screen)) {
     return false;
   }
 
-  const showLoadingScreen =
-    screenName ===
-    NACHT_RAIDERS_SCREEN_LOADING;
-
-  const showMenuScreen =
-    screenName ===
-    NACHT_RAIDERS_SCREEN_MENU;
-
-  const showGameScreen =
-    screenName ===
-    NACHT_RAIDERS_SCREEN_GAME;
-
-  if (
-    !showLoadingScreen &&
-    !showMenuScreen &&
-    !showGameScreen
-  ) {
-    return false;
+  for (const [registeredScreenName, screen] of screens) {
+    screen.hidden = registeredScreenName !== screenName;
   }
 
-  nachtRaidersLoadingScreen.hidden =
-    !showLoadingScreen;
-
-  nachtRaidersMenuScreen.hidden =
-    !showMenuScreen;
-
-  nachtRaidersGameScreen.hidden =
-    !showGameScreen;
-
-  nachtRaidersWindow.dataset
-    .nachtRaidersScreen =
-      screenName;
+  nachtRaidersWindow.dataset.nachtRaidersScreen = screenName;
 
   document.dispatchEvent(
-    new CustomEvent(
-      "nacht-raiders:screen-changed",
-      {
-        detail: {
-          screen:
-            screenName
-        }
+    new CustomEvent("nacht-raiders:screen-changed", {
+      detail: {
+        screen: screenName
       }
-    )
+    })
   );
 
   return true;
 }
 
+function showNachtRaidersLoadingScreen() {
+  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_LOADING);
+}
+
+function showNachtRaidersMenuScreen() {
+  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_MENU);
+}
+
+function showNachtRaidersRecordsScreen() {
+  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_RECORDS);
+}
+
+function showNachtRaidersGameScreen() {
+  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_GAME);
+}
 /* ==========================================================
    3. WINDOW ACCESS
 ========================================================== */
