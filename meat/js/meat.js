@@ -91,45 +91,88 @@ if (animationToggle) {
 /* ==========================================================
    EXPORT SAVE BUTTON
    ----------------------------------------------------------
-   Downloads the current save file and displays temporary
-   success or failure feedback.
+   Compresses and encrypts the current save, downloads the
+   .meat file, and displays temporary result feedback.
 ========================================================== */
 
 let exportSaveFeedbackTimeout = null;
 
-if (exportSaveButton) {
-  exportSaveButton.addEventListener(
-    "click",
+function setExportSaveButtonText(
+  message,
+  restoreDefault = true
+) {
+  const exportLabel = exportSaveButton?.querySelector(
+    "span:last-child"
+  );
+
+  if (!exportLabel) {
+    return;
+  }
+
+  exportLabel.textContent = message;
+
+  clearTimeout(
+    exportSaveFeedbackTimeout
+  );
+
+  if (!restoreDefault) {
+    return;
+  }
+
+  exportSaveFeedbackTimeout = setTimeout(
     () => {
-      const exportSucceeded =
-        exportGameSave();
-
-      const exportLabel =
-        exportSaveButton.querySelector(
-          "span:last-child"
-        );
-
-      if (!exportLabel) {
-        return;
-      }
-
-      exportLabel.textContent =
-        exportSucceeded
-          ? "SAVE EXPORTED"
-          : "EXPORT FAILED";
-
-      clearTimeout(
-        exportSaveFeedbackTimeout
-      );
-
-      exportSaveFeedbackTimeout =
-        setTimeout(() => {
-          exportLabel.textContent =
-            "EXPORT SAVE";
-        }, 1500);
-    }
+      exportLabel.textContent = "EXPORT SAVE";
+    },
+    1800
   );
 }
+
+async function handleExportSaveRequest() {
+  if (
+    !exportSaveButton ||
+    exportSaveButton.disabled
+  ) {
+    return;
+  }
+
+  exportSaveButton.disabled = true;
+  exportSaveButton.setAttribute(
+    "aria-busy",
+    "true"
+  );
+
+  setExportSaveButtonText(
+    "ENCRYPTING...",
+    false
+  );
+
+  let exportSucceeded = false;
+
+  try {
+    exportSucceeded = await exportGameSave();
+  } catch (error) {
+    console.error(
+      "MEAT.exe export request failed:",
+      error
+    );
+  } finally {
+    exportSaveButton.disabled = false;
+    exportSaveButton.removeAttribute(
+      "aria-busy"
+    );
+  }
+
+  setExportSaveButtonText(
+    exportSucceeded
+      ? "SAVE EXPORTED"
+      : "EXPORT FAILED"
+  );
+}
+
+exportSaveButton?.addEventListener(
+  "click",
+  handleExportSaveRequest
+);
 
 /* ==========================================================
    IMPORT SAVE BUTTON
