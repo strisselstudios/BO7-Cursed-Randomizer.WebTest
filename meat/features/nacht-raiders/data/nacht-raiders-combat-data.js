@@ -51,3 +51,16 @@ const NACHT_RAIDERS_COMBAT_SETTINGS = Object.freeze({
 
   enemyMaximumSpeedMultiplier: 1.75
 });
+
+/* ==========================================================
+   5. COMBAT PLAYBACK SETTINGS
+   ----------------------------------------------------------
+   Controls visual replay speed without altering the underlying
+   deterministic combat result.
+========================================================== */
+
+const NACHT_RAIDERS_COMBAT_PLAYBACK_SETTINGS = Object.freeze({
+  timeScale: 0.7,
+  actionCueMs: 220,
+  outcomeHoldMs: 1400
+});
