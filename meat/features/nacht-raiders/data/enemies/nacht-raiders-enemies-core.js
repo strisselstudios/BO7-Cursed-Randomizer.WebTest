@@ -7,10 +7,10 @@
 
 registerNachtRaidersEnemies([
   {
-    id: "shambling-dead",
-    name: "Shambling Dead",
+    id: "reanimate",
+    name: "Reanimate",
     designation: "REANIMATED CORPSE",
-    assetKey: "shambling-dead",
+    assetKey: "reanimate",
     weight: 55,
 
     stats: {
@@ -29,7 +29,7 @@ registerNachtRaidersEnemies([
 
     contactLines: [
       "Detected movement within the fog.",
-      "Reanimated biological contact approaching."
+      "Reanimate approaching."
     ],
 
     victoryLines: [
@@ -38,7 +38,7 @@ registerNachtRaidersEnemies([
     ],
 
     operativeDeathLines: [
-      "Operative overwhelmed by reanimated contact."
+      "Operative overwhelmed by reanimate corpse."
     ],
 
     tags: [
@@ -144,7 +144,7 @@ registerNachtRaidersEnemies([
   {
     id: "oscar",
     name: "O.S.C.A.R.",
-    designation: "ORGANIC SYNCHRONICITY COLLAPSE AND RECONSTRUCTION",
+    designation: "Observation. System. and Carnifex. Adjudicator. Robot.",
     assetKey: "oscar",
     weight: 5,
     minimumDepth: 12,
