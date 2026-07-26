@@ -1,0 +1,186 @@
+<!-- ==========================================================
+     1. FIELD RECORDS SCREEN
+     ----------------------------------------------------------
+     Displays archived expedition reports and their complete
+     structured incident transcripts.
+========================================================== -->
+
+<section
+  id="nachtRaidersRecordsScreen"
+  class="nacht-raiders-interface-screen nacht-raiders-records-screen"
+  aria-labelledby="nachtRaidersRecordsHeading"
+  hidden
+>
+
+  <!-- ========================================================
+       2. ARCHIVE HEADER
+  ========================================================= -->
+
+  <header class="nacht-raiders-records-header">
+
+    <div class="nacht-raiders-records-heading-group">
+
+      <span class="nacht-raiders-records-eyebrow">
+        M.E.A.T. TEMPORAL OPERATIONS ARCHIVE
+      </span>
+
+      <h2 id="nachtRaidersRecordsHeading">
+        FIELD RECORDS
+      </h2>
+
+      <p
+        id="nachtRaidersRecordsSummary"
+        class="nacht-raiders-records-summary"
+      >
+        ARCHIVE EMPTY
+      </p>
+
+    </div>
+
+    <button
+      id="nachtRaidersRecordsBackButton"
+      class="nacht-raiders-menu-button nacht-raiders-records-back-button"
+      type="button"
+    >
+      RETURN TO MENU
+    </button>
+
+  </header>
+
+  <!-- ========================================================
+       3. REPORT INDEX
+  ========================================================= -->
+
+  <div class="nacht-raiders-records-workspace">
+
+    <aside
+      class="nacht-raiders-record-index"
+      aria-label="Archived expedition reports"
+    >
+
+      <header class="nacht-raiders-record-index-header">
+
+        <span>
+          ARCHIVED FILES
+        </span>
+
+        <strong id="nachtRaidersReportCount">
+          0
+        </strong>
+
+      </header>
+
+      <div
+        id="nachtRaidersReportList"
+        class="nacht-raiders-record-list"
+      ></div>
+
+    </aside>
+
+    <!-- ======================================================
+         4. REPORT READER
+    ======================================================= -->
+
+    <article
+      class="nacht-raiders-report-reader"
+      aria-live="polite"
+    >
+
+      <div
+        id="nachtRaidersReportEmpty"
+        class="nacht-raiders-report-empty"
+      >
+
+        <span>
+          C:\MEAT\NACHT_RAIDERS\FIELD_RECORDS&gt;
+        </span>
+
+        <strong>
+          NO EXPEDITION LOG SELECTED
+        </strong>
+
+        <p>
+          ARCHIVE DIRECTORY CONTAINS NO READABLE DATA
+        </p>
+
+      </div>
+
+      <div
+        id="nachtRaidersReportContent"
+        class="nacht-raiders-report-content"
+        hidden
+      >
+
+        <header class="nacht-raiders-report-header">
+
+          <span class="nacht-raiders-report-path">
+            C:\MEAT\NACHT_RAIDERS\FIELD_RECORDS\
+          </span>
+
+          <h3 id="nachtRaidersReportFilename">
+            EXPEDITION_000000.LOG
+          </h3>
+
+          <p id="nachtRaidersReportCreatedAt">
+            UNKNOWN DATE
+          </p>
+
+        </header>
+
+        <dl class="nacht-raiders-report-metadata">
+
+          <div>
+            <dt>CYCLE</dt>
+            <dd id="nachtRaidersReportCycle">0</dd>
+          </div>
+
+          <div>
+            <dt>DEPTH</dt>
+            <dd id="nachtRaidersReportDepth">0</dd>
+          </div>
+
+          <div>
+            <dt>ENTRIES</dt>
+            <dd id="nachtRaidersReportEntryCount">0</dd>
+          </div>
+
+          <div>
+            <dt>ZONE</dt>
+            <dd id="nachtRaidersReportZones">UNKNOWN</dd>
+          </div>
+
+        </dl>
+
+        <section class="nacht-raiders-report-rewards-section">
+
+          <h4>
+            RECOVERED ASSETS
+          </h4>
+
+          <div
+            id="nachtRaidersReportRewards"
+            class="nacht-raiders-report-rewards"
+          ></div>
+
+        </section>
+
+        <section class="nacht-raiders-report-entries-section">
+
+          <h4>
+            FIELD TRANSCRIPT
+          </h4>
+
+          <div
+            id="nachtRaidersReportEntries"
+            class="nacht-raiders-report-entries"
+          ></div>
+
+        </section>
+
+      </div>
+
+    </article>
+
+  </div>
+
+</section>
