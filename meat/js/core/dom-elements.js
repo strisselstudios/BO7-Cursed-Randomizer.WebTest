@@ -600,6 +600,28 @@ const nachtRaidersGameBackButton =
     "nachtRaidersGameBackButton"
   );
 
+const nachtRaidersRecordsButton = document.getElementById("nachtRaidersRecordsButton");
+const nachtRaidersRecordsUnreadBadge = document.getElementById("nachtRaidersRecordsUnreadBadge");
+const nachtRaidersRecordsScreen = document.getElementById("nachtRaidersRecordsScreen");
+const nachtRaidersRecordsSummary = document.getElementById("nachtRaidersRecordsSummary");
+const nachtRaidersRecordsBackButton = document.getElementById("nachtRaidersRecordsBackButton");
+const nachtRaidersReportCount = document.getElementById("nachtRaidersReportCount");
+const nachtRaidersReportList = document.getElementById("nachtRaidersReportList");
+const nachtRaidersReportEmpty = document.getElementById("nachtRaidersReportEmpty");
+const nachtRaidersReportContent = document.getElementById("nachtRaidersReportContent");
+const nachtRaidersReportFilename = document.getElementById("nachtRaidersReportFilename");
+const nachtRaidersReportCreatedAt = document.getElementById("nachtRaidersReportCreatedAt");
+const nachtRaidersReportCycle = document.getElementById("nachtRaidersReportCycle");
+const nachtRaidersReportDepth = document.getElementById("nachtRaidersReportDepth");
+const nachtRaidersReportEntryCount = document.getElementById("nachtRaidersReportEntryCount");
+const nachtRaidersReportZones = document.getElementById("nachtRaidersReportZones");
+const nachtRaidersReportRewards = document.getElementById("nachtRaidersReportRewards");
+const nachtRaidersReportEntries = document.getElementById("nachtRaidersReportEntries");
+
+
+
+
+
 const aetherRepairmenIcon =
   document.getElementById(
     "aetherRepairmenIcon"
