@@ -5,7 +5,7 @@
    and window-state values.
 ========================================================== */
 
-const NACHT_RAIDERS_STATE_VERSION = 3;
+const NACHT_RAIDERS_STATE_VERSION = 4;
 
 const NACHT_RAIDERS_STATUS_INACTIVE = "inactive";
 const NACHT_RAIDERS_STATUS_RUNNING = "running";
@@ -175,7 +175,8 @@ function createDefaultNachtRaidersState() {
       reconstructions: 0
     },
 
-    fieldRecords: {
+        fieldRecords: {
+      reportSequence: 0,
       pendingEntries: [],
       reports: []
     },
@@ -245,6 +246,11 @@ function migrateNachtRaidersState(
     )
       ? sourceState.fieldRecords
       : {};
+
+   const reportSequence =
+    normalizeNachtRaidersInteger(
+      savedFieldRecords.reportSequence
+    );
 
   const savedWindow =
     isNachtRaidersPlainObject(
@@ -474,7 +480,9 @@ function migrateNachtRaidersState(
         )
     },
 
-    fieldRecords: {
+   fieldRecords: {
+      reportSequence,
+
       pendingEntries:
         normalizeNachtRaidersRecordArray(
           savedFieldRecords.pendingEntries,
@@ -487,7 +495,6 @@ function migrateNachtRaidersState(
           NACHT_RAIDERS_REPORT_ARCHIVE_LIMIT
         )
     },
-
     window: {
       mode:
         windowMode,
