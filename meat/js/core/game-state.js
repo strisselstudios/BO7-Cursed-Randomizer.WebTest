@@ -5,8 +5,8 @@
 ========================================================== */
 
 const MEAT_SAVE_KEY = "meatExeSave";
-const CURRENT_SAVE_VERSION = 16;
-
+const CURRENT_SAVE_VERSION = 17;
+const CURRENT_SAVE_INTEGRITY_VERSION = 1;
 /* ==========================================================
    2. DEFAULT GAME STATE
    ----------------------------------------------------------
@@ -16,16 +16,19 @@ const CURRENT_SAVE_VERSION = 16;
 function createDefaultGameState() {
   return {
     saveVersion: CURRENT_SAVE_VERSION,
+    saveIntegrityVersion: CURRENT_SAVE_INTEGRITY_VERSION,
+    modifiedSave: false,
+    modifiedSaveReasons: [],
 
     meat: 0,
-totalMeat: 0,
+    totalMeat: 0,
 
-infiniteMeat: false,
+    infiniteMeat: false,
 
-meatRemainder: 0,
-totalMeatRemainder: 0,
+    meatRemainder: 0,
+    totalMeatRemainder: 0,
 
-totalClicks: 0,
+    totalClicks: 0,
 
     meatPerClick: 1,
     meatPerSecond: 0,
