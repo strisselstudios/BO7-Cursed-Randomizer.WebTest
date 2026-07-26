@@ -92,6 +92,27 @@ function enterNachtRaidersGameStage() {
     saveGame();
   }
 
+  const reportResult =
+    finalizeNachtRaidersPendingReports(
+      nachtRaidersState,
+      {
+        force: true,
+
+        reason:
+          NACHT_RAIDERS_REPORT_REASON_OPERATIVE_ACCESS,
+
+        createdAt:
+          Date.now()
+      }
+    );
+
+  if (
+    !isFirstStart &&
+    reportResult.reportsCreated > 0
+  ) {
+    saveGame();
+  }
+
   updateNachtRaidersMenu();
 
   const screenChanged =
