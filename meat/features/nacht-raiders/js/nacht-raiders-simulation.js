@@ -27,15 +27,11 @@ function createNachtRaidersSimulationSummary(
     depthGained: 0,
 
     incidentsGenerated: 0,
+    levelsGained: 0,
 
-    rewards: {
-      xp: 0,
-      salvage: 0,
-      aetherResidue: 0,
-      fieldData: 0,
-      relicFragments: 0
-    },
-
+    rewards:
+      createEmptyNachtRaidersRewards(),
+   
     wasCapped: false
   };
 }
@@ -202,7 +198,7 @@ function simulateNachtRaidersToTime(
     generateNachtRaidersTravelIncidents(
       nachtRaidersState,
       {
-        incidentCount:
+         completedDepthCount:
           travelResult.depthGained,
 
         startingZoneDepth:
@@ -231,6 +227,9 @@ function simulateNachtRaidersToTime(
 
   summary.incidentsGenerated =
     incidentResult.incidentsGenerated;
+
+  summary.levelsGained =
+    incidentResult.levelsGained;
 
   summary.rewards = {
     ...incidentResult.rewards
