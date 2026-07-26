@@ -78,15 +78,26 @@ const importSaveButton = document.getElementById("importSaveButton");
 const resetGameButton = document.getElementById("resetGameButton");
 
 /* ==========================================================
-   3.2 RESET CONFIRMATION
+   3.2 SAVE IMPORT ASSESSMENT
+========================================================== */
+
+const saveImportOverlay = document.getElementById("saveImportOverlay");
+const saveImportDialog = document.getElementById("saveImportDialog");
+const saveImportStatus = document.getElementById("saveImportStatus");
+const saveImportTitle = document.getElementById("saveImportTitle");
+const saveImportMessage = document.getElementById("saveImportMessage");
+const cancelSaveImportButton = document.getElementById("cancelSaveImportButton");
+const confirmSaveImportButton = document.getElementById("confirmSaveImportButton");
+
+/* ==========================================================
+   3.3 RESET CONFIRMATION
 ========================================================== */
 
 const resetConfirmationOverlay = document.getElementById("resetConfirmationOverlay");
 const cancelResetButton = document.getElementById("cancelResetButton");
 const confirmResetButton = document.getElementById("confirmResetButton");
-
 /* ==========================================================
-   3.3 SAVE TRANSFER
+   3.4 SAVE TRANSFER
 ========================================================== */
 
 const createTransferButton = document.getElementById("createTransferButton");
@@ -111,7 +122,7 @@ const confirmTransferButton = document.getElementById("confirmTransferButton");
 const transferReceiveStatus = document.getElementById("transferReceiveStatus");
 
 /* ==========================================================
-   3.4 OFFLINE PRODUCTION
+   3.5 OFFLINE PRODUCTION
 ========================================================== */
 
 const offlineProductionDialog = document.getElementById("offlineProductionDialog");
