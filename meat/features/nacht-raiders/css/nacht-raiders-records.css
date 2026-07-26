@@ -1,0 +1,524 @@
+/* ==========================================================
+   1. FIELD RECORDS SCREEN
+========================================================== */
+
+.nacht-raiders-records-screen {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background:
+    radial-gradient(circle at 70% 30%, rgba(67, 95, 30, 0.16), transparent 36%),
+    linear-gradient(135deg, #010401, #071006 52%, #010301);
+  overflow: hidden;
+}
+
+.nacht-raiders-records-screen[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   2. ARCHIVE HEADER
+========================================================== */
+
+.nacht-raiders-records-header {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  background: rgba(1, 6, 1, 0.94);
+  border-bottom: 1px solid rgba(155, 188, 15, 0.48);
+}
+
+.nacht-raiders-records-heading-group {
+  min-width: 0;
+}
+
+.nacht-raiders-records-eyebrow {
+  display: block;
+  color: rgba(202, 220, 159, 0.56);
+  font-size: clamp(0.52rem, 1.4vw, 0.66rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.nacht-raiders-records-header h2 {
+  margin: 0.18rem 0 0;
+  color: #cadc9f;
+  font-size: clamp(1.15rem, 4vw, 2rem);
+  line-height: 1;
+  letter-spacing: 0.07em;
+  text-shadow: 0 0 11px rgba(155, 188, 15, 0.35);
+}
+
+.nacht-raiders-records-summary {
+  margin: 0.25rem 0 0;
+  color: #8bac0f;
+  font-size: clamp(0.52rem, 1.5vw, 0.68rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.nacht-raiders-records-back-button {
+  width: auto;
+  min-width: min(180px, 42vw);
+  flex: 0 0 auto;
+}
+
+/* ==========================================================
+   3. MENU RECORD CONTROL
+========================================================== */
+
+.nacht-raiders-records-menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.nacht-raiders-record-unread-badge {
+  min-width: 1.5rem;
+  display: inline-grid;
+  place-items: center;
+  padding: 0.16rem 0.34rem;
+  background: #9bbc0f;
+  color: #020602;
+  border: 1px solid #cadc9f;
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.nacht-raiders-record-unread-badge[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   4. ARCHIVE WORKSPACE
+========================================================== */
+
+.nacht-raiders-records-workspace {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 31%) minmax(0, 1fr);
+  overflow: hidden;
+}
+
+/* ==========================================================
+   5. REPORT INDEX
+========================================================== */
+
+.nacht-raiders-record-index {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: rgba(1, 5, 1, 0.9);
+  border-right: 1px solid rgba(155, 188, 15, 0.38);
+  overflow: hidden;
+}
+
+.nacht-raiders-record-index-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.65rem 0.75rem;
+  color: #cadc9f;
+  border-bottom: 1px solid rgba(155, 188, 15, 0.28);
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
+}
+
+.nacht-raiders-record-index-header strong {
+  min-width: 1.5rem;
+  text-align: right;
+}
+
+.nacht-raiders-record-list {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #697d4b #020602;
+  scrollbar-width: thin;
+}
+
+.nacht-raiders-record-list-empty {
+  margin: 0;
+  padding: 1rem 0.75rem;
+  color: rgba(202, 220, 159, 0.46);
+  font-size: 0.66rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.nacht-raiders-record-list-button {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.24rem;
+  padding: 0.72rem 0.75rem;
+  appearance: none;
+  background: rgba(1, 5, 1, 0.82);
+  color: #9bbc0f;
+  border: 0;
+  border-bottom: 1px solid rgba(155, 188, 15, 0.18);
+  border-radius: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.nacht-raiders-record-list-button:hover,
+.nacht-raiders-record-list-button:focus-visible {
+  background: rgba(31, 52, 15, 0.72);
+  color: #e2f1bd;
+}
+
+.nacht-raiders-record-list-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: -3px;
+}
+
+.nacht-raiders-record-list-button.is-selected {
+  background: rgba(56, 82, 24, 0.76);
+  box-shadow: inset 3px 0 0 #cadc9f;
+}
+
+.nacht-raiders-record-list-button.is-unread {
+  color: #cadc9f;
+}
+
+.nacht-raiders-record-list-filename-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.nacht-raiders-record-list-filename {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nacht-raiders-record-list-unread {
+  flex: 0 0 auto;
+  padding: 0.12rem 0.25rem;
+  background: #9bbc0f;
+  color: #020602;
+  font-size: 0.52rem;
+  font-weight: 700;
+}
+
+.nacht-raiders-record-list-date,
+.nacht-raiders-record-list-meta {
+  color: rgba(202, 220, 159, 0.54);
+  font-size: 0.55rem;
+  line-height: 1.35;
+}
+
+/* ==========================================================
+   6. REPORT READER
+========================================================== */
+
+.nacht-raiders-report-reader {
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #697d4b #020602;
+  scrollbar-width: thin;
+}
+
+.nacht-raiders-report-empty {
+  min-height: 100%;
+  display: grid;
+  place-content: center;
+  gap: 0.6rem;
+  padding: 1.5rem;
+  color: rgba(202, 220, 159, 0.45);
+  text-align: center;
+}
+
+.nacht-raiders-report-empty span {
+  font-size: 0.62rem;
+}
+
+.nacht-raiders-report-empty strong {
+  color: #cadc9f;
+  font-size: clamp(0.9rem, 3vw, 1.35rem);
+}
+
+.nacht-raiders-report-empty p {
+  margin: 0;
+  font-size: 0.62rem;
+}
+
+.nacht-raiders-report-content {
+  min-height: 100%;
+  padding: clamp(0.9rem, 3vw, 1.5rem);
+}
+
+.nacht-raiders-report-content[hidden],
+.nacht-raiders-report-empty[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   7. REPORT IDENTITY
+========================================================== */
+
+.nacht-raiders-report-header {
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(155, 188, 15, 0.32);
+}
+
+.nacht-raiders-report-path {
+  color: rgba(202, 220, 159, 0.44);
+  font-size: 0.58rem;
+  overflow-wrap: anywhere;
+}
+
+.nacht-raiders-report-header h3 {
+  margin: 0.34rem 0 0;
+  color: #cadc9f;
+  font-size: clamp(1rem, 3.5vw, 1.65rem);
+  line-height: 1.1;
+  letter-spacing: 0.045em;
+  overflow-wrap: anywhere;
+}
+
+.nacht-raiders-report-header p {
+  margin: 0.28rem 0 0;
+  color: #8bac0f;
+  font-size: 0.64rem;
+}
+
+/* ==========================================================
+   8. REPORT METADATA
+========================================================== */
+
+.nacht-raiders-report-metadata {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border-bottom: 1px solid rgba(155, 188, 15, 0.3);
+}
+
+.nacht-raiders-report-metadata div {
+  min-width: 0;
+  padding: 0.72rem 0.55rem;
+  border-right: 1px solid rgba(155, 188, 15, 0.2);
+}
+
+.nacht-raiders-report-metadata div:last-child {
+  border-right: 0;
+}
+
+.nacht-raiders-report-metadata dt {
+  color: rgba(202, 220, 159, 0.5);
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.nacht-raiders-report-metadata dd {
+  margin: 0.25rem 0 0;
+  color: #cadc9f;
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================================
+   9. REPORT REWARDS
+========================================================== */
+
+.nacht-raiders-report-rewards-section,
+.nacht-raiders-report-entries-section {
+  margin-top: 1rem;
+}
+
+.nacht-raiders-report-rewards-section h4,
+.nacht-raiders-report-entries-section h4 {
+  margin: 0 0 0.55rem;
+  color: #cadc9f;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+}
+
+.nacht-raiders-report-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.nacht-raiders-report-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.5rem;
+  background: rgba(31, 52, 15, 0.46);
+  border: 1px solid rgba(155, 188, 15, 0.32);
+  font-size: 0.6rem;
+}
+
+.nacht-raiders-report-reward-label {
+  color: rgba(202, 220, 159, 0.7);
+}
+
+.nacht-raiders-report-reward-value {
+  color: #cadc9f;
+  font-weight: 700;
+}
+
+.nacht-raiders-report-reward-empty {
+  color: rgba(202, 220, 159, 0.42);
+  font-size: 0.62rem;
+}
+
+/* ==========================================================
+   10. REPORT ENTRIES
+========================================================== */
+
+.nacht-raiders-report-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 0.72rem;
+}
+
+.nacht-raiders-report-entry {
+  padding: 0.72rem 0.8rem;
+  background: rgba(1, 6, 1, 0.72);
+  border: 1px solid rgba(155, 188, 15, 0.22);
+}
+
+.nacht-raiders-report-entry-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: rgba(202, 220, 159, 0.42);
+  font-size: 0.52rem;
+  line-height: 1.35;
+}
+
+.nacht-raiders-report-entry-location {
+  text-align: right;
+}
+
+.nacht-raiders-report-entry-title {
+  margin: 0.48rem 0 0.42rem;
+  color: #cadc9f;
+  font-size: 0.78rem;
+  letter-spacing: 0.055em;
+}
+
+.nacht-raiders-report-entry-line,
+.nacht-raiders-report-entry-output {
+  margin: 0.16rem 0 0;
+  font-size: 0.66rem;
+  line-height: 1.45;
+}
+
+.nacht-raiders-report-entry-line {
+  color: rgba(202, 220, 159, 0.74);
+}
+
+.nacht-raiders-report-entry-output {
+  color: #9bbc0f;
+  font-weight: 700;
+}
+
+/* ==========================================================
+   11. MOBILE PORTRAIT
+========================================================== */
+
+@media (orientation: portrait) and (max-width: 760px) {
+  .nacht-raiders-records-header {
+    align-items: flex-start;
+    padding: 0.65rem;
+  }
+
+  .nacht-raiders-records-back-button {
+    min-width: 132px;
+    min-height: 38px;
+    padding: 0.48rem 0.55rem;
+    font-size: 0.65rem;
+  }
+
+  .nacht-raiders-records-workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(150px, 34%) minmax(0, 1fr);
+  }
+
+  .nacht-raiders-record-index {
+    border-right: 0;
+    border-bottom: 1px solid rgba(155, 188, 15, 0.38);
+  }
+
+  .nacht-raiders-report-metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nacht-raiders-report-metadata div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .nacht-raiders-report-metadata div:nth-child(-n + 2) {
+    border-bottom: 1px solid rgba(155, 188, 15, 0.2);
+  }
+
+  .nacht-raiders-report-entry-header {
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .nacht-raiders-report-entry-location {
+    text-align: left;
+  }
+}
+
+/* ==========================================================
+   12. SHORT LANDSCAPE
+========================================================== */
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .nacht-raiders-records-header {
+    padding: 0.42rem 0.65rem;
+  }
+
+  .nacht-raiders-records-eyebrow,
+  .nacht-raiders-records-summary {
+    display: none;
+  }
+
+  .nacht-raiders-records-header h2 {
+    font-size: 1rem;
+  }
+
+  .nacht-raiders-records-back-button {
+    min-width: 145px;
+    min-height: 32px;
+    padding: 0.35rem 0.5rem;
+  }
+
+  .nacht-raiders-records-workspace {
+    grid-template-columns: minmax(190px, 29%) minmax(0, 1fr);
+  }
+
+  .nacht-raiders-report-content {
+    padding: 0.65rem;
+  }
+
+  .nacht-raiders-report-metadata div {
+    padding: 0.45rem;
+  }
+}
