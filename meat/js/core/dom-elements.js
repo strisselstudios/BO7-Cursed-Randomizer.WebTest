@@ -219,8 +219,8 @@ const silverSpoonIcon = document.getElementById("silverSpoonIcon");
 /* ==========================================================
    7. NACHT RAIDERS FEATURE ELEMENTS
    ----------------------------------------------------------
-   Caches the launcher, application window, boot terminal, menu,
-   gameplay staging screen, and Field Records archive.
+   Caches the launcher, window, boot terminal, menu, active
+   expedition interface, and Field Records archive.
 ========================================================== */
 
 /* ==========================================================
@@ -228,6 +228,7 @@ const silverSpoonIcon = document.getElementById("silverSpoonIcon");
 ========================================================== */
 
 const aetherRepairmenCardGroup = document.getElementById("aetherRepairmenCardGroup");
+const aetherRepairmenIcon = document.getElementById("aetherRepairmenIcon");
 const nachtRaidersLauncherButton = document.getElementById("nachtRaidersLauncherButton");
 const nachtRaidersOverlay = document.getElementById("nachtRaidersOverlay");
 const nachtRaidersWindow = document.getElementById("nachtRaidersWindow");
@@ -235,7 +236,7 @@ const nachtRaidersCloseButton = document.getElementById("nachtRaidersCloseButton
 const nachtRaidersScreen = document.getElementById("nachtRaidersScreen");
 
 /* ==========================================================
-   7.2 BOOT, MENU, AND GAME SCREENS
+   7.2 BOOT AND MENU
 ========================================================== */
 
 const nachtRaidersLoadingScreen = document.getElementById("nachtRaidersLoadingScreen");
@@ -246,11 +247,41 @@ const nachtRaidersPrimaryButton = document.getElementById("nachtRaidersPrimaryBu
 const nachtRaidersPrimaryButtonLabel = document.getElementById("nachtRaidersPrimaryButtonLabel");
 const nachtRaidersMenuStatus = document.getElementById("nachtRaidersMenuStatus");
 const nachtRaidersExitButton = document.getElementById("nachtRaidersExitButton");
-const nachtRaidersGameScreen = document.getElementById("nachtRaidersGameScreen");
-const nachtRaidersGameBackButton = document.getElementById("nachtRaidersGameBackButton");
 
 /* ==========================================================
-   7.3 FIELD RECORDS ARCHIVE
+   7.3 ACTIVE EXPEDITION
+========================================================== */
+
+const nachtRaidersGameScreen = document.getElementById("nachtRaidersGameScreen");
+const nachtRaidersGameBackButton = document.getElementById("nachtRaidersGameBackButton");
+const nachtRaidersGameZone = document.getElementById("nachtRaidersGameZone");
+const nachtRaidersGameDepth = document.getElementById("nachtRaidersGameDepth");
+const nachtRaidersGameCycle = document.getElementById("nachtRaidersGameCycle");
+const nachtRaidersGameLevel = document.getElementById("nachtRaidersGameLevel");
+const nachtRaidersGameHealthText = document.getElementById("nachtRaidersGameHealthText");
+const nachtRaidersGameHealthFill = document.getElementById("nachtRaidersGameHealthFill");
+const nachtRaidersGameXpText = document.getElementById("nachtRaidersGameXpText");
+const nachtRaidersGameXpFill = document.getElementById("nachtRaidersGameXpFill");
+const nachtRaidersGameTravelText = document.getElementById("nachtRaidersGameTravelText");
+const nachtRaidersGameTravelFill = document.getElementById("nachtRaidersGameTravelFill");
+const nachtRaidersOperativeEntity = document.getElementById("nachtRaidersOperativeEntity");
+const nachtRaidersOperativeVisual = document.getElementById("nachtRaidersOperativeVisual");
+const nachtRaidersOperativePlaceholder = document.getElementById("nachtRaidersOperativePlaceholder");
+const nachtRaidersEnemyEntity = document.getElementById("nachtRaidersEnemyEntity");
+const nachtRaidersEnemyVisual = document.getElementById("nachtRaidersEnemyVisual");
+const nachtRaidersEnemyPlaceholder = document.getElementById("nachtRaidersEnemyPlaceholder");
+const nachtRaidersEnemyName = document.getElementById("nachtRaidersEnemyName");
+const nachtRaidersEnemyHealthText = document.getElementById("nachtRaidersEnemyHealthText");
+const nachtRaidersEnemyHealthFill = document.getElementById("nachtRaidersEnemyHealthFill");
+const nachtRaidersGameEventType = document.getElementById("nachtRaidersGameEventType");
+const nachtRaidersGameEventText = document.getElementById("nachtRaidersGameEventText");
+const nachtRaidersGameSalvage = document.getElementById("nachtRaidersGameSalvage");
+const nachtRaidersGameAetherResidue = document.getElementById("nachtRaidersGameAetherResidue");
+const nachtRaidersGameFieldData = document.getElementById("nachtRaidersGameFieldData");
+const nachtRaidersGameRelicFragments = document.getElementById("nachtRaidersGameRelicFragments");
+
+/* ==========================================================
+   7.4 FIELD RECORDS ARCHIVE
 ========================================================== */
 
 const nachtRaidersRecordsButton = document.getElementById("nachtRaidersRecordsButton");
@@ -270,7 +301,6 @@ const nachtRaidersReportEntryCount = document.getElementById("nachtRaidersReport
 const nachtRaidersReportZones = document.getElementById("nachtRaidersReportZones");
 const nachtRaidersReportRewards = document.getElementById("nachtRaidersReportRewards");
 const nachtRaidersReportEntries = document.getElementById("nachtRaidersReportEntries");
-const aetherRepairmenIcon = document.getElementById("aetherRepairmenIcon");
 
 /* ==========================================================
    8. PRODUCER DISPLAY MAP
