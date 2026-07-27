@@ -717,16 +717,18 @@ function validateNachtRaidersSaveState(
     );
 
     if (
-      windowState.mode !== undefined &&
-      !NACHT_RAIDERS_WINDOW_MODES
-        .includes(
-          windowState.mode
-        )
-    ) {
-      throw new Error(
-        "The Nacht Raiders window mode is invalid."
-      );
-    }
+  windowState.mode !== undefined &&
+  !NACHT_RAIDERS_WINDOW_MODES.includes(
+    windowState.mode
+  ) &&
+  !NACHT_RAIDERS_LEGACY_WINDOW_MODES.includes(
+    windowState.mode
+  )
+) {
+  throw new Error(
+    "The Nacht Raiders window mode is invalid."
+  );
+}
 
     if (
       windowState.position !==
