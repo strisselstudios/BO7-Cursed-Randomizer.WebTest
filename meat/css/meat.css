@@ -31,6 +31,8 @@
 @import url("../features/nacht-raiders/css/nacht-raiders-game.css");
 @import url("../features/nacht-raiders/css/nacht-raiders-environment.css");
 @import url("../features/nacht-raiders/css/nacht-raiders-presentation.css");
+@import url("../features/nacht-raiders/css/nacht-raiders-compact-monitor.css");
+@import url("../features/nacht-raiders/css/nacht-raiders-terminal-monitor.css");
 
 @import url("../features/high-steaks/css/high-steaks-launcher.css");
 @import url("../features/high-steaks/css/high-steaks-window.css");
