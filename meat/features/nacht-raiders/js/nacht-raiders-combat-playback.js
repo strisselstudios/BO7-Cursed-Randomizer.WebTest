@@ -414,8 +414,10 @@ function showNachtRaidersCombatPlaybackOutcome(
 ========================================================== */
 
 function playNachtRaidersCombatTimeline(
-  combatResult
+  combatResult,
+  onComplete = null
 ) {
+   
   if (
     !combatResult ||
     !Array.isArray(combatResult.actions)
@@ -514,7 +516,7 @@ function playNachtRaidersCombatTimeline(
     runId
   );
 
-  scheduleNachtRaidersCombatPlayback(
+    scheduleNachtRaidersCombatPlayback(
     () => {
       cancelNachtRaidersCombatPlayback(true);
       renderNachtRaidersGameState();
@@ -524,6 +526,18 @@ function playNachtRaidersCombatTimeline(
 
       nachtRaidersGameEventText.textContent =
         "OPERATIVE ADVANCING";
+
+      if (typeof onComplete === "function") {
+        onComplete(combatResult);
+      }
+
+      document.dispatchEvent(
+        new CustomEvent("nacht-raiders:combat-playback-completed", {
+          detail: {
+            combatResult
+          }
+        })
+      );
     },
     outcomeDelayMs +
       NACHT_RAIDERS_COMBAT_PLAYBACK_SETTINGS
