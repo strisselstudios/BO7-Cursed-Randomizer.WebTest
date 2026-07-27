@@ -390,7 +390,32 @@ function generateNachtRaidersEncounter(
       ? 1
       : 0;
 
-  result.lastEncounter = combatResult;
+    result.lastEncounter = {
+    ...combatResult,
+
+    recordId:
+      record.recordId,
+
+    rewards: {
+      ...outcomeResult.rewards
+    },
+
+    levelsGained:
+      outcomeResult.levelsGained,
+
+    presentation: {
+      ...record.presentation,
+
+      lines:
+        Array.isArray(
+          record.presentation?.lines
+        )
+          ? [
+              ...record.presentation.lines
+            ]
+          : []
+    }
+  };
 
   return result;
 }
