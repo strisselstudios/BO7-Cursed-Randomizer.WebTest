@@ -44,7 +44,7 @@ body.high-steaks-window-open { overflow: hidden; }
 /* ==========================================================
    3. TITLE BAR
 ========================================================== */
-.high-steaks-title-bar {
+grid-template-columns: minmax(0, 1fr) auto; {
   position: relative;
   z-index: 30;
   min-width: 0;
