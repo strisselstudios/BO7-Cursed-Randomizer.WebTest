@@ -60,7 +60,7 @@
 }
 
 /* ==========================================================
-   2. FLOATING OVERLAY BEHAVIOR
+   2. FLOATING OVERLAY
 ========================================================== */
 
 .nacht-raiders-overlay.is-floating {
@@ -79,7 +79,8 @@
   display: none;
 }
 
-.nacht-raiders-overlay.is-floating .nacht-raiders-window {
+.nacht-raiders-overlay.is-floating
+.nacht-raiders-window {
   position: fixed;
   margin: 0;
   max-width: calc(100vw - 8px);
@@ -93,27 +94,35 @@
     0 8px 28px rgba(0, 0, 0, 0.62);
 }
 
+.nacht-raiders-overlay.is-floating
+.nacht-raiders-title-bar {
+  min-height: 29px;
+  padding: 2px 2px 2px 5px;
+}
+
+.nacht-raiders-overlay.is-floating
+.nacht-raiders-window-body {
+  padding: 3px;
+}
+
 /* ==========================================================
-   3. COMPACT GRAPHICAL WINDOW
+   3. COMPACT FIELD MONITOR SIZE
 ========================================================== */
 
 .nacht-raiders-overlay.is-floating[data-window-mode="compact"]
 .nacht-raiders-window {
-  width: min(430px, calc(100vw - 12px));
-  height: min(260px, calc(100dvh - 12px));
+  width: min(394px, calc(100vw - 12px));
+  height: min(238px, calc(100dvh - 12px));
 }
 
 /* ==========================================================
-   4. TERMINAL-SIZED WINDOW
-   ----------------------------------------------------------
-   Step 15C will replace the temporary reused content with the
-   dedicated rolling field-link terminal.
+   4. TERMINAL FIELD-LINK SIZE
 ========================================================== */
 
 .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
 .nacht-raiders-window {
-  width: min(360px, calc(100vw - 12px));
-  height: min(210px, calc(100dvh - 12px));
+  width: min(330px, calc(100vw - 12px));
+  height: min(192px, calc(100dvh - 12px));
 }
 
 .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
@@ -122,12 +131,30 @@
 }
 
 .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
+.nacht-raiders-window-identity {
+  gap: 0;
+}
+
+.nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
 .nacht-raiders-window-identity strong {
   font-size: 0.68rem;
 }
 
 /* ==========================================================
-   5. FLOATING TITLE-BAR DRAGGING
+   5. MODE-SPECIFIC INTERFACES
+========================================================== */
+
+.nacht-raiders-overlay[data-window-mode="terminal"]
+.nacht-raiders-interface-screen {
+  display: none !important;
+}
+
+.nacht-raiders-field-link-monitor[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   6. FLOATING TITLE-BAR DRAGGING
 ========================================================== */
 
 .nacht-raiders-overlay.is-floating
@@ -148,7 +175,7 @@
 }
 
 /* ==========================================================
-   6. FLOATING MOBILE PRESENTATION
+   7. MOBILE FLOATING MODES
 ========================================================== */
 
 @media (max-width: 760px) {
@@ -165,48 +192,48 @@
 
   .nacht-raiders-overlay.is-floating[data-window-mode="compact"]
   .nacht-raiders-window {
-    width: min(92vw, 430px);
-    height: min(34dvh, 260px);
+    width: min(94vw, 394px);
+    height: min(40dvh, 238px);
   }
 
   .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
   .nacht-raiders-window {
-    width: min(88vw, 360px);
-    height: min(28dvh, 210px);
+    width: min(92vw, 330px);
+    height: min(34dvh, 192px);
   }
 
   .nacht-raiders-overlay.is-floating
   .nacht-raiders-title-bar {
-    min-height: 30px;
+    min-height: 29px;
     padding: 2px 2px 2px 5px;
   }
 
   .nacht-raiders-overlay.is-floating
   .nacht-raiders-window-body {
-    padding: 2px;
+    padding: 3px;
   }
 }
 
 /* ==========================================================
-   7. SHORT LANDSCAPE FLOATING PRESENTATION
+   8. SHORT LANDSCAPE
 ========================================================== */
 
 @media (orientation: landscape) and (max-height: 520px) {
   .nacht-raiders-overlay.is-floating[data-window-mode="compact"]
   .nacht-raiders-window {
-    width: min(54vw, 430px);
-    height: min(62dvh, 260px);
+    width: min(58vw, 394px);
+    height: min(68dvh, 238px);
   }
 
   .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
   .nacht-raiders-window {
-    width: min(46vw, 360px);
-    height: min(48dvh, 210px);
+    width: min(50vw, 330px);
+    height: min(58dvh, 192px);
   }
 }
 
 /* ==========================================================
-   8. REDUCED ANIMATION
+   9. REDUCED ANIMATION
 ========================================================== */
 
 body.animations-disabled
