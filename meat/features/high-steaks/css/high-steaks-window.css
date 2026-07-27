@@ -1,0 +1,505 @@
+/* ==========================================================
+   1. HIGH STEAKS OVERLAY
+========================================================== */
+
+.high-steaks-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 21000;
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.75rem, 3vw, 2.5rem);
+  background: rgba(7, 2, 1, 0.72);
+  -webkit-backdrop-filter: blur(7px) brightness(0.52);
+  backdrop-filter: blur(7px) brightness(0.52);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.high-steaks-overlay[hidden] { display: none; }
+body.high-steaks-window-open { overflow: hidden; }
+
+/* ==========================================================
+   2. SALOON WINDOW
+========================================================== */
+
+.high-steaks-window {
+  position: relative;
+  width: min(1120px, calc(100vw - 1.5rem));
+  height: min(760px, calc(100dvh - 1.5rem));
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: #1d0b07;
+  color: #f6e0b6;
+  border: 2px solid #d6aa62;
+  box-shadow:
+    inset 0 0 0 2px #512210,
+    inset 0 0 35px rgba(0, 0, 0, 0.72),
+    0 24px 80px rgba(0, 0, 0, 0.82);
+  overflow: hidden;
+  outline: none;
+  touch-action: manipulation;
+}
+
+.high-steaks-window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 62px, rgba(0, 0, 0, 0.2) 63px 65px),
+    linear-gradient(180deg, rgba(255, 194, 96, 0.05), transparent 28%),
+    #35160d;
+  pointer-events: none;
+}
+
+/* ==========================================================
+   3. SALOON HEADER
+========================================================== */
+
+.high-steaks-title-bar {
+  position: relative;
+  z-index: 2;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.65rem 0.55rem 0.85rem;
+  background:
+    linear-gradient(180deg, rgba(102, 42, 20, 0.98), rgba(48, 16, 9, 0.99));
+  border-bottom: 2px solid #d6aa62;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.high-steaks-window-identity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.high-steaks-window-mark {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #201008;
+  background: #d6aa62;
+  border: 2px solid #f6ddb0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px #8d5b27;
+  font-size: 1.3rem;
+}
+
+.high-steaks-window-identity div { min-width: 0; }
+
+.high-steaks-window-identity span:not(.high-steaks-window-mark) {
+  display: block;
+  color: #d4b584;
+  font: 700 0.58rem/1.1 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.high-steaks-window-identity strong {
+  display: block;
+  margin-top: 0.18rem;
+  color: #fff0c7;
+  font: 800 clamp(1rem, 2.7vw, 1.5rem)/1 Georgia, "Times New Roman", serif;
+  letter-spacing: 0.12em;
+  text-shadow: 0 2px 0 #250904;
+  white-space: nowrap;
+}
+
+.high-steaks-close-button {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  appearance: none;
+  background: #2a0d07;
+  color: #f6ddb0;
+  border: 1px solid #d6aa62;
+  border-radius: 4px;
+  font: 700 1.45rem/1 Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.high-steaks-close-button:hover,
+.high-steaks-close-button:focus-visible { background: #6c2815; color: #ffffff; }
+
+.high-steaks-close-button:focus-visible { outline: 2px solid #fff0c7; outline-offset: 2px; }
+.high-steaks-close-button:active { transform: translateY(1px); }
+
+/* ==========================================================
+   4. SALOON PLAY AREA
+========================================================== */
+
+.high-steaks-saloon {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(180px, 1fr) auto;
+  gap: clamp(0.55rem, 1.6vh, 1rem);
+  padding: clamp(0.7rem, 2vw, 1.35rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(212, 157, 77, 0.08), transparent 42%),
+    linear-gradient(180deg, rgba(13, 4, 2, 0.2), rgba(0, 0, 0, 0.42));
+}
+
+.high-steaks-opponent-zone,
+.high-steaks-player-zone {
+  min-width: 0;
+  display: grid;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.65rem;
+  background: rgba(18, 6, 3, 0.72);
+  border: 1px solid rgba(214, 170, 98, 0.48);
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.48);
+}
+
+.high-steaks-opponent-zone { grid-template-columns: auto minmax(130px, 0.6fr) minmax(0, 2fr); }
+.high-steaks-player-zone { grid-template-columns: 1fr; }
+
+/* ==========================================================
+   5. PLAYER AND OPPONENT IDENTITIES
+========================================================== */
+
+.high-steaks-opponent-portrait {
+  width: clamp(54px, 8vw, 76px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 35%, #3a2b22 0 18%, transparent 19%),
+    radial-gradient(ellipse at 50% 88%, #2b201a 0 38%, transparent 39%),
+    #120806;
+  color: #d6aa62;
+  border: 2px solid #8d5b27;
+  border-radius: 50%;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.72);
+  font: 800 1.5rem/1 Georgia, serif;
+}
+
+.high-steaks-opponent-information,
+.high-steaks-player-heading { min-width: 0; }
+
+.high-steaks-player-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.high-steaks-zone-label {
+  display: block;
+  color: #b68c53;
+  font: 700 0.56rem/1 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.high-steaks-opponent-information h2,
+.high-steaks-player-heading h2 {
+  margin: 0.25rem 0 0.4rem;
+  color: #f4d9a8;
+  font: 800 clamp(0.82rem, 2vw, 1.05rem)/1.05 Georgia, "Times New Roman", serif;
+  letter-spacing: 0.05em;
+}
+
+.high-steaks-score-pips {
+  display: flex;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.high-steaks-score-pips li {
+  width: 18px;
+  height: 7px;
+  background: #1c0b06;
+  border: 1px solid #8d5b27;
+  border-radius: 999px;
+}
+
+.high-steaks-score-pips li.high-steaks-score-pip-won {
+  background: #d6aa62;
+  box-shadow: 0 0 8px rgba(214, 170, 98, 0.58);
+}
+
+/* ==========================================================
+   6. CARD HANDS
+========================================================== */
+
+.high-steaks-hand {
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(0.18rem, 0.7vw, 0.45rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0.15rem 0.4rem;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
+}
+
+.high-steaks-card {
+  position: relative;
+  flex: 0 0 clamp(38px, 5vw, 58px);
+  aspect-ratio: 0.69;
+  display: grid;
+  place-items: center;
+  border-radius: clamp(3px, 0.55vw, 6px);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.48);
+  overflow: hidden;
+}
+
+.high-steaks-card-back {
+  background:
+    linear-gradient(45deg, transparent 43%, rgba(245, 210, 154, 0.18) 44% 56%, transparent 57%),
+    linear-gradient(-45deg, transparent 43%, rgba(245, 210, 154, 0.18) 44% 56%, transparent 57%),
+    #5b170f;
+  background-size: 12px 12px;
+  border: 2px solid #e2c28a;
+  box-shadow:
+    inset 0 0 0 2px #5b170f,
+    inset 0 0 0 3px #d6aa62,
+    0 3px 7px rgba(0, 0, 0, 0.48);
+}
+
+.high-steaks-card-back::after {
+  content: "HS";
+  display: grid;
+  place-items: center;
+  width: 58%;
+  aspect-ratio: 1;
+  color: #f2d39a;
+  background: #240906;
+  border: 1px solid #d6aa62;
+  border-radius: 50%;
+  font: 800 clamp(0.42rem, 1vw, 0.62rem)/1 Georgia, serif;
+  letter-spacing: 0.04em;
+}
+
+.high-steaks-card-face {
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  justify-items: start;
+  padding: 0.26rem;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(221, 207, 177, 0.98));
+  color: #17100d;
+  border: 1px solid #2c1b14;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.high-steaks-card-face b { font-size: clamp(0.62rem, 1.5vw, 0.92rem); line-height: 1; }
+.high-steaks-card-face i { place-self: center; font-size: clamp(1rem, 2.5vw, 1.55rem); font-style: normal; }
+.high-steaks-card-red { color: #8e1616; }
+
+/* ==========================================================
+   7. CARD TABLE
+========================================================== */
+
+.high-steaks-table {
+  position: relative;
+  min-width: 0;
+  min-height: 180px;
+  display: grid;
+  place-items: stretch;
+  padding: clamp(12px, 2vw, 20px);
+  background:
+    linear-gradient(145deg, #6d351c, #2b0e08 58%, #7a3f23);
+  border: 1px solid #d6aa62;
+  border-radius: clamp(28px, 7vw, 72px);
+  box-shadow:
+    inset 0 0 0 5px #2a0b06,
+    inset 0 0 0 8px rgba(214, 170, 98, 0.42),
+    0 10px 24px rgba(0, 0, 0, 0.55);
+}
+
+.high-steaks-table-rail {
+  position: absolute;
+  inset: 9px;
+  border: 2px solid rgba(214, 170, 98, 0.34);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.high-steaks-table-content {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.35rem;
+  padding: clamp(0.8rem, 2vw, 1.4rem);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(219, 191, 120, 0.07), transparent 38%),
+    #153b2b;
+  border: 2px solid #091d14;
+  border-radius: clamp(22px, 6vw, 58px);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.68);
+}
+
+.high-steaks-play-lane {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.high-steaks-play-slot {
+  width: clamp(38px, 5vw, 58px);
+  aspect-ratio: 0.69;
+  display: grid;
+  place-items: center;
+  color: rgba(233, 218, 171, 0.26);
+  border: 1px dashed rgba(233, 218, 171, 0.28);
+  border-radius: 5px;
+  font: 700 1rem/1 Georgia, serif;
+}
+
+.high-steaks-table-center { text-align: center; }
+
+.high-steaks-table-eyebrow {
+  display: block;
+  color: rgba(233, 218, 171, 0.62);
+  font: 700 0.5rem/1 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.18em;
+}
+
+.high-steaks-table-center strong {
+  display: block;
+  margin-top: 0.25rem;
+  color: rgba(244, 217, 168, 0.78);
+  font: 800 clamp(1rem, 3vw, 1.7rem)/1 Georgia, "Times New Roman", serif;
+  letter-spacing: 0.12em;
+}
+
+.high-steaks-table-center p {
+  margin: 0.25rem 0 0;
+  color: #d6aa62;
+  font: 700 clamp(0.55rem, 1.5vw, 0.72rem)/1.2 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.1em;
+}
+
+/* ==========================================================
+   8. PROTOTYPE DEAL CONTROL
+========================================================== */
+
+.high-steaks-deal-button {
+  width: min(380px, 100%);
+  min-height: 40px;
+  justify-self: center;
+  padding: 0.55rem 0.8rem;
+  background: #24100a;
+  color: #8d7352;
+  border: 1px solid #6d4a2b;
+  border-radius: 4px;
+  font: 800 0.7rem/1 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.1em;
+  cursor: not-allowed;
+}
+
+/* ==========================================================
+   9. OPENING MOTION
+========================================================== */
+
+.high-steaks-overlay:not([hidden]) { animation: high-steaks-overlay-open 150ms ease-out both; }
+.high-steaks-overlay:not([hidden]) .high-steaks-window { animation: high-steaks-window-open 180ms ease-out both; }
+
+@keyframes high-steaks-overlay-open {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes high-steaks-window-open {
+  from { opacity: 0; transform: scale(0.975) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ==========================================================
+   10. TABLET AND MOBILE
+========================================================== */
+
+@media (max-width: 760px) {
+  .high-steaks-overlay { padding: 0; }
+
+  .high-steaks-window {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .high-steaks-title-bar {
+    padding-left: max(0.7rem, env(safe-area-inset-left));
+    padding-right: max(0.55rem, env(safe-area-inset-right));
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+
+  .high-steaks-saloon {
+    padding-right: max(0.55rem, env(safe-area-inset-right));
+    padding-bottom: max(0.65rem, env(safe-area-inset-bottom));
+    padding-left: max(0.55rem, env(safe-area-inset-left));
+  }
+
+  .high-steaks-opponent-zone { grid-template-columns: auto minmax(0, 1fr); }
+  .high-steaks-opponent-hand { grid-column: 1 / -1; justify-content: flex-start; }
+  .high-steaks-player-hand { justify-content: flex-start; }
+}
+
+@media (max-width: 430px) {
+  .high-steaks-window-mark { width: 32px; height: 32px; font-size: 1rem; }
+  .high-steaks-close-button { flex-basis: 34px; width: 34px; height: 34px; }
+  .high-steaks-saloon { grid-template-rows: auto minmax(210px, 1fr) auto; }
+  .high-steaks-opponent-zone,
+  .high-steaks-player-zone { padding: 0.5rem; }
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .high-steaks-overlay { padding: 0; }
+  .high-steaks-window { width: 100vw; height: 100dvh; border: 0; }
+  .high-steaks-saloon { grid-template-columns: minmax(170px, 0.65fr) minmax(340px, 1.7fr) minmax(220px, 0.85fr); grid-template-rows: minmax(0, 1fr); }
+  .high-steaks-opponent-zone,
+  .high-steaks-player-zone { align-content: center; }
+  .high-steaks-opponent-zone { grid-template-columns: auto minmax(0, 1fr); }
+  .high-steaks-opponent-hand { grid-column: 1 / -1; }
+}
+
+/* ==========================================================
+   11. REDUCED MOTION
+========================================================== */
+
+body.animations-disabled .high-steaks-overlay:not([hidden]),
+body.animations-disabled .high-steaks-overlay:not([hidden]) .high-steaks-window { animation: none; }
+
+body.animations-disabled .high-steaks-close-button:active { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .high-steaks-overlay:not([hidden]),
+  .high-steaks-overlay:not([hidden]) .high-steaks-window { animation: none; }
+  .high-steaks-close-button:active { transform: none; }
+}
