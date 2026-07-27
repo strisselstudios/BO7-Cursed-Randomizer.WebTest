@@ -207,13 +207,29 @@ function renderNachtRaidersGameState() {
       "function" &&
     isNachtRaidersPresentationBusy();
 
-  if (!combatPlaybackActive && !presentationBusy) {
+    if (!combatPlaybackActive && !presentationBusy) {
     applyNachtRaidersVisualAsset(
       nachtRaidersOperativeVisual,
       nachtRaidersOperativePlaceholder,
       "operative",
       NACHT_RAIDERS_ANIMATION_WALK
     );
+  }
+
+  if (
+    typeof renderNachtRaidersCompactMonitorState ===
+      "function"
+  ) {
+    renderNachtRaidersCompactMonitorState(
+      nachtRaidersState
+    );
+  }
+
+  if (
+    typeof renderNachtRaidersTerminalState ===
+      "function"
+  ) {
+    renderNachtRaidersTerminalState();
   }
 
   return nachtRaidersState;
