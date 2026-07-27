@@ -361,6 +361,7 @@ const highSteaksScene = document.getElementById("highSteaksScene");
 
 const highSteaksOpponentName = document.getElementById("highSteaksOpponentName");
 const highSteaksOpponentPortrait = document.getElementById("highSteaksOpponentPortrait");
+const highSteaksOpponentArtwork = document.getElementById("highSteaksOpponentArtwork");
 const highSteaksOpponentHand = document.getElementById("highSteaksOpponentHand");
 const highSteaksOpponentWins = document.getElementById("highSteaksOpponentWins");
 const highSteaksPlayerWins = document.getElementById("highSteaksPlayerWins");
@@ -370,6 +371,8 @@ const highSteaksRuleCard = document.getElementById("highSteaksRuleCard");
 const highSteaksOpponentPlayZone = document.getElementById("highSteaksOpponentPlayZone");
 const highSteaksPlayerPlayZone = document.getElementById("highSteaksPlayerPlayZone");
 const highSteaksRoundHistory = document.getElementById("highSteaksRoundHistory");
+const highSteaksWagerAmount = document.getElementById("highSteaksWagerAmount");
+const highSteaksDeckCount = document.getElementById("highSteaksDeckCount");
 const highSteaksPlayerHand = document.getElementById("highSteaksPlayerHand");
 const highSteaksConfirmButton = document.getElementById("highSteaksConfirmButton");
 const highSteaksClearButton = document.getElementById("highSteaksClearButton");
