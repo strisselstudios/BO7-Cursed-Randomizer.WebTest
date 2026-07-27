@@ -36,9 +36,7 @@ const nachtRaidersIncidentDefinitionsById = new Map();
 ========================================================== */
 
 function normalizeNachtRaidersIncidentStringArray(value) {
-  if (!Array.isArray(value)) {
-    return Object.freeze([]);
-  }
+  if (!Array.isArray(value)) return Object.freeze([]);
 
   return Object.freeze(
     value
@@ -76,6 +74,42 @@ function normalizeNachtRaidersIncidentRewards(rewards) {
   return Object.freeze(normalizedRewards);
 }
 
+function normalizeNachtRaidersIncidentPresentation(presentation) {
+  const source =
+    presentation &&
+    typeof presentation === "object" &&
+    !Array.isArray(presentation)
+      ? presentation
+      : {};
+
+  return Object.freeze({
+    visualize: source.visualize !== false,
+
+    eventLabel:
+      typeof source.eventLabel === "string" && source.eventLabel.trim()
+        ? source.eventLabel.trim()
+        : "FIELD INCIDENT",
+
+    objectAssetKey:
+      typeof source.objectAssetKey === "string"
+        ? source.objectAssetKey.trim()
+        : "",
+
+    objectLabel:
+      typeof source.objectLabel === "string"
+        ? source.objectLabel.trim()
+        : "",
+
+    durationMs: Math.max(
+      NACHT_RAIDERS_PRESENTATION_SETTINGS.minimumIncidentDurationMs,
+      Math.floor(
+        Number(source.durationMs) ||
+        NACHT_RAIDERS_PRESENTATION_SETTINGS.defaultIncidentDurationMs
+      )
+    )
+  });
+}
+
 function normalizeNachtRaidersIncidentDefinition(definition) {
   if (!definition || typeof definition !== "object" || Array.isArray(definition)) {
     return null;
@@ -84,9 +118,7 @@ function normalizeNachtRaidersIncidentDefinition(definition) {
   const id = typeof definition.id === "string" ? definition.id.trim() : "";
   const lines = normalizeNachtRaidersIncidentStringArray(definition.lines);
 
-  if (!id || lines.length === 0) {
-    return null;
-  }
+  if (!id || lines.length === 0) return null;
 
   const minimumDepth = Math.max(0, Math.floor(Number(definition.minimumDepth) || 0));
   const maximumDepthValue = Number(definition.maximumDepth);
@@ -102,25 +134,26 @@ function normalizeNachtRaidersIncidentDefinition(definition) {
 
   return Object.freeze({
     id,
-    pool: typeof definition.pool === "string"
-      ? definition.pool
-      : NACHT_RAIDERS_INCIDENT_POOL_TRAVEL,
 
-    type: typeof definition.type === "string"
-      ? definition.type
-      : NACHT_RAIDERS_RECORD_TYPE_TRAVEL,
+    pool:
+      typeof definition.pool === "string"
+        ? definition.pool
+        : NACHT_RAIDERS_INCIDENT_POOL_TRAVEL,
+
+    type:
+      typeof definition.type === "string"
+        ? definition.type
+        : NACHT_RAIDERS_RECORD_TYPE_TRAVEL,
 
     weight: Math.max(0, Number(definition.weight) || 0),
     title: typeof definition.title === "string" ? definition.title : id.toUpperCase(),
-
     lines,
     rewards: normalizeNachtRaidersIncidentRewards(definition.rewards),
-
+    presentation: normalizeNachtRaidersIncidentPresentation(definition.presentation),
     minimumDepth,
     maximumDepth,
     minimumCycle,
     maximumCycle,
-
     zoneIds: normalizeNachtRaidersIncidentStringArray(definition.zoneIds),
     doctrines: normalizeNachtRaidersIncidentStringArray(definition.doctrines),
     tags: normalizeNachtRaidersIncidentStringArray(definition.tags)
@@ -173,9 +206,7 @@ function getNachtRaidersIncidentDefinition(incidentId) {
 }
 
 function getNachtRaidersIncidentDefinitions(pool = null) {
-  if (!pool) {
-    return [...nachtRaidersIncidentDefinitions];
-  }
+  if (!pool) return [...nachtRaidersIncidentDefinitions];
 
   return nachtRaidersIncidentDefinitions.filter(
     (incident) => incident.pool === pool
