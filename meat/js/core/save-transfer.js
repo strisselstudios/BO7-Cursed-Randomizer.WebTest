@@ -1,12 +1,14 @@
 /* ==========================================================
    1. SAVE TRANSFER CONFIGURATION
    ----------------------------------------------------------
-   Defines the Worker endpoint, local recovery backup key, and
-   accepted transfer-code format.
+   Defines the Worker endpoint, version-2 transport format,
+   local recovery backup key, and accepted transfer codes.
 ========================================================== */
 
 const MEAT_TRANSFER_API_BASE =
   "https://meat-save-transfer.dopefishlivesagain.workers.dev";
+
+const MEAT_TRANSFER_VERSION = 2;
 
 const MEAT_TRANSFER_BACKUP_KEY =
   `${MEAT_SAVE_KEY}:pre-transfer-backup`;
@@ -51,25 +53,425 @@ function prepareCurrentSaveForTransfer() {
 }
 
 /* ==========================================================
-   3. TRANSFER PACKAGE CREATION
+   3. COMPRESSED TRANSFER REQUEST CREATION
+   ----------------------------------------------------------
+   Freezes one save snapshot, compresses it, and sends only the
+   compact payload. Preview metadata is rebuilt by the Worker.
 ========================================================== */
 
-function createTransferSavePackage() {
+async function createTransferSavePackage() {
   prepareCurrentSaveForTransfer();
+
+  const exportPackage =
+    createSaveExportPackage();
+
+  const compressedPayload =
+    await createCompressedSaveTransferPayload(
+      exportPackage
+    );
 
   return {
     game: "MEAT.exe",
-    exportVersion: 1,
-    exportedAt: new Date().toISOString(),
-    saveData: JSON.parse(
-      JSON.stringify(gameState)
-    )
+    transferVersion:
+      MEAT_TRANSFER_VERSION,
+    compressedPayload
   };
 }
 
 /* ==========================================================
-   4. TRANSFER PACKAGE VALIDATION
+   4. SERVER-VERIFIED TRANSFER VALIDATION
+   ----------------------------------------------------------
+   Validates Worker responses, preview summaries, compressed
+   claim envelopes, and the decoded save before trust assessment.
 ========================================================== */
+
+function validateTransferDateString(
+  value,
+  label
+) {
+  requireSaveString(
+    value,
+    label,
+    {
+      allowUndefined: false,
+      maximumLength: 64
+    }
+  );
+
+  if (
+    Number.isNaN(
+      Date.parse(value)
+    )
+  ) {
+    throw new Error(
+      `${label} is invalid.`
+    );
+  }
+}
+
+function validateTransferSummary(
+  summary
+) {
+  requirePlainSaveObject(
+    summary,
+    "The transfer summary"
+  );
+
+  rejectUnknownObjectKeys(
+    summary,
+    [
+      "meat",
+      "totalMeat",
+      "totalClicks",
+      "producersOwned",
+      "lastSavedAt"
+    ],
+    "The transfer summary"
+  );
+
+  requireSaveNumber(
+    summary.meat,
+    "The transfer current-MEAT summary",
+    {
+      allowUndefined: false
+    }
+  );
+
+  requireSaveNumber(
+    summary.totalMeat,
+    "The transfer lifetime-MEAT summary",
+    {
+      allowUndefined: false
+    }
+  );
+
+  requireSaveNumber(
+    summary.totalClicks,
+    "The transfer click summary",
+    {
+      allowUndefined: false,
+      integer: true,
+      maximum:
+        Number.MAX_SAFE_INTEGER
+    }
+  );
+
+  requireSaveNumber(
+    summary.producersOwned,
+    "The transfer producer summary",
+    {
+      allowUndefined: false,
+      integer: true,
+      maximum:
+        Number.MAX_SAFE_INTEGER
+    }
+  );
+
+  requireSaveNumber(
+    summary.lastSavedAt,
+    "The transfer save-date summary",
+    {
+      allowUndefined: false,
+      integer: true,
+      maximum:
+        Number.MAX_SAFE_INTEGER
+    }
+  );
+
+  return true;
+}
+
+function calculateTransferProducerCount(
+  saveState
+) {
+  const totalOwned = producerOrder.reduce(
+    (
+      runningTotal,
+      producerKey
+    ) => {
+      const nextTotal =
+        runningTotal +
+        Number(
+          saveState.producers?.[
+            producerKey
+          ] || 0
+        );
+
+      if (!Number.isSafeInteger(nextTotal)) {
+        throw new Error(
+          "The transferred producer total is invalid."
+        );
+      }
+
+      return nextTotal;
+    },
+    0
+  );
+
+  return totalOwned;
+}
+
+function validateTransferSummaryMatchesSave(
+  summary,
+  saveState
+) {
+  const expectedSummary = {
+    meat:
+      saveState.meat,
+    totalMeat:
+      saveState.totalMeat,
+    totalClicks:
+      saveState.totalClicks,
+    producersOwned:
+      calculateTransferProducerCount(
+        saveState
+      ),
+    lastSavedAt:
+      saveState.lastSavedAt
+  };
+
+  Object.keys(
+    expectedSummary
+  ).forEach(
+    (propertyName) => {
+      if (
+        summary[propertyName] !==
+        expectedSummary[propertyName]
+      ) {
+        throw new Error(
+          `The transfer ${propertyName} summary does not match the transferred save.`
+        );
+      }
+    }
+  );
+
+  return true;
+}
+
+function validateTransferCreationResponse(
+  transfer
+) {
+  requirePlainSaveObject(
+    transfer,
+    "The transfer creation response"
+  );
+
+  rejectUnknownObjectKeys(
+    transfer,
+    [
+      "code",
+      "transferVersion",
+      "serverVerified",
+      "expiresAt"
+    ],
+    "The transfer creation response"
+  );
+
+  requireValidTransferCode(
+    transfer.code
+  );
+
+  if (
+    transfer.transferVersion !==
+      MEAT_TRANSFER_VERSION ||
+    transfer.serverVerified !== true
+  ) {
+    throw new Error(
+      "The transfer server did not verify the created transfer."
+    );
+  }
+
+  validateTransferDateString(
+    transfer.expiresAt,
+    "The transfer expiration date"
+  );
+
+  return true;
+}
+
+function validateTransferMetadata(
+  metadata
+) {
+  requirePlainSaveObject(
+    metadata,
+    "The transfer metadata"
+  );
+
+  rejectUnknownObjectKeys(
+    metadata,
+    [
+      "code",
+      "transferVersion",
+      "serverVerified",
+      "createdAt",
+      "expiresAt",
+      "summary"
+    ],
+    "The transfer metadata"
+  );
+
+  requireValidTransferCode(
+    metadata.code
+  );
+
+  if (
+    metadata.transferVersion !==
+      MEAT_TRANSFER_VERSION ||
+    metadata.serverVerified !== true
+  ) {
+    throw new Error(
+      "The transfer metadata failed server verification."
+    );
+  }
+
+  validateTransferDateString(
+    metadata.createdAt,
+    "The transfer creation date"
+  );
+
+  validateTransferDateString(
+    metadata.expiresAt,
+    "The transfer expiration date"
+  );
+
+  validateTransferSummary(
+    metadata.summary
+  );
+
+  return true;
+}
+
+function validateClaimedTransferEnvelope(
+  transfer
+) {
+  requirePlainSaveObject(
+    transfer,
+    "The claimed transfer"
+  );
+
+  rejectUnknownObjectKeys(
+    transfer,
+    [
+      "game",
+      "transferVersion",
+      "serverVerified",
+      "createdAt",
+      "expiresAt",
+      "summary",
+      "compressedPayload"
+    ],
+    "The claimed transfer"
+  );
+
+  if (
+    transfer.game !== "MEAT.exe" ||
+    transfer.transferVersion !==
+      MEAT_TRANSFER_VERSION ||
+    transfer.serverVerified !== true
+  ) {
+    throw new Error(
+      "The claimed transfer failed server verification."
+    );
+  }
+
+  validateTransferDateString(
+    transfer.createdAt,
+    "The claimed transfer creation date"
+  );
+
+  validateTransferDateString(
+    transfer.expiresAt,
+    "The claimed transfer expiration date"
+  );
+
+  validateTransferSummary(
+    transfer.summary
+  );
+
+  requireSaveString(
+    transfer.compressedPayload,
+    "The claimed compressed payload",
+    {
+      allowUndefined: false,
+      maximumLength:
+        Math.ceil(
+          MAX_TRANSFER_COMPRESSED_BYTES *
+          4 /
+          3
+        ) + 64
+    }
+  );
+
+  if (
+    !transfer.compressedPayload
+      .startsWith(
+        SAVE_TRANSFER_PAYLOAD_MAGIC
+      )
+  ) {
+    throw new Error(
+      "The claimed compressed payload is invalid."
+    );
+  }
+
+  return true;
+}
+
+function validateTransferredExportPackage(
+  exportPackage
+) {
+  requirePlainSaveObject(
+    exportPackage,
+    "The transferred export package"
+  );
+
+  validateSaveDataSafety(
+    exportPackage,
+    "transferExportPackage"
+  );
+
+  rejectUnknownObjectKeys(
+    exportPackage,
+    [
+      "game",
+      "exportVersion",
+      "saveIntegrityVersion",
+      "exportedAt",
+      "saveData"
+    ],
+    "The transferred export package"
+  );
+
+  if (
+    exportPackage.game !==
+      "MEAT.exe" ||
+    exportPackage.exportVersion !==
+      SAVE_EXPORT_VERSION ||
+    exportPackage
+      .saveIntegrityVersion !==
+      CURRENT_SAVE_INTEGRITY_VERSION
+  ) {
+    throw new Error(
+      "The transferred export format is unsupported."
+    );
+  }
+
+  requireSaveNumber(
+    exportPackage.exportedAt,
+    "The transferred export timestamp",
+    {
+      allowUndefined: false,
+      integer: true,
+      maximum:
+        Number.MAX_SAFE_INTEGER
+    }
+  );
+
+  validateGameStateStructure(
+    exportPackage.saveData
+  );
+
+  return true;
+}
 
 function validateTransferSavePackage(
   transferPackage
@@ -88,47 +490,49 @@ function validateTransferSavePackage(
     transferPackage,
     [
       "game",
-      "exportVersion",
-      "exportedAt",
+      "transferVersion",
+      "serverVerified",
+      "createdAt",
+      "expiresAt",
+      "summary",
       "saveData"
     ],
     "The received transfer package"
   );
 
-  if (transferPackage.game !== "MEAT.exe") {
-    throw new Error(
-      "The received transfer is not a MEAT.exe save."
-    );
-  }
-
-  if (transferPackage.exportVersion !== 1) {
-    throw new Error(
-      "The received transfer version is not supported."
-    );
-  }
-
-  requireSaveString(
-    transferPackage.exportedAt,
-    "The transfer creation date",
-    {
-      allowUndefined: false,
-      maximumLength: 64
-    }
-  );
-
   if (
-    Number.isNaN(
-      Date.parse(
-        transferPackage.exportedAt
-      )
-    )
+    transferPackage.game !==
+      "MEAT.exe" ||
+    transferPackage.transferVersion !==
+      MEAT_TRANSFER_VERSION ||
+    transferPackage.serverVerified !==
+      true
   ) {
     throw new Error(
-      "The transfer creation date is invalid."
+      "The received transfer is not server-verified MEAT.exe data."
     );
   }
 
+  validateTransferDateString(
+    transferPackage.createdAt,
+    "The received transfer creation date"
+  );
+
+  validateTransferDateString(
+    transferPackage.expiresAt,
+    "The received transfer expiration date"
+  );
+
+  validateTransferSummary(
+    transferPackage.summary
+  );
+
   validateGameStateStructure(
+    transferPackage.saveData
+  );
+
+  validateTransferSummaryMatchesSave(
+    transferPackage.summary,
     transferPackage.saveData
   );
 
@@ -217,49 +621,72 @@ async function requestSaveTransfer(
 
 async function createSaveTransfer() {
   const transferPackage =
-    createTransferSavePackage();
+    await createTransferSavePackage();
 
-  return requestSaveTransfer(
-    "/transfer",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type":
-          "application/json"
-      },
-      body: JSON.stringify(
-        transferPackage
-      )
-    }
+  const responseData =
+    await requestSaveTransfer(
+      "/transfer",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+        body:
+          JSON.stringify(
+            transferPackage
+          )
+      }
+    );
+
+  validateTransferCreationResponse(
+    responseData
   );
+
+  return responseData;
 }
 
 /* ==========================================================
    8. PREVIEW SAVE TRANSFER
 ========================================================== */
 
-async function previewSaveTransfer(code) {
+async function previewSaveTransfer(
+  code
+) {
   const normalizedCode =
-    requireValidTransferCode(code);
+    requireValidTransferCode(
+      code
+    );
 
-  return requestSaveTransfer(
-    `/transfer/${normalizedCode}/meta`,
-    {
-      method: "GET"
-    }
+  const metadata =
+    await requestSaveTransfer(
+      `/transfer/${normalizedCode}/meta`,
+      {
+        method: "GET"
+      }
+    );
+
+  validateTransferMetadata(
+    metadata
   );
+
+  return metadata;
 }
 
 /* ==========================================================
-   9. CLAIM SAVE TRANSFER
+   9. CLAIM AND DECODE SAVE TRANSFER
    ----------------------------------------------------------
-   Claims the one-use package and validates its outer structure
-   before it can reach trust classification or active state.
+   Requires Worker verification, decodes the compact payload,
+   validates the export, and reconstructs the transfer package.
 ========================================================== */
 
-async function claimSaveTransfer(code) {
+async function claimSaveTransfer(
+  code
+) {
   const normalizedCode =
-    requireValidTransferCode(code);
+    requireValidTransferCode(
+      code
+    );
 
   const responseData =
     await requestSaveTransfer(
@@ -269,11 +696,43 @@ async function claimSaveTransfer(code) {
       }
     );
 
-  validateTransferSavePackage(
+  validateClaimedTransferEnvelope(
     responseData.transfer
   );
 
-  return responseData.transfer;
+  const exportPackage =
+    await decodeCompressedSaveTransferPayload(
+      responseData.transfer
+        .compressedPayload
+    );
+
+  validateTransferredExportPackage(
+    exportPackage
+  );
+
+  const transferPackage = {
+    game: "MEAT.exe",
+    transferVersion:
+      MEAT_TRANSFER_VERSION,
+    serverVerified: true,
+    createdAt:
+      responseData.transfer
+        .createdAt,
+    expiresAt:
+      responseData.transfer
+        .expiresAt,
+    summary:
+      responseData.transfer
+        .summary,
+    saveData:
+      exportPackage.saveData
+  };
+
+  validateTransferSavePackage(
+    transferPackage
+  );
+
+  return transferPackage;
 }
 
 /* ==========================================================
