@@ -276,6 +276,13 @@ const nachtRaidersExitButton = document.getElementById("nachtRaidersExitButton")
 ========================================================== */
 
 const nachtRaidersGameScreen = document.getElementById("nachtRaidersGameScreen");
+const nachtRaidersGameHeading = document.getElementById("nachtRaidersGameHeading");
+const nachtRaidersEnvironment = document.getElementById("nachtRaidersEnvironment");
+const nachtRaidersEnvironmentSky = document.getElementById("nachtRaidersEnvironmentSky");
+const nachtRaidersEnvironmentFar = document.getElementById("nachtRaidersEnvironmentFar");
+const nachtRaidersEnvironmentMiddle = document.getElementById("nachtRaidersEnvironmentMiddle");
+const nachtRaidersEnvironmentNear = document.getElementById("nachtRaidersEnvironmentNear");
+const nachtRaidersEnvironmentGround = document.getElementById("nachtRaidersEnvironmentGround");
 const nachtRaidersGameBackButton = document.getElementById("nachtRaidersGameBackButton");
 const nachtRaidersGameZone = document.getElementById("nachtRaidersGameZone");
 const nachtRaidersGameDepth = document.getElementById("nachtRaidersGameDepth");
