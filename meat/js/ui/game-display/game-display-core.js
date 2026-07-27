@@ -64,18 +64,15 @@ function updateGameDisplay() {
    * display state.
    */
 
-    if (typeof updateNachtRaidersLauncher === "function") {
-    updateNachtRaidersLauncher();
-  }
+if (typeof updateNachtRaidersLauncher === "function") {
+  updateNachtRaidersLauncher();
+}
 
-    if (
-    typeof updateHighSteaksLauncher ===
-    "function"
-  ) {
-    updateHighSteaksLauncher();
-  }
+if (typeof updateHighSteaksLauncher === "function") {
+  updateHighSteaksLauncher();
+}
 
-  if (typeof updateNachtRaidersBootSettingControl === "function") {
-    updateNachtRaidersBootSettingControl();
-  }
+if (typeof updateNachtRaidersBootSettingControl === "function") {
+  updateNachtRaidersBootSettingControl();
+}
 }
