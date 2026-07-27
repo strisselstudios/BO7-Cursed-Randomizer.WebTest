@@ -195,12 +195,17 @@ function renderNachtRaidersGameState() {
       );
   }
 
-  const combatPlaybackActive =
+    const combatPlaybackActive =
     typeof isNachtRaidersCombatPlaybackActive ===
       "function" &&
     isNachtRaidersCombatPlaybackActive();
 
-  if (!combatPlaybackActive) {
+  const presentationBusy =
+    typeof isNachtRaidersPresentationBusy ===
+      "function" &&
+    isNachtRaidersPresentationBusy();
+
+  if (!combatPlaybackActive && !presentationBusy) {
     applyNachtRaidersVisualAsset(
       nachtRaidersOperativeVisual,
       nachtRaidersOperativePlaceholder,
@@ -220,6 +225,18 @@ function updateNachtRaidersGameSimulationStatus(
   summary
 ) {
   if (!summary) return;
+
+  if (
+    Array.isArray(summary.presentationEvents) &&
+    summary.presentationEvents.length > 0 &&
+    typeof enqueueNachtRaidersPresentationEvents === "function"
+  ) {
+    enqueueNachtRaidersPresentationEvents(
+      summary.presentationEvents
+    );
+
+    return;
+  }
 
   if (
     summary.lastEncounter &&
