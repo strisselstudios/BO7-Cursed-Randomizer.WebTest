@@ -29,9 +29,29 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          while IFS= read -r -d '' file; do
+            echo "Checking JavaScript syntax: $file"
+            node --check "$file"
+          done < <(
+            find randomizer meat tools \
+              -type f \
+              -name "*.js" \
+              -print0
+          )
+
+      - name: Validate repository source
+        run: |
+          node tools/validation/validate-repository.js
+
       - name: Prepare deployment directory
         run: |
           mkdir -p _site
+
           rsync -a \
             --exclude "/.git/" \
             --exclude "/.github/" \
