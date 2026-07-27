@@ -1,0 +1,101 @@
+/* ==========================================================
+   1. PAUSED EXPEDITION PRESENTATION
+========================================================== */
+
+.nacht-raiders-game-screen.is-presentation-paused
+.nacht-raiders-game-landscape,
+.nacht-raiders-game-screen.is-presentation-paused
+.nacht-raiders-game-ground,
+.nacht-raiders-game-screen.is-presentation-paused
+.nacht-raiders-game-operative
+.nacht-raiders-game-entity-visual {
+  animation-play-state: paused;
+}
+
+/* ==========================================================
+   2. INCIDENT OBJECT STAGE
+========================================================== */
+
+.nacht-raiders-game-object {
+  left: 58%;
+  transform: translateX(-50%);
+}
+
+.nacht-raiders-game-object
+.nacht-raiders-game-entity-visual {
+  width: clamp(58px, 12vh, 92px);
+}
+
+.nacht-raiders-game-object
+.nacht-raiders-game-entity-placeholder {
+  width: 78%;
+  height: 72%;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(202, 220, 159, 0.82),
+      rgba(31, 52, 15, 0.9)
+    );
+  border-color: #cadc9f;
+  clip-path:
+    polygon(
+      8% 18%,
+      92% 18%,
+      100% 34%,
+      94% 88%,
+      76% 100%,
+      24% 100%,
+      6% 88%,
+      0 34%
+    );
+}
+
+.nacht-raiders-game-object
+.nacht-raiders-game-entity-name {
+  color: #cadc9f;
+}
+
+/* ==========================================================
+   3. INCIDENT EVENT DETAILS
+========================================================== */
+
+.nacht-raiders-game-event-detail {
+  margin: 0;
+  color: rgba(202, 220, 159, 0.72);
+  font-size: clamp(0.52rem, 1.5vw, 0.66rem);
+  line-height: 1.4;
+}
+
+.nacht-raiders-game-event-detail[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   4. MOBILE PORTRAIT
+========================================================== */
+
+@media (orientation: portrait) and (max-width: 760px) {
+  .nacht-raiders-game-object {
+    left: 62%;
+  }
+
+  .nacht-raiders-game-object
+  .nacht-raiders-game-entity-visual {
+    width: clamp(52px, 16vw, 76px);
+  }
+}
+
+/* ==========================================================
+   5. SHORT LANDSCAPE
+========================================================== */
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .nacht-raiders-game-object
+  .nacht-raiders-game-entity-visual {
+    width: clamp(46px, 18vh, 70px);
+  }
+
+  .nacht-raiders-game-event-detail {
+    font-size: 0.5rem;
+  }
+}
