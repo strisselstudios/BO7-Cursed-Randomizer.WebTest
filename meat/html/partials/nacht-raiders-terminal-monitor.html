@@ -1,0 +1,118 @@
+<!-- ==========================================================
+     1. REDUCED FIELD-LINK TERMINAL
+     ----------------------------------------------------------
+     Displays the authoritative expedition state and recent
+     Field Record narrative without graphical scenery.
+========================================================== -->
+
+<section
+  id="nachtRaidersTerminalMonitor"
+  class="nacht-raiders-field-link-monitor"
+  aria-label="Nacht Raiders live field link"
+  aria-hidden="true"
+  hidden
+>
+
+  <!-- ========================================================
+       2. FIELD-LINK STATUS
+  ========================================================= -->
+
+  <header class="nacht-raiders-field-link-header">
+
+    <strong class="nacht-raiders-field-link-title">
+      LIVE FIELD LINK
+    </strong>
+
+    <div class="nacht-raiders-field-link-location">
+
+      <span>
+        ZONE:
+      </span>
+
+      <strong id="nachtRaidersTerminalZone">
+        NACHT
+      </strong>
+
+      <span>
+        DEPTH:
+      </span>
+
+      <strong id="nachtRaidersTerminalDepth">
+        0
+      </strong>
+
+      <span>
+        CYCLE:
+      </span>
+
+      <strong id="nachtRaidersTerminalCycle">
+        0
+      </strong>
+
+      <span>
+        LEVEL:
+      </span>
+
+      <strong id="nachtRaidersTerminalLevel">
+        1
+      </strong>
+
+    </div>
+
+  </header>
+
+  <!-- ========================================================
+       3. OPERATIVE INTEGRITY
+  ========================================================= -->
+
+  <section class="nacht-raiders-field-link-vitals">
+
+    <div class="nacht-raiders-field-link-vital-heading">
+
+      <span>
+        OPERATIVE INTEGRITY
+      </span>
+
+      <strong id="nachtRaidersTerminalHealthText">
+        100 / 100
+      </strong>
+
+    </div>
+
+    <div
+      class="nacht-raiders-game-meter nacht-raiders-field-link-meter"
+      role="progressbar"
+      aria-label="Field-link operative integrity"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="100"
+    >
+
+      <span
+        id="nachtRaidersTerminalHealthFill"
+        class="nacht-raiders-game-meter-fill nacht-raiders-game-health-fill"
+      ></span>
+
+    </div>
+
+  </section>
+
+  <!-- ========================================================
+       4. LIVE FIELD RECORD FEED
+  ========================================================= -->
+
+  <div
+    id="nachtRaidersTerminalLog"
+    class="nacht-raiders-field-link-log"
+    role="log"
+    aria-live="polite"
+    aria-relevant="additions text"
+  >
+
+    <p class="nacht-raiders-field-link-empty">
+      &gt; AWAITING FIELD ACTIVITY_
+    </p>
+
+  </div>
+
+</section>
