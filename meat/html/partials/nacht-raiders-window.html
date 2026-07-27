@@ -37,36 +37,80 @@
 
     ======================================================= -->
 
-    <header class="nacht-raiders-title-bar">
+    <header
+  id="nachtRaidersTitleBar"
+  class="nacht-raiders-title-bar"
+>
 
-      <div class="nacht-raiders-window-identity">
+  <div class="nacht-raiders-window-identity">
 
-        <span
-          class="nacht-raiders-window-icon"
-          aria-hidden="true"
-        >
-          C:\&gt;_
-        </span>
+    <span
+      class="nacht-raiders-window-icon"
+      aria-hidden="true"
+    >
+      C:\&gt;_
+    </span>
 
-        <strong id="nachtRaidersWindowTitle">
-          Nacht-Raiders.exe - Command Prompt
-        </strong>
+    <strong id="nachtRaidersWindowTitle">
+      Nacht-Raiders.exe - Command Prompt
+    </strong>
 
-      </div>
+  </div>
 
-      <button
-        id="nachtRaidersCloseButton"
-        class="nacht-raiders-close-button"
-        type="button"
-        aria-label="Close Nacht Raiders"
-        title="Close Nacht Raiders"
-      >
-        <span aria-hidden="true">
-          ×
-        </span>
-      </button>
+  <div
+    class="nacht-raiders-window-controls"
+    role="group"
+    aria-label="Nacht Raiders window controls"
+  >
 
-    </header>
+    <button
+      id="nachtRaidersCompactButton"
+      class="nacht-raiders-window-control-button nacht-raiders-window-mode-button"
+      type="button"
+      data-nacht-raiders-window-control
+      aria-label="Switch to compact graphical monitor"
+      title="Compact graphical monitor"
+    >
+      <span aria-hidden="true">—</span>
+    </button>
+
+    <button
+      id="nachtRaidersTerminalButton"
+      class="nacht-raiders-window-control-button nacht-raiders-window-mode-button nacht-raiders-terminal-button"
+      type="button"
+      data-nacht-raiders-window-control
+      aria-label="Switch to reduced terminal monitor"
+      title="Reduced terminal monitor"
+    >
+      <span aria-hidden="true">&gt;_</span>
+    </button>
+
+    <button
+      id="nachtRaidersFullButton"
+      class="nacht-raiders-window-control-button nacht-raiders-window-mode-button"
+      type="button"
+      data-nacht-raiders-window-control
+      aria-label="Restore full Nacht Raiders window"
+      title="Restore full window"
+      hidden
+    >
+      <span aria-hidden="true">□</span>
+    </button>
+
+    <button
+      id="nachtRaidersCloseButton"
+      class="nacht-raiders-window-control-button nacht-raiders-close-button"
+      type="button"
+      data-nacht-raiders-window-control
+      aria-label="Close Nacht Raiders"
+      title="Close Nacht Raiders"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+
+  </div>
+
+</header>
 
     <!-- ======================================================
 
