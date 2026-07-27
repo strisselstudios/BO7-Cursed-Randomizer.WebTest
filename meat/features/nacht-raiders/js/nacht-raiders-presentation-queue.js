@@ -76,11 +76,28 @@ function enqueueNachtRaidersPresentationEvents(events) {
 function finishNachtRaidersPresentationEvent() {
   const completedEvent = nachtRaidersCurrentPresentationEvent;
 
-  if (completedEvent?.eventKey) {
-    nachtRaidersPresentationEventKeys.delete(completedEvent.eventKey);
+    if (completedEvent?.eventKey) {
+    nachtRaidersPresentationEventKeys.delete(
+      completedEvent.eventKey
+    );
   }
 
-  nachtRaidersCurrentPresentationEvent = null;
+  if (completedEvent) {
+    document.dispatchEvent(
+      new CustomEvent(
+        "nacht-raiders:presentation-event-completed",
+        {
+          detail: {
+            presentationEvent:
+              completedEvent
+          }
+        }
+      )
+    );
+  }
+
+  nachtRaidersCurrentPresentationEvent =
+    null;
 
   if (nachtRaidersPresentationQueue.length === 0) {
     setNachtRaidersPresentationState(NACHT_RAIDERS_PRESENTATION_STATE_TRAVEL);
