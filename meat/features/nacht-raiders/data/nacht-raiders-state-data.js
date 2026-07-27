@@ -5,13 +5,12 @@
    and window-state values.
 ========================================================== */
 
-const NACHT_RAIDERS_STATE_VERSION = 5;
+const NACHT_RAIDERS_STATE_VERSION = 6;
 
 const NACHT_RAIDERS_STATUS_INACTIVE = "inactive";
 const NACHT_RAIDERS_STATUS_RUNNING = "running";
 
 const NACHT_RAIDERS_STARTING_ZONE_ID = "nacht";
-
 const NACHT_RAIDERS_DEFAULT_DOCTRINE = "balanced";
 
 const NACHT_RAIDERS_DOCTRINES = Object.freeze([
@@ -22,10 +21,19 @@ const NACHT_RAIDERS_DOCTRINES = Object.freeze([
   "exploration"
 ]);
 
+const NACHT_RAIDERS_WINDOW_MODE_FULL = "full";
+const NACHT_RAIDERS_WINDOW_MODE_COMPACT = "compact";
+const NACHT_RAIDERS_WINDOW_MODE_TERMINAL = "terminal";
+const NACHT_RAIDERS_LEGACY_WINDOW_MODE_MINIMIZED = "minimized";
+
 const NACHT_RAIDERS_WINDOW_MODES = Object.freeze([
-  "full",
-  "compact",
-  "minimized"
+  NACHT_RAIDERS_WINDOW_MODE_FULL,
+  NACHT_RAIDERS_WINDOW_MODE_COMPACT,
+  NACHT_RAIDERS_WINDOW_MODE_TERMINAL
+]);
+
+const NACHT_RAIDERS_LEGACY_WINDOW_MODES = Object.freeze([
+  NACHT_RAIDERS_LEGACY_WINDOW_MODE_MINIMIZED
 ]);
 
 const NACHT_RAIDERS_PENDING_RECORD_LIMIT = 500;
@@ -86,6 +94,16 @@ function normalizeNachtRaidersUnitValue(
       numericValue
     )
   );
+}
+
+function normalizeNachtRaidersWindowMode(value) {
+  if (value === NACHT_RAIDERS_LEGACY_WINDOW_MODE_MINIMIZED) {
+    return NACHT_RAIDERS_WINDOW_MODE_TERMINAL;
+  }
+
+  return NACHT_RAIDERS_WINDOW_MODES.includes(value)
+    ? value
+    : NACHT_RAIDERS_WINDOW_MODE_FULL;
 }
 
 function normalizeNachtRaidersRecordArray(
@@ -190,7 +208,7 @@ function createDefaultNachtRaidersState() {
     },
 
     window: {
-      mode: "full",
+      mode: NACHT_RAIDERS_WINDOW_MODE_FULL,
 
       position: {
         x: 0.5,
@@ -410,11 +428,9 @@ function migrateNachtRaidersState(
       : null;
 
   const windowMode =
-    NACHT_RAIDERS_WINDOW_MODES.includes(
-      savedWindow.mode
-    )
-      ? savedWindow.mode
-      : defaultState.window.mode;
+  normalizeNachtRaidersWindowMode(
+    savedWindow.mode
+  );
 
   return {
     stateVersion:
