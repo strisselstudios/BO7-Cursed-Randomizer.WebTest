@@ -98,6 +98,25 @@ function setNachtRaidersPlaybackOperativeHealth(
     normalizedCurrent /
       normalizedMaximum <= 0.25
   );
+     if (
+    typeof updateNachtRaidersCompactOperativeHealth ===
+      "function"
+  ) {
+    updateNachtRaidersCompactOperativeHealth(
+      normalizedCurrent,
+      normalizedMaximum
+    );
+  }
+
+  if (
+    typeof updateNachtRaidersTerminalHealth ===
+      "function"
+  ) {
+    updateNachtRaidersTerminalHealth(
+      normalizedCurrent,
+      normalizedMaximum
+    );
+  }
 }
 
 function setNachtRaidersPlaybackEnemyHealth(
