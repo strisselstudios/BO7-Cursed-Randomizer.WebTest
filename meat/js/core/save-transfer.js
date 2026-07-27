@@ -1,8 +1,8 @@
 /* ==========================================================
-   SAVE TRANSFER SYSTEM
+   1. SAVE TRANSFER CONFIGURATION
    ----------------------------------------------------------
-   Creates temporary transfer codes, previews incoming saves,
-   claims transfers, and safely applies received save data.
+   Defines the Worker endpoint, local recovery backup key, and
+   accepted transfer-code format.
 ========================================================== */
 
 const MEAT_TRANSFER_API_BASE =
@@ -15,23 +15,52 @@ const MEAT_TRANSFER_CODE_PATTERN =
   /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{7}$/;
 
 /* ==========================================================
-   CREATE TRANSFER PACKAGE
+   2. TRUSTED TRANSFER CREATION GATE
+   ----------------------------------------------------------
+   Rechecks the active save before allowing it to create a
+   transfer intended for trusted use on another device.
 ========================================================== */
 
-function createTransferSavePackage() {
-  const saveResult = saveGame();
+function prepareCurrentSaveForTransfer() {
+  validateGameStateStructure(gameState);
 
-  if (saveResult === false) {
+  const impossibleStateReasons =
+    inspectGameStateForImpossibleProgress(gameState);
+
+  if (impossibleStateReasons.length > 0) {
+    mergeSaveTrustState(
+      gameState,
+      gameState,
+      impossibleStateReasons
+    );
+  }
+
+  if (!saveGame()) {
     throw new Error(
       "The current save could not be prepared."
     );
   }
 
+  if (!canUseTrustedSaveFeatures()) {
+    throw new Error(
+      "Modified saves cannot create trusted save transfers. Only a full game reset, which deletes all progress, can restore trusted status."
+    );
+  }
+
+  return true;
+}
+
+/* ==========================================================
+   3. TRANSFER PACKAGE CREATION
+========================================================== */
+
+function createTransferSavePackage() {
+  prepareCurrentSaveForTransfer();
+
   return {
     game: "MEAT.exe",
     exportVersion: 1,
     exportedAt: new Date().toISOString(),
-
     saveData: JSON.parse(
       JSON.stringify(gameState)
     )
@@ -39,21 +68,32 @@ function createTransferSavePackage() {
 }
 
 /* ==========================================================
-   VALIDATE TRANSFER PACKAGE
+   4. TRANSFER PACKAGE VALIDATION
 ========================================================== */
 
 function validateTransferSavePackage(
   transferPackage
 ) {
-  if (
-    !transferPackage ||
-    typeof transferPackage !== "object" ||
-    Array.isArray(transferPackage)
-  ) {
-    throw new Error(
-      "The received transfer package is invalid."
-    );
-  }
+  requirePlainSaveObject(
+    transferPackage,
+    "The received transfer package"
+  );
+
+  validateSaveDataSafety(
+    transferPackage,
+    "transferPackage"
+  );
+
+  rejectUnknownObjectKeys(
+    transferPackage,
+    [
+      "game",
+      "exportVersion",
+      "exportedAt",
+      "saveData"
+    ],
+    "The received transfer package"
+  );
 
   if (transferPackage.game !== "MEAT.exe") {
     throw new Error(
@@ -67,13 +107,36 @@ function validateTransferSavePackage(
     );
   }
 
+  requireSaveString(
+    transferPackage.exportedAt,
+    "The transfer creation date",
+    {
+      allowUndefined: false,
+      maximumLength: 64
+    }
+  );
+
+  if (
+    Number.isNaN(
+      Date.parse(
+        transferPackage.exportedAt
+      )
+    )
+  ) {
+    throw new Error(
+      "The transfer creation date is invalid."
+    );
+  }
+
   validateGameStateStructure(
-  transferPackage.saveData
-);
+    transferPackage.saveData
+  );
+
+  return true;
 }
 
 /* ==========================================================
-   NORMALIZE TRANSFER CODE
+   5. TRANSFER CODE NORMALIZATION
 ========================================================== */
 
 function normalizeTransferCode(value) {
@@ -86,8 +149,25 @@ function normalizeTransferCode(value) {
     .slice(0, 7);
 }
 
+function requireValidTransferCode(code) {
+  const normalizedCode =
+    normalizeTransferCode(code);
+
+  if (
+    !MEAT_TRANSFER_CODE_PATTERN.test(
+      normalizedCode
+    )
+  ) {
+    throw new Error(
+      "Enter a valid seven-character transfer code."
+    );
+  }
+
+  return normalizedCode;
+}
+
 /* ==========================================================
-   API REQUEST HELPER
+   6. TRANSFER API REQUEST
 ========================================================== */
 
 async function requestSaveTransfer(
@@ -104,7 +184,7 @@ async function requestSaveTransfer(
         ...options
       }
     );
-  } catch {
+  } catch (error) {
     throw new Error(
       "The transfer server could not be reached."
     );
@@ -113,8 +193,9 @@ async function requestSaveTransfer(
   let responseData;
 
   try {
-    responseData = await response.json();
-  } catch {
+    responseData =
+      await response.json();
+  } catch (error) {
     throw new Error(
       "The transfer server returned an invalid response."
     );
@@ -131,7 +212,7 @@ async function requestSaveTransfer(
 }
 
 /* ==========================================================
-   CREATE SAVE TRANSFER
+   7. CREATE SAVE TRANSFER
 ========================================================== */
 
 async function createSaveTransfer() {
@@ -142,11 +223,10 @@ async function createSaveTransfer() {
     "/transfer",
     {
       method: "POST",
-
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type":
+          "application/json"
       },
-
       body: JSON.stringify(
         transferPackage
       )
@@ -155,22 +235,12 @@ async function createSaveTransfer() {
 }
 
 /* ==========================================================
-   PREVIEW SAVE TRANSFER
+   8. PREVIEW SAVE TRANSFER
 ========================================================== */
 
 async function previewSaveTransfer(code) {
   const normalizedCode =
-    normalizeTransferCode(code);
-
-  if (
-    !MEAT_TRANSFER_CODE_PATTERN.test(
-      normalizedCode
-    )
-  ) {
-    throw new Error(
-      "Enter a valid seven-character transfer code."
-    );
-  }
+    requireValidTransferCode(code);
 
   return requestSaveTransfer(
     `/transfer/${normalizedCode}/meta`,
@@ -181,22 +251,15 @@ async function previewSaveTransfer(code) {
 }
 
 /* ==========================================================
-   CLAIM SAVE TRANSFER
+   9. CLAIM SAVE TRANSFER
+   ----------------------------------------------------------
+   Claims the one-use package and validates its outer structure
+   before it can reach trust classification or active state.
 ========================================================== */
 
 async function claimSaveTransfer(code) {
   const normalizedCode =
-    normalizeTransferCode(code);
-
-  if (
-    !MEAT_TRANSFER_CODE_PATTERN.test(
-      normalizedCode
-    )
-  ) {
-    throw new Error(
-      "Enter a valid seven-character transfer code."
-    );
-  }
+    requireValidTransferCode(code);
 
   const responseData =
     await requestSaveTransfer(
@@ -214,61 +277,145 @@ async function claimSaveTransfer(code) {
 }
 
 /* ==========================================================
-   APPLY TRANSFERRED SAVE
+   10. TRANSFER TRUST ASSESSMENT
+   ----------------------------------------------------------
+   Converts a claimed transfer into the same trusted, untrusted,
+   or rejected assessment used by file imports.
 ========================================================== */
 
-function applyTransferredSave(
+function inspectTransferredSavePackage(
   transferPackage
 ) {
-  validateTransferSavePackage(
-    transferPackage
+  try {
+    validateTransferSavePackage(
+      transferPackage
+    );
+
+    const importedState =
+      transferPackage.saveData;
+
+    const trustReasons =
+      collectSaveImportTrustReasons(
+        importedState
+      );
+
+    return {
+      status:
+        trustReasons.length > 0
+          ? SAVE_IMPORT_STATUS_UNTRUSTED
+          : SAVE_IMPORT_STATUS_TRUSTED,
+      sourceFormat: "save-transfer",
+      importPackage: transferPackage,
+      importedState,
+      trustReasons,
+      errorMessage: "",
+      commitHandler:
+        commitInspectedTransferSave,
+      reloadAfterCommit: true
+    };
+  } catch (error) {
+    console.error(
+      "MEAT.exe transferred save inspection failed:",
+      error
+    );
+
+    const assessment =
+      createRejectedSaveImportAssessment(
+        error
+      );
+
+    assessment.sourceFormat =
+      "save-transfer";
+
+    return assessment;
+  }
+}
+
+/* ==========================================================
+   11. PRE-TRANSFER BACKUP RESTORATION
+========================================================== */
+
+function restorePreviousTransferBackup(
+  previousBackup
+) {
+  if (previousBackup === null) {
+    localStorage.removeItem(
+      MEAT_TRANSFER_BACKUP_KEY
+    );
+
+    return;
+  }
+
+  localStorage.setItem(
+    MEAT_TRANSFER_BACKUP_KEY,
+    previousBackup
   );
+}
+
+/* ==========================================================
+   12. INSPECTED TRANSFER COMMITMENT
+   ----------------------------------------------------------
+   Preserves the receiving device's current save before using
+   the central inspected-import commitment pathway.
+========================================================== */
+
+function commitInspectedTransferSave(
+  assessment
+) {
+  if (
+    assessment?.sourceFormat !==
+    "save-transfer"
+  ) {
+    return false;
+  }
 
   const currentSave =
     localStorage.getItem(
       MEAT_SAVE_KEY
     );
 
-  /*
-   * Preserve the receiving device's previous save.
-   * This backup is replaced by the next successful transfer.
-   */
-  if (currentSave !== null) {
-    localStorage.setItem(
-      MEAT_TRANSFER_BACKUP_KEY,
-      currentSave
-    );
-  }
-
-  const previousGameState =
-    JSON.parse(
-      JSON.stringify(gameState)
+  const previousTransferBackup =
+    localStorage.getItem(
+      MEAT_TRANSFER_BACKUP_KEY
     );
 
   try {
-    gameState = migrateGameState(
-      transferPackage.saveData
-    );
-
-    calculateMeatPerSecond();
-
-    const saveResult = saveGame();
-
-    if (saveResult === false) {
-      throw new Error(
-        "The transferred save could not be stored."
-      );
-    }
-  } catch (error) {
-    gameState = previousGameState;
-
     if (currentSave !== null) {
       localStorage.setItem(
-        MEAT_SAVE_KEY,
+        MEAT_TRANSFER_BACKUP_KEY,
         currentSave
       );
     }
 
-    throw error;
+    const importSucceeded =
+      commitInspectedSaveImport(
+        assessment
+      );
+
+    if (!importSucceeded) {
+      throw new Error(
+        "The transferred save could not be stored."
+      );
+    }
+
+    return true;
+  } catch (error) {
+    try {
+      restorePreviousTransferBackup(
+        previousTransferBackup
+      );
+    } catch (backupError) {
+      console.error(
+        "MEAT.exe could not restore the previous transfer backup:",
+        backupError
+      );
+    }
+
+    console.error(
+      "MEAT.exe inspected transfer could not be applied:",
+      error
+    );
+
+    return false;
   }
 }
