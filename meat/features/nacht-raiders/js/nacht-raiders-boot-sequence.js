@@ -803,4 +803,3 @@ document.addEventListener(
     startNachtRaidersBootSequence();
   }
 );
-);
