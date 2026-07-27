@@ -282,6 +282,15 @@ const nachtRaidersExitButton = document.getElementById("nachtRaidersExitButton")
 ========================================================== */
 
 const nachtRaidersGameScreen = document.getElementById("nachtRaidersGameScreen");
+const nachtRaidersCompactHud = document.getElementById("nachtRaidersCompactHud");
+const nachtRaidersCompactHealthText = document.getElementById("nachtRaidersCompactHealthText");
+const nachtRaidersCompactHealthFill = document.getElementById("nachtRaidersCompactHealthFill");
+const nachtRaidersCompactFooter = document.getElementById("nachtRaidersCompactFooter");
+const nachtRaidersCompactXpText = document.getElementById("nachtRaidersCompactXpText");
+const nachtRaidersCompactXpFill = document.getElementById("nachtRaidersCompactXpFill");
+const nachtRaidersCompactTravelText = document.getElementById("nachtRaidersCompactTravelText");
+const nachtRaidersCompactTravelFill = document.getElementById("nachtRaidersCompactTravelFill");
+const nachtRaidersCompactFeedback = document.getElementById("nachtRaidersCompactFeedback");
 const nachtRaidersGameHeading = document.getElementById("nachtRaidersGameHeading");
 const nachtRaidersEnvironment = document.getElementById("nachtRaidersEnvironment");
 const nachtRaidersEnvironmentSky = document.getElementById("nachtRaidersEnvironmentSky");
@@ -320,9 +329,21 @@ const nachtRaidersGameSalvage = document.getElementById("nachtRaidersGameSalvage
 const nachtRaidersGameAetherResidue = document.getElementById("nachtRaidersGameAetherResidue");
 const nachtRaidersGameFieldData = document.getElementById("nachtRaidersGameFieldData");
 const nachtRaidersGameRelicFragments = document.getElementById("nachtRaidersGameRelicFragments");
+/* ==========================================================
+   7.4 REDUCED FIELD-LINK TERMINAL
+========================================================== */
+
+const nachtRaidersTerminalMonitor = document.getElementById("nachtRaidersTerminalMonitor");
+const nachtRaidersTerminalZone = document.getElementById("nachtRaidersTerminalZone");
+const nachtRaidersTerminalDepth = document.getElementById("nachtRaidersTerminalDepth");
+const nachtRaidersTerminalCycle = document.getElementById("nachtRaidersTerminalCycle");
+const nachtRaidersTerminalLevel = document.getElementById("nachtRaidersTerminalLevel");
+const nachtRaidersTerminalHealthText = document.getElementById("nachtRaidersTerminalHealthText");
+const nachtRaidersTerminalHealthFill = document.getElementById("nachtRaidersTerminalHealthFill");
+const nachtRaidersTerminalLog = document.getElementById("nachtRaidersTerminalLog");
 
 /* ==========================================================
-   7.4 FIELD RECORDS ARCHIVE
+   7.5 FIELD RECORDS ARCHIVE
 ========================================================== */
 
 const nachtRaidersRecordsButton = document.getElementById("nachtRaidersRecordsButton");
