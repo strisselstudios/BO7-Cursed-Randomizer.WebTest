@@ -98,7 +98,15 @@ HighSteaks.createCardBackElement = function createCardBackElement(index) {
 HighSteaks.createEmptyPlaySlot = function createEmptyPlaySlot(label, ownerLabel) {
   const slotElement = document.createElement("span");
   slotElement.className = `high-steaks-play-card-slot is-${ownerLabel.toLowerCase()}-slot`;
-  slotElement.setAttribute("aria-label", label);
+  slotElement.setAttribute(
+  "role",
+  "img"
+);
+
+slotElement.setAttribute(
+  "aria-label",
+  label
+);
   return slotElement;
 };
 
