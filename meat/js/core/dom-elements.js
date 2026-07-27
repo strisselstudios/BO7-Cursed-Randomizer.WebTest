@@ -10,6 +10,7 @@
 ========================================================== */
 
 const meatView = document.getElementById("meatView");
+const gameShell = document.querySelector(".game-shell");
 const sidePanel = document.getElementById("sidePanel");
 const panelViews = document.querySelectorAll(".panel-view");
 const desktopTabs = document.querySelectorAll(".desktop-tab");
@@ -253,6 +254,11 @@ const aetherRepairmenIcon = document.getElementById("aetherRepairmenIcon");
 const nachtRaidersLauncherButton = document.getElementById("nachtRaidersLauncherButton");
 const nachtRaidersOverlay = document.getElementById("nachtRaidersOverlay");
 const nachtRaidersWindow = document.getElementById("nachtRaidersWindow");
+const nachtRaidersTitleBar = document.getElementById("nachtRaidersTitleBar");
+const nachtRaidersWindowTitle = document.getElementById("nachtRaidersWindowTitle");
+const nachtRaidersCompactButton = document.getElementById("nachtRaidersCompactButton");
+const nachtRaidersTerminalButton = document.getElementById("nachtRaidersTerminalButton");
+const nachtRaidersFullButton = document.getElementById("nachtRaidersFullButton");
 const nachtRaidersCloseButton = document.getElementById("nachtRaidersCloseButton");
 const nachtRaidersScreen = document.getElementById("nachtRaidersScreen");
 
