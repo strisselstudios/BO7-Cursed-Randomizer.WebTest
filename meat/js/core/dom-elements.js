@@ -331,7 +331,20 @@ const nachtRaidersReportRewards = document.getElementById("nachtRaidersReportRew
 const nachtRaidersReportEntries = document.getElementById("nachtRaidersReportEntries");
 
 /* ==========================================================
-   8. PRODUCER DISPLAY MAP
+   8. HIGH STEAKS FEATURE ELEMENTS
+   ----------------------------------------------------------
+   Caches the Tier III Sunken Mining Town launcher and the
+   asset-independent saloon prototype window.
+========================================================== */
+
+const sunkenMiningTownCardGroup = document.getElementById("sunkenMiningTownCardGroup");
+const highSteaksLauncherButton = document.getElementById("highSteaksLauncherButton");
+const highSteaksOverlay = document.getElementById("highSteaksOverlay");
+const highSteaksWindow = document.getElementById("highSteaksWindow");
+const highSteaksCloseButton = document.getElementById("highSteaksCloseButton");
+
+/* ==========================================================
+   9. PRODUCER DISPLAY MAP
    ----------------------------------------------------------
    Maps producer IDs to their cost and ownership display nodes.
 ========================================================== */
