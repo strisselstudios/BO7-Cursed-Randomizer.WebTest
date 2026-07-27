@@ -36,6 +36,7 @@ function createNachtRaidersSimulationSummary(currentTime, source) {
 
     rewards: createEmptyNachtRaidersRewards(),
     lastEncounter: null,
+    presentationEvents: [],
 
     wasCapped: false
   };
@@ -123,7 +124,8 @@ function processNachtRaidersCompletedDepths(
     reportsCreated: 0,
 
     rewards: createEmptyNachtRaidersRewards(),
-    lastEncounter: null
+    lastEncounter: null,
+    presentationEvents: []
   };
 
   for (
@@ -168,6 +170,13 @@ function processNachtRaidersCompletedDepths(
       incidentResult.rewards
     );
 
+   for (const record of incidentResult.records || []) {
+      appendNachtRaidersPresentationEvent(
+        result.presentationEvents,
+        createNachtRaidersIncidentPresentationEvent(record)
+      );
+    }
+
     const encounterResult =
       generateNachtRaidersEncounter(
         nachtRaidersState,
@@ -204,9 +213,17 @@ function processNachtRaidersCompletedDepths(
       encounterResult.rewards
     );
 
-    if (encounterResult.lastEncounter) {
+   if (encounterResult.lastEncounter) {
       result.lastEncounter =
         encounterResult.lastEncounter;
+
+      appendNachtRaidersPresentationEvent(
+        result.presentationEvents,
+        createNachtRaidersCombatPresentationEvent(
+          encounterResult.lastEncounter,
+          occurredAt
+        )
+      );
     }
   }
 
@@ -387,6 +404,11 @@ function simulateNachtRaidersToTime(
   summary.lastEncounter =
     depthResult.lastEncounter;
 
+
+  summary.presentationEvents = [
+    ...depthResult.presentationEvents
+  ];
+	
   const shouldFinalizePartialReport =
     source ===
       NACHT_RAIDERS_REPORT_REASON_INITIAL_LOAD ||
