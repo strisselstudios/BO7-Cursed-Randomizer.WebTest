@@ -94,10 +94,38 @@ const confirmSaveImportButton = document.getElementById("confirmSaveImportButton
 ========================================================== */
 
 const resetConfirmationOverlay = document.getElementById("resetConfirmationOverlay");
+const cancelResetButton = document.getElementById/* ==========================================================
+   3.2 LOCAL SAVE RECOVERY
+========================================================== */
+
+const localSaveRecoveryOverlay = document.getElementById("localSaveRecoveryOverlay");
+const localSaveRecoveryDialog = document.getElementById("localSaveRecoveryDialog");
+const localSaveRecoveryMessage = document.getElementById("localSaveRecoveryMessage");
+const downloadLocalSaveBackupButton = document.getElementById("downloadLocalSaveBackupButton");
+const continueLocalSaveRecoveryButton = document.getElementById("continueLocalSaveRecoveryButton");
+
+/* ==========================================================
+   3.3 SAVE IMPORT ASSESSMENT
+========================================================== */
+
+const saveImportOverlay = document.getElementById("saveImportOverlay");
+const saveImportDialog = document.getElementById("saveImportDialog");
+const saveImportStatus = document.getElementById("saveImportStatus");
+const saveImportTitle = document.getElementById("saveImportTitle");
+const saveImportMessage = document.getElementById("saveImportMessage");
+const cancelSaveImportButton = document.getElementById("cancelSaveImportButton");
+const confirmSaveImportButton = document.getElementById("confirmSaveImportButton");
+
+/* ==========================================================
+   3.4 RESET CONFIRMATION
+========================================================== */
+
+const resetConfirmationOverlay = document.getElementById("resetConfirmationOverlay");
 const cancelResetButton = document.getElementById("cancelResetButton");
 const confirmResetButton = document.getElementById("confirmResetButton");
+
 /* ==========================================================
-   3.4 SAVE TRANSFER
+   3.5 SAVE TRANSFER
 ========================================================== */
 
 const createTransferButton = document.getElementById("createTransferButton");
@@ -122,14 +150,13 @@ const confirmTransferButton = document.getElementById("confirmTransferButton");
 const transferReceiveStatus = document.getElementById("transferReceiveStatus");
 
 /* ==========================================================
-   3.5 OFFLINE PRODUCTION
+   3.6 OFFLINE PRODUCTION
 ========================================================== */
 
 const offlineProductionDialog = document.getElementById("offlineProductionDialog");
 const offlineProductionAmount = document.getElementById("offlineProductionAmount");
 const offlineProductionDuration = document.getElementById("offlineProductionDuration");
 const offlineProductionCloseButton = document.getElementById("offlineProductionCloseButton");
-
 /* ==========================================================
    4. PRODUCER INFORMATION ELEMENTS
    ----------------------------------------------------------
