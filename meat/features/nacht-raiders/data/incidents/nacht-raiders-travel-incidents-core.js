@@ -19,6 +19,10 @@ registerNachtRaidersIncidents([
       "Operative advanced without contact."
     ],
 
+    presentation: {
+      visualize: false
+    },
+
     rewards: {
       xp: {
         minimum: 2,
@@ -26,7 +30,6 @@ registerNachtRaidersIncidents([
       }
     }
   },
-
   {
     id: "abandoned-field-pack",
     pool: NACHT_RAIDERS_INCIDENT_POOL_TRAVEL,
@@ -38,6 +41,13 @@ registerNachtRaidersIncidents([
       "Located a discarded field pack beneath collapsed masonry.",
       "Usable components recovered."
     ],
+
+    presentation: {
+      eventLabel: "SALVAGE",
+      objectAssetKey: "abandoned-field-pack",
+      objectLabel: "FIELD PACK",
+      durationMs: 3200
+    },
 
     rewards: {
       xp: {
@@ -51,7 +61,6 @@ registerNachtRaidersIncidents([
       }
     }
   },
-
   {
     id: "broken-perk-machine",
     pool: NACHT_RAIDERS_INCIDENT_POOL_TRAVEL,
@@ -63,6 +72,13 @@ registerNachtRaidersIncidents([
       "Found a broken-down perk machine.",
       "Repaired the coin mechanism and recovered one intact bottle."
     ],
+
+    presentation: {
+      eventLabel: "RECOVERY OPERATION",
+      objectAssetKey: "damaged-perk-machine",
+      objectLabel: "PERK MACHINE",
+      durationMs: 4200
+    },
 
     rewards: {
       xp: {
@@ -76,7 +92,6 @@ registerNachtRaidersIncidents([
       }
     }
   },
-
   {
     id: "encrypted-field-signal",
     pool: NACHT_RAIDERS_INCIDENT_POOL_TRAVEL,
@@ -88,6 +103,13 @@ registerNachtRaidersIncidents([
       "Intercepted a fragmented transmission.",
       "Signal origin could not be determined."
     ],
+
+    presentation: {
+      eventLabel: "SIGNAL INTERCEPT",
+      objectAssetKey: "encrypted-field-radio",
+      objectLabel: "FIELD RADIO",
+      durationMs: 3400
+    },
 
     rewards: {
       xp: {
@@ -101,7 +123,6 @@ registerNachtRaidersIncidents([
       }
     }
   },
-
   {
     id: "aether-contamination",
     pool: NACHT_RAIDERS_INCIDENT_POOL_TRAVEL,
@@ -113,6 +134,13 @@ registerNachtRaidersIncidents([
       "Detected crystallized residue surrounding a temporal fracture.",
       "Sample isolated and secured."
     ],
+
+    presentation: {
+      eventLabel: "ANOMALY",
+      objectAssetKey: "aether-contamination-sample",
+      objectLabel: "AETHER SAMPLE",
+      durationMs: 3600
+    },
 
     rewards: {
       xp: {
@@ -126,7 +154,6 @@ registerNachtRaidersIncidents([
       }
     }
   },
-
   {
     id: "temporal-echo",
     pool: NACHT_RAIDERS_INCIDENT_POOL_TRAVEL,
@@ -138,6 +165,13 @@ registerNachtRaidersIncidents([
       "Operative encountered a residual image of a previous cycle.",
       "Echo terminated before synchronization occurred."
     ],
+
+    presentation: {
+      eventLabel: "TEMPORAL ANOMALY",
+      objectAssetKey: "temporal-echo",
+      objectLabel: "ECHO",
+      durationMs: 3800
+    },
 
     rewards: {
       xp: {
@@ -151,7 +185,6 @@ registerNachtRaidersIncidents([
       }
     }
   },
-
   {
     id: "sealed-relic-fragment",
     pool: NACHT_RAIDERS_INCIDENT_POOL_TRAVEL,
@@ -164,6 +197,13 @@ registerNachtRaidersIncidents([
       "Recovered an unidentified fragment from a sealed containment case.",
       "Material remains temporally unstable."
     ],
+
+    presentation: {
+      eventLabel: "RELIC RECOVERY",
+      objectAssetKey: "sealed-relic-fragment",
+      objectLabel: "RELIC FRAGMENT",
+      durationMs: 4200
+    },
 
     rewards: {
       xp: {
