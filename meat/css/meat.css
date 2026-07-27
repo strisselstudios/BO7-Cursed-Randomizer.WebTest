@@ -30,6 +30,9 @@
 @import url("../features/nacht-raiders/css/nacht-raiders-game.css");
 @import url("../features/nacht-raiders/css/nacht-raiders-presentation.css");
 
+@import url("../features/high-steaks/css/high-steaks-launcher.css");
+@import url("../features/high-steaks/css/high-steaks-window.css");
+
 @import url("components/transaction-feedback.css");
 @import url("components/stats.css");
 @import url("components/settings.css");
