@@ -1,0 +1,183 @@
+/* ==========================================================
+   1. ENVIRONMENT STAGE
+========================================================== */
+
+.nacht-raiders-environment {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  background: #010401;
+  pointer-events: none;
+}
+
+/* ==========================================================
+   2. ENVIRONMENT LAYERS
+========================================================== */
+
+.nacht-raiders-environment-layer {
+  --nacht-raiders-environment-scroll-duration: 0ms;
+  --nacht-raiders-environment-scroll-distance: -1px;
+
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-color: transparent;
+  background-image: none;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: cover;
+  opacity: 1;
+  pointer-events: none;
+  will-change: background-position;
+}
+
+.nacht-raiders-environment-layer[hidden] {
+  display: none;
+}
+
+.nacht-raiders-environment-layer-sky {
+  z-index: 0;
+}
+
+.nacht-raiders-environment-layer-far {
+  z-index: 1;
+}
+
+.nacht-raiders-environment-layer-middle {
+  z-index: 2;
+}
+
+.nacht-raiders-environment-layer-near {
+  z-index: 3;
+}
+
+.nacht-raiders-environment-layer-ground {
+  z-index: 4;
+  top: auto;
+  height: 26%;
+  border-top: 1px solid rgba(155, 188, 15, 0.28);
+}
+
+/* ==========================================================
+   3. ENVIRONMENT SCROLLING
+========================================================== */
+
+.nacht-raiders-environment-layer.is-scrolling {
+  animation:
+    nacht-raiders-environment-scroll
+    var(--nacht-raiders-environment-scroll-duration)
+    linear
+    infinite;
+}
+
+@keyframes nacht-raiders-environment-scroll {
+  from {
+    background-position-x: 0;
+  }
+
+  to {
+    background-position-x:
+      var(--nacht-raiders-environment-scroll-distance);
+  }
+}
+
+/* ==========================================================
+   4. NACHT FALLBACK SKY
+========================================================== */
+
+.nacht-raiders-environment-fallback-sky {
+  background:
+    radial-gradient(
+      circle at 72% 36%,
+      rgba(111, 135, 53, 0.12),
+      transparent 24%
+    ),
+    linear-gradient(
+      #071006 0%,
+      #030803 62%,
+      #010301 100%
+    );
+}
+
+/* ==========================================================
+   5. NACHT FALLBACK DISTANT LAYERS
+========================================================== */
+
+.nacht-raiders-environment-fallback-far {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 120px,
+      rgba(105, 125, 75, 0.18) 121px,
+      rgba(105, 125, 75, 0.04) 150px,
+      transparent 151px,
+      transparent 240px
+    );
+}
+
+.nacht-raiders-environment-fallback-middle {
+  background:
+    repeating-linear-gradient(
+      96deg,
+      transparent 0,
+      transparent 92px,
+      rgba(67, 95, 30, 0.22) 93px,
+      rgba(67, 95, 30, 0.05) 130px,
+      transparent 131px,
+      transparent 200px
+    );
+}
+
+/* ==========================================================
+   6. NACHT FALLBACK NEAR LAYER
+========================================================== */
+
+.nacht-raiders-environment-fallback-near {
+  top: 28%;
+  background:
+    repeating-linear-gradient(
+      100deg,
+      transparent 0,
+      transparent 68px,
+      rgba(31, 52, 15, 0.48) 69px,
+      rgba(31, 52, 15, 0.08) 100px,
+      transparent 101px,
+      transparent 170px
+    );
+}
+
+/* ==========================================================
+   7. NACHT FALLBACK GROUND
+========================================================== */
+
+.nacht-raiders-environment-fallback-ground {
+  background:
+    linear-gradient(
+      rgba(155, 188, 15, 0.12),
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      100deg,
+      #020702 0,
+      #020702 34px,
+      #071006 35px,
+      #071006 66px
+    );
+}
+
+/* ==========================================================
+   8. DISABLED AND REDUCED ANIMATION
+========================================================== */
+
+body.animations-disabled
+.nacht-raiders-environment-layer {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nacht-raiders-environment-layer {
+    animation: none;
+  }
+}
