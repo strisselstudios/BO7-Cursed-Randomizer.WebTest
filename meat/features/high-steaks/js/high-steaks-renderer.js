@@ -1,54 +1,103 @@
 /* ==========================================================
-   1. HIGH STEAKS CARD ELEMENTS
+   1. STANDARD PLAYING-CARD ELEMENTS
 ========================================================== */
+HighSteaks.getCardPipCount = function getCardPipCount(card) {
+  const numericRank = Number.parseInt(card.rank, 10);
+  return Number.isInteger(numericRank) && numericRank >= 2 && numericRank <= 10
+    ? numericRank
+    : 1;
+};
+
+HighSteaks.createCardCornerElement = function createCardCornerElement(card, position) {
+  const cornerElement = document.createElement("span");
+  cornerElement.className = `high-steaks-card-corner high-steaks-card-corner-${position}`;
+
+  const rankElement = document.createElement("strong");
+  rankElement.className = "high-steaks-card-rank";
+  rankElement.textContent = card.rank;
+
+  const suitElement = document.createElement("span");
+  suitElement.className = "high-steaks-card-corner-suit";
+  suitElement.textContent = card.symbol;
+
+  cornerElement.append(rankElement, suitElement);
+  return cornerElement;
+};
+
+HighSteaks.createCardCenterElement = function createCardCenterElement(card) {
+  const centerElement = document.createElement("span");
+  centerElement.className = "high-steaks-card-center";
+
+  if (["J", "Q", "K"].includes(card.rank)) {
+    const courtElement = document.createElement("span");
+    courtElement.className = "high-steaks-card-court";
+    courtElement.textContent = `${card.rank}${card.symbol}`;
+    centerElement.append(courtElement);
+    return centerElement;
+  }
+
+  if (card.rank === "A") {
+    const aceElement = document.createElement("span");
+    aceElement.className = "high-steaks-card-ace";
+    aceElement.textContent = card.symbol;
+    centerElement.append(aceElement);
+    return centerElement;
+  }
+
+  const pipCount = HighSteaks.getCardPipCount(card);
+  const pipsElement = document.createElement("span");
+  pipsElement.className = "high-steaks-card-pips";
+  pipsElement.dataset.pipCount = String(pipCount);
+
+  for (let pipIndex = 0; pipIndex < pipCount; pipIndex += 1) {
+    const pipElement = document.createElement("span");
+    pipElement.className = "high-steaks-card-pip";
+    pipElement.textContent = card.symbol;
+    pipsElement.append(pipElement);
+  }
+
+  centerElement.append(pipsElement);
+  return centerElement;
+};
+
 HighSteaks.createCardFaceElement = function createCardFaceElement(card, options = {}) {
   const elementName = options.interactive ? "button" : "span";
   const cardElement = document.createElement(elementName);
+
   if (options.interactive) {
     cardElement.type = "button";
     cardElement.setAttribute("role", "listitem");
     cardElement.setAttribute("aria-pressed", options.selected ? "true" : "false");
   }
 
-  cardElement.className = "high-steaks-card high-steaks-card-face";
-  if (options.zone) cardElement.classList.add(`high-steaks-card-zone-${options.zone}`);
+  cardElement.className = `high-steaks-card high-steaks-card-face is-${card.color}`;
   cardElement.dataset.highSteaksCardId = card.id;
   cardElement.dataset.highSteaksCardValue = String(card.value);
   cardElement.dataset.highSteaksCardSuit = card.suit;
-  cardElement.setAttribute("aria-label", `${card.value} of ${card.suit.toLowerCase()}`);
+  cardElement.setAttribute("aria-label", `${card.rank} of ${card.suit}`);
   cardElement.classList.toggle("is-selected", Boolean(options.selected));
   if (options.interactive) cardElement.disabled = Boolean(options.disabled);
 
-  const valueElement = document.createElement("strong");
-  valueElement.className = "high-steaks-card-value";
-  valueElement.textContent = String(card.value);
+  cardElement.append(
+    HighSteaks.createCardCornerElement(card, "top"),
+    HighSteaks.createCardCenterElement(card),
+    HighSteaks.createCardCornerElement(card, "bottom")
+  );
 
-  const symbolElement = document.createElement("span");
-  symbolElement.className = "high-steaks-card-symbol";
-  symbolElement.textContent = card.symbol;
-
-  const suitElement = document.createElement("small");
-  suitElement.className = "high-steaks-card-suit";
-  suitElement.textContent = card.suit;
-
-  cardElement.append(valueElement, symbolElement, suitElement);
   return cardElement;
 };
 
-HighSteaks.createCardBackElement = function createCardBackElement(index, centerIndex) {
+HighSteaks.createCardBackElement = function createCardBackElement(index) {
   const cardElement = document.createElement("span");
-  const cardOffset = index - centerIndex;
   cardElement.className = "high-steaks-card high-steaks-card-back";
   cardElement.dataset.highSteaksOpponentCardIndex = String(index);
-  cardElement.style.setProperty("--high-steaks-card-offset", String(cardOffset));
-  cardElement.style.setProperty("--high-steaks-card-depth", String(Math.abs(cardOffset)));
   cardElement.setAttribute("aria-hidden", "true");
   return cardElement;
 };
 
-HighSteaks.createEmptyPlaySlot = function createEmptyPlaySlot(label) {
+HighSteaks.createEmptyPlaySlot = function createEmptyPlaySlot(label, ownerLabel) {
   const slotElement = document.createElement("span");
-  slotElement.className = "high-steaks-play-card-slot";
+  slotElement.className = `high-steaks-play-card-slot is-${ownerLabel.toLowerCase()}-slot`;
   slotElement.setAttribute("aria-label", label);
   return slotElement;
 };
@@ -56,11 +105,10 @@ HighSteaks.createEmptyPlaySlot = function createEmptyPlaySlot(label) {
 /* ==========================================================
    2. SCOREBOARD RENDERING
 ========================================================== */
-HighSteaks.renderWinPips = function renderWinPips(container, wins, ownerLabel) {
+HighSteaks.renderWinPips = function renderWinPips(container, wins, label) {
   if (!container) return;
-  const pips = Array.from(container.children);
-  pips.forEach((pip, index) => pip.classList.toggle("is-won", index < wins));
-  container.setAttribute("aria-label", `${ownerLabel} round wins: ${wins}`);
+  Array.from(container.children).forEach((pip, index) => pip.classList.toggle("is-won", index < wins));
+  container.setAttribute("aria-label", `${label} round wins: ${wins}`);
 };
 
 HighSteaks.renderScoreboard = function renderScoreboard(state) {
@@ -74,11 +122,10 @@ HighSteaks.renderScoreboard = function renderScoreboard(state) {
 ========================================================== */
 HighSteaks.renderOpponentHand = function renderOpponentHand(state) {
   if (!highSteaksOpponentHand) return;
-  highSteaksOpponentHand.replaceChildren();
 
-  const handCenter = (state.opponent.handSize - 1) / 2;
+  highSteaksOpponentHand.replaceChildren();
   for (let index = 0; index < state.opponent.handSize; index += 1) {
-    highSteaksOpponentHand.append(HighSteaks.createCardBackElement(index, handCenter));
+    highSteaksOpponentHand.append(HighSteaks.createCardBackElement(index));
   }
 
   highSteaksOpponentHand.setAttribute("aria-label", `Opponent hand: ${state.opponent.handSize} hidden cards`);
@@ -86,15 +133,19 @@ HighSteaks.renderOpponentHand = function renderOpponentHand(state) {
 
 HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
   if (!highSteaksPlayerHand) return;
-  highSteaksPlayerHand.replaceChildren();
 
+  highSteaksPlayerHand.replaceChildren();
   const handCenter = (state.player.hand.length - 1) / 2;
+  const maximumDistance = Math.max(1, handCenter);
+
   state.player.hand.forEach((card, index) => {
     const selected = state.player.selectedCardIds.includes(card.id);
-    const cardElement = HighSteaks.createCardFaceElement(card, { interactive: true, selected, disabled: state.locked, zone: "hand" });
-    cardElement.style.setProperty("--high-steaks-card-offset", String(index - handCenter));
-    cardElement.style.setProperty("--high-steaks-card-depth", String(Math.abs(index - handCenter)));
-    cardElement.style.setProperty("--high-steaks-card-order", String(index + 1));
+    const cardElement = HighSteaks.createCardFaceElement(card, { interactive: true, selected, disabled: state.locked });
+    const normalizedOffset = (index - handCenter) / maximumDistance;
+    cardElement.style.setProperty("--high-steaks-card-x", `${normalizedOffset * 41}%`);
+    cardElement.style.setProperty("--high-steaks-card-drop", `${Math.abs(normalizedOffset) * 22}px`);
+    cardElement.style.setProperty("--high-steaks-card-rotation", `${normalizedOffset * 10}deg`);
+    cardElement.style.setProperty("--high-steaks-card-z", String(index + 1));
     highSteaksPlayerHand.append(cardElement);
   });
 };
@@ -102,22 +153,22 @@ HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
 /* ==========================================================
    4. TABLE RENDERING
 ========================================================== */
-HighSteaks.renderPlayZone = function renderPlayZone(container, cards, ownerLabel, zoneName) {
+HighSteaks.renderPlayZone = function renderPlayZone(container, cards, ownerLabel) {
   if (!container) return;
-  container.replaceChildren();
 
+  container.replaceChildren();
   for (let slotIndex = 0; slotIndex < 2; slotIndex += 1) {
     const card = cards[slotIndex];
     container.append(card
-      ? HighSteaks.createCardFaceElement(card, { zone: zoneName })
-      : HighSteaks.createEmptyPlaySlot(`${ownerLabel} card slot ${slotIndex + 1}`));
+      ? HighSteaks.createCardFaceElement(card)
+      : HighSteaks.createEmptyPlaySlot(`${ownerLabel} card slot ${slotIndex + 1}`, ownerLabel));
   }
 };
 
 HighSteaks.renderRoundHistory = function renderRoundHistory(state) {
   if (!highSteaksRoundHistory) return;
-  highSteaksRoundHistory.replaceChildren();
 
+  highSteaksRoundHistory.replaceChildren();
   for (let roundIndex = 0; roundIndex < state.maximumRounds; roundIndex += 1) {
     const historyMarker = document.createElement("span");
     const roundResult = state.history[roundIndex] || "pending";
@@ -133,13 +184,11 @@ HighSteaks.renderTable = function renderTable(state) {
     .map((cardId) => state.player.hand.find((card) => card.id === cardId))
     .filter(Boolean);
 
-  HighSteaks.renderPlayZone(highSteaksOpponentPlayZone, state.opponent.playedCards || [], "Opponent", "opponent-play");
-  HighSteaks.renderPlayZone(highSteaksPlayerPlayZone, selectedCards, "Player", "player-play");
+  HighSteaks.renderPlayZone(highSteaksOpponentPlayZone, state.opponent.playedCards || [], "Opponent");
+  HighSteaks.renderPlayZone(highSteaksPlayerPlayZone, selectedCards, "Player");
   HighSteaks.renderRoundHistory(state);
   if (highSteaksRuleCard) highSteaksRuleCard.textContent = state.ruleName;
   if (highSteaksPhaseText) highSteaksPhaseText.textContent = state.phaseText;
-  if (highSteaksWagerAmount) highSteaksWagerAmount.textContent = state.wagerLabel;
-  if (highSteaksDeckCount) highSteaksDeckCount.textContent = String(state.deckCount);
 };
 
 /* ==========================================================
@@ -147,9 +196,10 @@ HighSteaks.renderTable = function renderTable(state) {
 ========================================================== */
 HighSteaks.renderControls = function renderControls(state) {
   const selectionCount = state.player.selectedCardIds.length;
+
   if (highSteaksConfirmButton) {
     highSteaksConfirmButton.disabled = selectionCount !== 2 || state.locked;
-    highSteaksConfirmButton.textContent = state.locked ? "PAIR LOCKED" : "PLAY CARDS";
+    highSteaksConfirmButton.textContent = state.locked ? "PAIR LOCKED" : "PLAY PAIR";
   }
 
   if (highSteaksClearButton) {
@@ -171,5 +221,6 @@ HighSteaks.renderPrototype = function renderPrototype() {
   HighSteaks.renderPlayerHand(state);
   HighSteaks.renderTable(state);
   HighSteaks.renderControls(state);
+
   if (typeof HighSteaks.applySceneState === "function") HighSteaks.applySceneState(state.sceneState);
 };

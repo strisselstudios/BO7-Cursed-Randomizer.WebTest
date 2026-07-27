@@ -2,24 +2,28 @@
    1. HIGH STEAKS PROTOTYPE NAMESPACE
    ----------------------------------------------------------
    Keeps temporary scene data isolated from the future match
-   engine, AI, economy, card registry, and persistent state.
+   engine, AI, economy, and persistent progression.
 ========================================================== */
 window.HighSteaks = window.HighSteaks || {};
 
 /* ==========================================================
-   2. PLACEHOLDER CARD DEFINITIONS
+   2. STANDARD PLAYING-CARD DEFINITIONS
+   ----------------------------------------------------------
+   These are real ranks and suits used only for the prototype.
+   Final themed card art can replace the renderer later without
+   changing card identity or match data.
 ========================================================== */
 HighSteaks.PLACEHOLDER_PLAYER_HAND = Object.freeze([
-  Object.freeze({ id: "prototype-1-bone", value: 1, suit: "BONE", symbol: "I" }),
-  Object.freeze({ id: "prototype-2-blood", value: 2, suit: "BLOOD", symbol: "II" }),
-  Object.freeze({ id: "prototype-3-steel", value: 3, suit: "STEEL", symbol: "III" }),
-  Object.freeze({ id: "prototype-4-aether", value: 4, suit: "AETHER", symbol: "IV" }),
-  Object.freeze({ id: "prototype-5-bone", value: 5, suit: "BONE", symbol: "V" }),
-  Object.freeze({ id: "prototype-6-blood", value: 6, suit: "BLOOD", symbol: "VI" }),
-  Object.freeze({ id: "prototype-7-steel", value: 7, suit: "STEEL", symbol: "VII" }),
-  Object.freeze({ id: "prototype-8-aether", value: 8, suit: "AETHER", symbol: "VIII" }),
-  Object.freeze({ id: "prototype-9-bone", value: 9, suit: "BONE", symbol: "IX" }),
-  Object.freeze({ id: "prototype-10-blood", value: 10, suit: "BLOOD", symbol: "X" })
+  Object.freeze({ id: "prototype-5-spades", rank: "5", value: 5, suit: "spades", symbol: "♠", color: "black" }),
+  Object.freeze({ id: "prototype-6-hearts", rank: "6", value: 6, suit: "hearts", symbol: "♥", color: "red" }),
+  Object.freeze({ id: "prototype-2-clubs", rank: "2", value: 2, suit: "clubs", symbol: "♣", color: "black" }),
+  Object.freeze({ id: "prototype-j-diamonds", rank: "J", value: 11, suit: "diamonds", symbol: "♦", color: "red" }),
+  Object.freeze({ id: "prototype-8-hearts", rank: "8", value: 8, suit: "hearts", symbol: "♥", color: "red" }),
+  Object.freeze({ id: "prototype-q-clubs", rank: "Q", value: 12, suit: "clubs", symbol: "♣", color: "black" }),
+  Object.freeze({ id: "prototype-7-clubs", rank: "7", value: 7, suit: "clubs", symbol: "♣", color: "black" }),
+  Object.freeze({ id: "prototype-k-diamonds", rank: "K", value: 13, suit: "diamonds", symbol: "♦", color: "red" }),
+  Object.freeze({ id: "prototype-10-diamonds", rank: "10", value: 10, suit: "diamonds", symbol: "♦", color: "red" }),
+  Object.freeze({ id: "prototype-a-spades", rank: "A", value: 14, suit: "spades", symbol: "♠", color: "black" })
 ]);
 
 /* ==========================================================
@@ -33,11 +37,15 @@ HighSteaks.createPlaceholderState = function createPlaceholderState() {
     winsRequired: 3,
     ruleName: "STANDARD DUEL",
     phaseText: "CHOOSE EXACTLY TWO CARDS",
-    deckCount: 20,
-    wagerLabel: "NO WAGER",
     opponent: { name: "THE DRIFTER", wins: 0, handSize: 10, playedCards: [] },
-    player: { wins: 0, hand: HighSteaks.PLACEHOLDER_PLAYER_HAND.map((card) => ({ ...card })), selectedCardIds: [] },
+    player: {
+      wins: 0,
+      hand: HighSteaks.PLACEHOLDER_PLAYER_HAND.map((card) => ({ ...card })),
+      selectedCardIds: []
+    },
     history: [],
     locked: false
   };
 };
+
+HighSteaks.prototypeState = HighSteaks.createPlaceholderState();
