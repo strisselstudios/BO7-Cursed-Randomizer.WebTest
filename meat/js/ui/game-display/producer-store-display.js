@@ -92,10 +92,14 @@ function updateProducerDisplay() {
       return;
     }
 
-    const producerName = card.querySelector(".producer-information strong");
-    const producerDescription = card.querySelector(".producer-description");
-    const producerProduction = card.querySelector(".producer-production");
-    const producerInfoControl = card.querySelector(".producer-info-button");
+const producerName = card.querySelector(".producer-information strong");
+const producerDescription = card.querySelector(".producer-description");
+
+const producerProduction =
+  card.querySelector(".producer-production") ||
+  card.querySelector(".producer-information small");
+
+const producerInfoControl = card.querySelector(".producer-info-button");
 
     if (!producerName || !producerProduction) {
       return;
