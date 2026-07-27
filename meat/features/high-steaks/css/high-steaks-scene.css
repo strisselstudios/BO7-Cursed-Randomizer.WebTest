@@ -40,10 +40,11 @@
 .high-steaks-perspective-stage {
   position: relative;
   flex: 0 0 auto;
-  height: 100%;
-  aspect-ratio: 1395 / 717;
+  width: 100%;
+  aspect-ratio: 1528 / 1079;
   overflow: hidden;
   background: #020104;
+  isolation: isolate;
 }
 .high-steaks-scene-art {
   position: absolute;
@@ -190,6 +191,6 @@
 /* ==========================================================
    8. WIDE VIEWPORT FIT
 ========================================================== */
-@media (min-aspect-ratio: 1395 / 717) {
+@media (min-aspect-ratio: 1528 / 1079) {
   .high-steaks-perspective-stage { width: 100%; height: auto; }
 }
