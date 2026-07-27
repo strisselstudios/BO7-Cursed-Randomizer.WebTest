@@ -299,3 +299,130 @@ async function decodeEncryptedSaveExportString(exportText) {
     throw new Error("The decrypted save package is malformed.");
   }
 }
+/* ==========================================================
+   10. SAVE TRANSFER PAYLOAD FORMAT
+   ----------------------------------------------------------
+   Defines the compact gzip payload sent to the transfer Worker.
+   The Worker encrypts this payload before database storage.
+========================================================== */
+
+const SAVE_TRANSFER_PAYLOAD_MAGIC =
+  "MEATC2.";
+
+const MAX_TRANSFER_COMPRESSED_BYTES =
+  1200000;
+
+/* ==========================================================
+   11. SAVE TRANSFER COMPRESSION
+========================================================== */
+
+async function createCompressedSaveTransferPayload(
+  exportPackage
+) {
+  requireEncryptedSaveSupport();
+
+  const serializedPackage =
+    JSON.stringify(
+      exportPackage
+    );
+
+  const plaintextBytes =
+    SAVE_CODEC_TEXT_ENCODER.encode(
+      serializedPackage
+    );
+
+  if (
+    plaintextBytes.byteLength >
+    MAX_DECOMPRESSED_SAVE_BYTES
+  ) {
+    throw new Error(
+      "The save data is too large to transfer."
+    );
+  }
+
+  const compressedBytes =
+    await compressSaveBytes(
+      plaintextBytes
+    );
+
+  if (
+    compressedBytes.byteLength <= 0 ||
+    compressedBytes.byteLength >
+      MAX_TRANSFER_COMPRESSED_BYTES
+  ) {
+    throw new Error(
+      "The compressed save is too large to transfer."
+    );
+  }
+
+  return (
+    SAVE_TRANSFER_PAYLOAD_MAGIC +
+    encodeSaveBytesAsBase64Url(
+      compressedBytes
+    )
+  );
+}
+
+async function decodeCompressedSaveTransferPayload(
+  payload
+) {
+  requireEncryptedSaveSupport();
+
+  const normalizedPayload =
+    typeof payload === "string"
+      ? payload.trim()
+      : "";
+
+  if (
+    !normalizedPayload.startsWith(
+      SAVE_TRANSFER_PAYLOAD_MAGIC
+    )
+  ) {
+    throw new Error(
+      "The compressed transfer payload is invalid."
+    );
+  }
+
+  const compressedBytes =
+    decodeSaveBase64Url(
+      normalizedPayload.slice(
+        SAVE_TRANSFER_PAYLOAD_MAGIC.length
+      ),
+      "The compressed transfer payload"
+    );
+
+  if (
+    compressedBytes.byteLength <= 0 ||
+    compressedBytes.byteLength >
+      MAX_TRANSFER_COMPRESSED_BYTES
+  ) {
+    throw new Error(
+      "The compressed transfer payload is too large."
+    );
+  }
+
+  let plaintextBytes;
+
+  try {
+    plaintextBytes =
+      await decompressSaveBytes(
+        compressedBytes
+      );
+  } catch (error) {
+    throw new Error(
+      "The compressed transfer payload could not be decompressed."
+    );
+  }
+
+  try {
+    return JSON.parse(
+      SAVE_CODEC_TEXT_DECODER.decode(
+        plaintextBytes
+      )
+    );
+  } catch (error) {
+    throw new Error(
+      "The compressed transfer package is malformed."
+    );
+  }
+}
