@@ -281,7 +281,10 @@ checkTransferCodeButton.addEventListener(
 );
 
 /* ==========================================================
-   CLAIM AND APPLY TRANSFER
+   CLAIM, INSPECT, AND APPLY TRANSFER
+   ----------------------------------------------------------
+   Claims the one-use package, performs trust assessment, and
+   requires the untrusted-save warning before unsafe commitment.
 ========================================================== */
 
 confirmTransferButton.addEventListener(
@@ -294,7 +297,8 @@ confirmTransferButton.addEventListener(
       return;
     }
 
-    confirmTransferButton.disabled = true;
+    confirmTransferButton.disabled =
+      true;
 
     transferReceiveStatus.textContent =
       "RECEIVING SAVE...";
@@ -305,9 +309,48 @@ confirmTransferButton.addEventListener(
           previewedTransferCode
         );
 
-      applyTransferredSave(
-        transferPackage
-      );
+      const assessment =
+        inspectTransferredSavePackage(
+          transferPackage
+        );
+
+      previewedTransferCode = "";
+
+      if (
+        assessment.status ===
+        SAVE_IMPORT_STATUS_REJECTED
+      ) {
+        throw new Error(
+          assessment.errorMessage ||
+          "The transferred save was rejected."
+        );
+      }
+
+      if (
+        assessment.status ===
+        SAVE_IMPORT_STATUS_UNTRUSTED
+      ) {
+        transferReceiveStatus.textContent =
+          "TRANSFER REQUIRES CONFIRMATION";
+
+        closeSaveTransferDialog();
+        openSaveImportDialog(
+          assessment
+        );
+
+        return;
+      }
+
+      const importSucceeded =
+        commitInspectedTransferSave(
+          assessment
+        );
+
+      if (!importSucceeded) {
+        throw new Error(
+          "The transferred save could not be stored."
+        );
+      }
 
       transferReceiveStatus.textContent =
         "TRANSFER COMPLETE";
