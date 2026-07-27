@@ -179,38 +179,79 @@ async function inspectSelectedSaveFile() {
 function confirmPendingSaveImport() {
   if (
     !pendingSaveImportAssessment ||
-    pendingSaveImportAssessment.status === SAVE_IMPORT_STATUS_REJECTED ||
+    pendingSaveImportAssessment.status ===
+      SAVE_IMPORT_STATUS_REJECTED ||
     saveImportCommitInProgress
   ) {
     return;
   }
 
+  const completedAssessment =
+    pendingSaveImportAssessment;
+
+  const commitHandler =
+    typeof completedAssessment
+      .commitHandler === "function"
+      ? completedAssessment
+          .commitHandler
+      : commitInspectedSaveImport;
+
   saveImportCommitInProgress = true;
 
   confirmSaveImportButton.disabled = true;
   cancelSaveImportButton.disabled = true;
-  confirmSaveImportButton.textContent = "IMPORTING...";
+  confirmSaveImportButton.textContent =
+    "IMPORTING...";
 
-  const importSucceeded = commitInspectedSaveImport(
-    pendingSaveImportAssessment
-  );
+  const importSucceeded =
+    commitHandler(
+      completedAssessment
+    );
 
   saveImportCommitInProgress = false;
 
   if (!importSucceeded) {
-    const rejectedAssessment = createRejectedSaveImportAssessment(
-      new Error("The inspected save could not be stored.")
+    const rejectedAssessment =
+      createRejectedSaveImportAssessment(
+        new Error(
+          "The inspected save could not be stored."
+        )
+      );
+
+    pendingSaveImportAssessment =
+      rejectedAssessment;
+
+    configureSaveImportDialog(
+      rejectedAssessment
     );
 
-    pendingSaveImportAssessment = rejectedAssessment;
-    configureSaveImportDialog(rejectedAssessment);
-    setImportSaveButtonText("IMPORT FAILED");
+    setImportSaveButtonText(
+      "IMPORT FAILED"
+    );
+
     return;
   }
 
   closeSaveImportDialog();
+
+  if (
+    completedAssessment
+      .reloadAfterCommit === true
+  ) {
+    window.setTimeout(
+      () => {
+        window.location.reload();
+      },
+      250
+    );
+
+    return;
+  }
+
   refreshGameAfterSaveImport();
-  setImportSaveButtonText("SAVE IMPORTED");
+  setImportSaveButtonText(
+    "SAVE IMPORTED"
+  );
 }
 
 /* ==========================================================
