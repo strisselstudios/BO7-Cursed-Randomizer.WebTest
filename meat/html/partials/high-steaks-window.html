@@ -1,10 +1,9 @@
 <!-- ==========================================================
   1. HIGH STEAKS WINDOW LAYER
   ----------------------------------------------------------
-  Perspective saloon table scene opened through the permanent
-  Tier III Sunken Mining Town launcher. All temporary scenery,
-  opponent, table, wager, deck, and card visuals can be replaced
-  by final artwork without changing the gameplay DOM anchors.
+  Perspective saloon table opened through the Tier III Sunken
+  Mining Town launcher. The three scene PNGs share one canvas so
+  every dynamic card layer stays aligned with the painted scene.
 ========================================================== -->
 <div id="highSteaksOverlay" class="high-steaks-overlay" aria-hidden="true" hidden>
   <section
@@ -26,13 +25,6 @@
           <strong id="highSteaksWindowTitle">HIGH STEAKS</strong>
         </div>
       </div>
-
-      <div class="high-steaks-title-status" aria-label="Prototype match status">
-        <span id="highSteaksPhaseText" class="high-steaks-phase-text" aria-live="polite">
-          CHOOSE EXACTLY TWO CARDS
-        </span>
-      </div>
-
       <button
         id="highSteaksCloseButton"
         class="high-steaks-close-button"
@@ -45,125 +37,124 @@
     </header>
 
     <!-- ======================================================
-      1.2 SEATED SALOON SCENE
+      1.2 SEATED-PERSPECTIVE SALOON SCENE
     ======================================================= -->
     <main
       id="highSteaksScene"
       class="high-steaks-scene"
       data-high-steaks-scene-state="table"
     >
-      <div class="high-steaks-room" aria-hidden="true">
-        <div class="high-steaks-room-backdrop"></div>
-        <div class="high-steaks-room-left-structure"></div>
-        <div class="high-steaks-room-right-structure"></div>
-        <div class="high-steaks-room-haze"></div>
-      </div>
+      <div class="high-steaks-perspective-stage">
+        <!-- ==================================================
+          1.3 FULL-CANVAS ART LAYERS
+          --------------------------------------------------
+          These PNGs must have identical pixel dimensions and
+          identical transparent canvas alignment.
+        =================================================== -->
+        <img
+          class="high-steaks-scene-art high-steaks-scene-background-art"
+          src="meat/features/high-steaks/images/backgrounds/background-1.png"
+          alt=""
+          aria-hidden="true"
+          draggable="false"
+        >
+        <img
+          id="highSteaksOpponentArtwork"
+          class="high-steaks-scene-art high-steaks-scene-dealer-art"
+          src="meat/features/high-steaks/images/opponents/dealer-1.png"
+          alt=""
+          aria-hidden="true"
+          draggable="false"
+        >
+        <img
+          class="high-steaks-scene-art high-steaks-scene-table-art"
+          src="meat/features/high-steaks/images/tables/table-1.png"
+          alt=""
+          aria-hidden="true"
+          draggable="false"
+        >
 
-      <!-- ====================================================
-        1.3 MATCH HUD
-      ===================================================== -->
-      <header class="high-steaks-scoreboard" aria-label="High Steaks match score">
-        <section class="high-steaks-scoreboard-side" aria-labelledby="highSteaksOpponentScoreLabel">
-          <span id="highSteaksOpponentScoreLabel" class="high-steaks-scoreboard-label">HOUSE</span>
-          <ol id="highSteaksOpponentWins" class="high-steaks-score-pips" aria-label="Opponent round wins: 0">
-            <li></li><li></li><li></li>
-          </ol>
-        </section>
+        <!-- ==================================================
+          1.4 COMPACT MATCH HUD
+        =================================================== -->
+        <header class="high-steaks-scoreboard" aria-label="Prototype match status">
+          <section class="high-steaks-scoreboard-side" aria-labelledby="highSteaksOpponentScoreLabel">
+            <span id="highSteaksOpponentScoreLabel" class="high-steaks-scoreboard-label">HOUSE</span>
+            <ol id="highSteaksOpponentWins" class="high-steaks-score-pips" aria-label="Opponent round wins: 0">
+              <li></li><li></li><li></li>
+            </ol>
+          </section>
+          <section class="high-steaks-scoreboard-round" aria-label="Current round">
+            <span>ROUND</span>
+            <strong id="highSteaksRoundValue">1 / 5</strong>
+          </section>
+          <section class="high-steaks-scoreboard-side high-steaks-scoreboard-side-player" aria-labelledby="highSteaksPlayerScoreLabel">
+            <span id="highSteaksPlayerScoreLabel" class="high-steaks-scoreboard-label">YOU</span>
+            <ol id="highSteaksPlayerWins" class="high-steaks-score-pips" aria-label="Player round wins: 0">
+              <li></li><li></li><li></li>
+            </ol>
+          </section>
+        </header>
 
-        <section class="high-steaks-scoreboard-round" aria-label="Current round">
-          <span>ROUND</span>
-          <strong id="highSteaksRoundValue">1 / 5</strong>
-        </section>
-
-        <section class="high-steaks-scoreboard-side high-steaks-scoreboard-side-player" aria-labelledby="highSteaksPlayerScoreLabel">
-          <ol id="highSteaksPlayerWins" class="high-steaks-score-pips" aria-label="Player round wins: 0">
-            <li></li><li></li><li></li>
-          </ol>
-          <span id="highSteaksPlayerScoreLabel" class="high-steaks-scoreboard-label">YOU</span>
-        </section>
-      </header>
-
-      <!-- ====================================================
-        1.4 OPPONENT ACROSS THE TABLE
-      ===================================================== -->
-      <section class="high-steaks-opponent-zone" aria-labelledby="highSteaksOpponentName">
-        <div id="highSteaksOpponentPortrait" class="high-steaks-opponent-portrait">
-          <img id="highSteaksOpponentArtwork" class="high-steaks-opponent-artwork" alt="" hidden>
-          <div class="high-steaks-opponent-placeholder" aria-hidden="true">
-            <span class="high-steaks-opponent-hat"></span>
-            <span class="high-steaks-opponent-head"></span>
-            <span class="high-steaks-opponent-eye high-steaks-opponent-eye-left"></span>
-            <span class="high-steaks-opponent-eye high-steaks-opponent-eye-right"></span>
-            <span class="high-steaks-opponent-body"></span>
+        <!-- ==================================================
+          1.5 OPPONENT IDENTITY AND HIDDEN HAND
+        =================================================== -->
+        <section class="high-steaks-opponent-zone" aria-labelledby="highSteaksOpponentName">
+          <div class="high-steaks-opponent-nameplate">
+            <span>HOUSE PLAYER</span>
+            <h2 id="highSteaksOpponentName">THE DRIFTER</h2>
           </div>
-        </div>
+          <div
+            id="highSteaksOpponentHand"
+            class="high-steaks-opponent-hand"
+            aria-label="Opponent hand: 10 hidden cards"
+          ></div>
+        </section>
 
-        <div class="high-steaks-opponent-nameplate">
-          <span>HOUSE PLAYER</span>
-          <h2 id="highSteaksOpponentName">THE DRIFTER</h2>
-        </div>
-      </section>
-
-      <!-- ====================================================
-        1.5 PERSPECTIVE TABLE PLANE
-      ===================================================== -->
-      <section class="high-steaks-table-stage" aria-label="High Steaks card table">
-        <div class="high-steaks-table-rail" aria-hidden="true"></div>
-        <div class="high-steaks-table-surface" aria-hidden="true"></div>
-
-        <div
-          id="highSteaksOpponentHand"
-          class="high-steaks-opponent-hand"
-          aria-label="Opponent hand: 10 hidden cards"
-        ></div>
-
-        <div class="high-steaks-table-wager" aria-label="Current wager">
-          <div class="high-steaks-wager-plate" aria-hidden="true">
-            <span class="high-steaks-wager-meat"></span>
-            <span class="high-steaks-wager-meat high-steaks-wager-meat-secondary"></span>
-          </div>
-          <span id="highSteaksWagerAmount" class="high-steaks-wager-label">NO WAGER</span>
-        </div>
-
-        <div class="high-steaks-table-deck" aria-label="Prototype deck">
-          <span class="high-steaks-deck-shadow" aria-hidden="true"></span>
-          <span class="high-steaks-deck-card high-steaks-deck-card-bottom" aria-hidden="true"></span>
-          <span class="high-steaks-deck-card high-steaks-deck-card-middle" aria-hidden="true"></span>
-          <span class="high-steaks-deck-card high-steaks-deck-card-top" aria-hidden="true"></span>
-          <span id="highSteaksDeckCount" class="high-steaks-deck-count">20</span>
-        </div>
-
-        <div class="high-steaks-table-playfield">
+        <!-- ==================================================
+          1.6 FOUR CENTRAL PLAY POSITIONS
+          --------------------------------------------------
+          The upper pair belongs to the opponent. The lower pair
+          belongs to the player. No wager or deck prop is rendered.
+        =================================================== -->
+        <section class="high-steaks-table-play-area" aria-label="Played cards">
           <section class="high-steaks-play-zone high-steaks-play-zone-opponent" aria-labelledby="highSteaksOpponentPlayLabel">
-            <span id="highSteaksOpponentPlayLabel" class="high-steaks-visually-hidden">Opponent played cards</span>
+            <h2 id="highSteaksOpponentPlayLabel" class="high-steaks-visually-hidden">Opponent played cards</h2>
             <div id="highSteaksOpponentPlayZone" class="high-steaks-play-card-row"></div>
           </section>
-
-          <section class="high-steaks-table-center" aria-label="Round information">
-            <span id="highSteaksRuleCard" class="high-steaks-rule-card">STANDARD DUEL</span>
-            <div id="highSteaksRoundHistory" class="high-steaks-round-history" aria-label="Round history"></div>
-          </section>
-
           <section class="high-steaks-play-zone high-steaks-play-zone-player" aria-labelledby="highSteaksPlayerPlayLabel">
-            <span id="highSteaksPlayerPlayLabel" class="high-steaks-visually-hidden">Player played cards</span>
+            <h2 id="highSteaksPlayerPlayLabel" class="high-steaks-visually-hidden">Your played cards</h2>
             <div id="highSteaksPlayerPlayZone" class="high-steaks-play-card-row"></div>
           </section>
-        </div>
-      </section>
+        </section>
 
-      <!-- ====================================================
-        1.6 FOREGROUND PLAYER HAND
-      ===================================================== -->
-      <section class="high-steaks-player-zone" aria-labelledby="highSteaksPlayerHandLabel">
-        <h2 id="highSteaksPlayerHandLabel" class="high-steaks-visually-hidden">Select two cards from your hand</h2>
+        <!-- ==================================================
+          1.7 TABLE STATUS
+        =================================================== -->
+        <aside class="high-steaks-table-status" aria-label="Round condition and phase">
+          <span id="highSteaksRuleCard" class="high-steaks-rule-card">STANDARD DUEL</span>
+          <strong id="highSteaksPhaseText" class="high-steaks-phase-text" role="status" aria-live="polite">
+            CHOOSE EXACTLY TWO CARDS
+          </strong>
+          <div id="highSteaksRoundHistory" class="high-steaks-round-history" aria-label="Round history"></div>
+        </aside>
 
-        <div
-          id="highSteaksPlayerHand"
-          class="high-steaks-player-hand"
-          role="list"
-          aria-label="Prototype player hand"
-        ></div>
+        <!-- ==================================================
+          1.8 PLAYER HAND
+        =================================================== -->
+        <section class="high-steaks-player-zone" aria-labelledby="highSteaksPlayerHandLabel">
+          <h2 id="highSteaksPlayerHandLabel" class="high-steaks-visually-hidden">Select two cards from your hand</h2>
+          <div
+            id="highSteaksPlayerHand"
+            class="high-steaks-player-hand"
+            role="list"
+            aria-label="Prototype player hand"
+          ></div>
+        </section>
 
+        <!-- ==================================================
+          1.9 PROTOTYPE CONTROLS
+        =================================================== -->
         <div class="high-steaks-player-controls">
           <button
             id="highSteaksClearButton"
@@ -173,19 +164,16 @@
           >
             CLEAR
           </button>
-
-          <span class="high-steaks-selection-limit" aria-hidden="true">SELECT 2</span>
-
           <button
             id="highSteaksConfirmButton"
             class="high-steaks-control-button high-steaks-control-button-primary"
             type="button"
             disabled
           >
-            PLAY CARDS
+            PLAY PAIR
           </button>
         </div>
-      </section>
+      </div>
     </main>
   </section>
 </div>
