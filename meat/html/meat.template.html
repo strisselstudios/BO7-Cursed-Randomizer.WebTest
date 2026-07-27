@@ -255,9 +255,64 @@
 
   </div>
 
+  <!-- ==========================================================
+       3.2 LOCAL SAVE RECOVERY
+       ----------------------------------------------------------
+       Reports that unsafe local data was quarantined before a
+       clean replacement game was created.
+  ========================================================== -->
 
+  <div
+    id="localSaveRecoveryOverlay"
+    class="save-import-overlay"
+    hidden
+  >
+    <section
+      id="localSaveRecoveryDialog"
+      class="save-import-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="localSaveRecoveryTitle"
+      aria-describedby="localSaveRecoveryMessage"
+      data-import-status="rejected"
+    >
+      <div
+        class="save-import-status"
+        aria-hidden="true"
+      >
+        &gt; LOCAL SAVE QUARANTINED
+      </div>
+
+      <h2 id="localSaveRecoveryTitle">
+        SAVE RECOVERY
+      </h2>
+
+      <p id="localSaveRecoveryMessage">
+        Your stored save failed safety checks. The original data was quarantined and a new game was started.
+      </p>
+
+      <div class="save-import-actions">
+        <button
+          id="downloadLocalSaveBackupButton"
+          class="save-import-button confirm-save-import-button"
+          type="button"
+        >
+          DOWNLOAD BACKUP
+        </button>
+
+        <button
+          id="continueLocalSaveRecoveryButton"
+          class="save-import-button cancel-save-import-button"
+          type="button"
+        >
+          CONTINUE
+        </button>
+      </div>
+    </section>
+  </div>
+  
     <!-- ==========================================================
-       3.2 SAVE IMPORT ASSESSMENT
+       3.3 SAVE IMPORT ASSESSMENT
        ----------------------------------------------------------
        Displays trusted, untrusted, or rejected import results
        before any selected save replaces active progress.
@@ -314,7 +369,7 @@
   </div>
 
   <!-- ==========================================================
-       3.3 SAVE TRANSFER DIALOG
+       3.4 SAVE TRANSFER DIALOG
        ----------------------------------------------------------
        Creates transfer codes and imports saves from another device.
   ========================================================== -->
@@ -475,7 +530,7 @@
   </dialog>
 
   <!-- ==========================================================
-       3.4 OFFLINE PRODUCTION REPORT
+       3.5 OFFLINE PRODUCTION REPORT
        ----------------------------------------------------------
        Displays MEAT produced while the game was closed,
        suspended, or running in a background tab.
@@ -524,7 +579,7 @@
   </dialog>
 
   <!-- ==========================================================
-       3.5 RANDOMIZER NAVIGATION CONFIRMATION
+       3.6 RANDOMIZER NAVIGATION CONFIRMATION
        ----------------------------------------------------------
        Confirms that the player wants to leave MEAT.exe and return
        to the Cursed Relic Randomizer.
@@ -584,7 +639,7 @@
   </div>
 
   <!-- ==========================================================
-       3.6 NACHT RAIDERS WINDOW
+       3.7 NACHT RAIDERS WINDOW
        ----------------------------------------------------------
        Standalone Nacht Raiders interface opened from the Tier III
        Aether Repairmen launcher.
