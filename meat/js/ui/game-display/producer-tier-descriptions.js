@@ -34,15 +34,11 @@ function getTemporaryProducerTierForOwnedAmount(producerKey, ownedAmount) {
   if (!thresholds) return 1;
   if (normalizedOwnedAmount >= thresholds.tier3) return 3;
   if (normalizedOwnedAmount >= thresholds.tier2) return 2;
-
   return 1;
 }
 
 function getTemporaryProducerTier(producerKey) {
-  return getTemporaryProducerTierForOwnedAmount(
-    producerKey,
-    gameState.producers[producerKey] ?? 0
-  );
+  return getTemporaryProducerTierForOwnedAmount(producerKey, gameState.producers[producerKey] ?? 0);
 }
 
 /* ==========================================================
