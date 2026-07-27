@@ -78,23 +78,6 @@ const importSaveButton = document.getElementById("importSaveButton");
 const resetGameButton = document.getElementById("resetGameButton");
 
 /* ==========================================================
-   3.2 SAVE IMPORT ASSESSMENT
-========================================================== */
-
-const saveImportOverlay = document.getElementById("saveImportOverlay");
-const saveImportDialog = document.getElementById("saveImportDialog");
-const saveImportStatus = document.getElementById("saveImportStatus");
-const saveImportTitle = document.getElementById("saveImportTitle");
-const saveImportMessage = document.getElementById("saveImportMessage");
-const cancelSaveImportButton = document.getElementById("cancelSaveImportButton");
-const confirmSaveImportButton = document.getElementById("confirmSaveImportButton");
-
-/* ==========================================================
-   3.3 RESET CONFIRMATION
-========================================================== */
-
-const resetConfirmationOverlay = document.getElementById("resetConfirmationOverlay");
-const cancelResetButton = document.getElementById/* ==========================================================
    3.2 LOCAL SAVE RECOVERY
 ========================================================== */
 
