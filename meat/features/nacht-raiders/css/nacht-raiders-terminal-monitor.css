@@ -1,0 +1,189 @@
+/* ==========================================================
+   1. FIELD-LINK MONITOR
+========================================================== */
+
+.nacht-raiders-field-link-monitor {
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows:
+    auto
+    auto
+    minmax(0, 1fr);
+  gap: 4px;
+  padding: 6px 7px 5px;
+  background:
+    linear-gradient(
+      rgba(0, 9, 0, 0.96),
+      rgba(0, 4, 0, 0.98)
+    );
+  color: #16e52b;
+  font-family:
+    "Courier New",
+    Courier,
+    monospace;
+  font-style: italic;
+  overflow: hidden;
+  text-shadow:
+    0 0 4px rgba(22, 229, 43, 0.34);
+}
+
+.nacht-raiders-field-link-monitor[hidden] {
+  display: none;
+}
+
+/* ==========================================================
+   2. FIELD-LINK HEADER
+========================================================== */
+
+.nacht-raiders-field-link-header {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.nacht-raiders-field-link-title {
+  color: #16e52b;
+  font-size: 0.72rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.nacht-raiders-field-link-location {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.3rem;
+  color: #16e52b;
+  font-size: 0.52rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.nacht-raiders-field-link-location strong {
+  color: #16e52b;
+  font-size: inherit;
+}
+
+#nachtRaidersTerminalZone {
+  font-size: 0.76rem;
+}
+
+/* ==========================================================
+   3. FIELD-LINK VITALS
+========================================================== */
+
+.nacht-raiders-field-link-vitals {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid rgba(22, 229, 43, 0.2);
+}
+
+.nacht-raiders-field-link-vital-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  color: rgba(22, 229, 43, 0.72);
+  font-size: 0.42rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.nacht-raiders-field-link-vital-heading strong {
+  color: #b4ef4e;
+}
+
+.nacht-raiders-field-link-meter {
+  width: calc(100% - 24px);
+  height: 7px;
+  margin-inline: auto;
+  border-color: rgba(155, 188, 15, 0.4);
+}
+
+/* ==========================================================
+   4. FIELD-RECORD LOG
+========================================================== */
+
+.nacht-raiders-field-link-log {
+  min-width: 0;
+  min-height: 0;
+  padding: 2px 8px 2px 1px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color:
+    #8bac0f
+    rgba(20, 45, 4, 0.9);
+  scrollbar-width: thin;
+}
+
+.nacht-raiders-field-link-log::-webkit-scrollbar {
+  width: 7px;
+}
+
+.nacht-raiders-field-link-log::-webkit-scrollbar-track {
+  background: rgba(20, 45, 4, 0.9);
+  border-left: 1px solid rgba(155, 188, 15, 0.26);
+}
+
+.nacht-raiders-field-link-log::-webkit-scrollbar-thumb {
+  background: #8bac0f;
+  border: 1px solid #1f340f;
+}
+
+.nacht-raiders-field-link-record {
+  display: grid;
+  gap: 1px;
+  margin: 0 0 7px;
+}
+
+.nacht-raiders-field-link-record:last-child {
+  margin-bottom: 0;
+}
+
+.nacht-raiders-field-link-record p,
+.nacht-raiders-field-link-empty {
+  margin: 0;
+  color: #16e52b;
+  font-size: 0.5rem;
+  font-weight: 700;
+  line-height: 1.24;
+  overflow-wrap: anywhere;
+}
+
+.nacht-raiders-field-link-record-reward {
+  padding-left: 1rem;
+  color: #9bbc0f !important;
+  text-align: center;
+}
+
+.nacht-raiders-field-link-empty {
+  padding-top: 2px;
+}
+
+/* ==========================================================
+   5. TERMINAL SCANLINES
+========================================================== */
+
+.nacht-raiders-field-link-monitor::after {
+  content: "";
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 2px,
+      rgba(0, 0, 0, 0.12) 2px,
+      rgba(0, 0, 0, 0.12) 3px
+    );
+  pointer-events: none;
+}
