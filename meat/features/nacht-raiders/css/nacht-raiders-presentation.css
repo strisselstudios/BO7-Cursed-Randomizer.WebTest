@@ -3,15 +3,13 @@
 ========================================================== */
 
 .nacht-raiders-game-screen.is-presentation-paused
-.nacht-raiders-game-landscape,
-.nacht-raiders-game-screen.is-presentation-paused
-.nacht-raiders-game-ground,
+.nacht-raiders-environment-layer,
+
 .nacht-raiders-game-screen.is-presentation-paused
 .nacht-raiders-game-operative
 .nacht-raiders-game-entity-visual {
   animation-play-state: paused;
 }
-
 /* ==========================================================
    2. INCIDENT OBJECT STAGE
 ========================================================== */
