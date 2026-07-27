@@ -1,0 +1,78 @@
+/* ==========================================================
+   1. TABLET AND NARROW DESKTOP
+========================================================== */
+
+@media (max-width: 900px) {
+  .high-steaks-scene-content { grid-template-rows: auto minmax(82px, 0.62fr) minmax(235px, 1.9fr) minmax(148px, 1fr); }
+  .high-steaks-opponent-zone { width: min(820px, 94%); grid-template-columns: auto minmax(110px, 0.5fr) minmax(0, 1.5fr); }
+  .high-steaks-table-stage { width: 98%; }
+  .high-steaks-table-layout { padding-inline: clamp(1rem, 5vw, 3rem); }
+}
+
+/* ==========================================================
+   2. MOBILE WINDOW
+========================================================== */
+
+@media (max-width: 760px) {
+  .high-steaks-overlay { padding: 0; }
+  .high-steaks-window { width: 100vw; height: 100dvh; max-width: none; max-height: none; border: 0; box-shadow: none; }
+  .high-steaks-title-bar { padding-top: max(5px, env(safe-area-inset-top)); padding-right: max(5px, env(safe-area-inset-right)); padding-left: max(8px, env(safe-area-inset-left)); }
+  .high-steaks-scene-content { padding-right: max(0.45rem, env(safe-area-inset-right)); padding-bottom: max(0.45rem, env(safe-area-inset-bottom)); padding-left: max(0.45rem, env(safe-area-inset-left)); }
+  .high-steaks-room-shelf { display: none; }
+  .high-steaks-room-lamp-left { left: 5%; }
+  .high-steaks-room-lamp-right { right: 5%; }
+  .high-steaks-opponent-zone { grid-template-columns: auto minmax(0, 1fr); width: 96%; }
+  .high-steaks-opponent-hand { grid-column: 1 / -1; justify-content: center; }
+  .high-steaks-opponent-portrait { width: clamp(50px, 12vw, 74px); }
+  .high-steaks-player-hand { justify-content: flex-start; }
+  .high-steaks-player-controls { display: grid; grid-template-columns: 1fr 1.25fr; }
+  .high-steaks-control-button { min-width: 0; padding-inline: 0.45rem; }
+}
+
+/* ==========================================================
+   3. MOBILE PORTRAIT
+========================================================== */
+
+@media (max-width: 520px) and (orientation: portrait) {
+  .high-steaks-window-identity > div > span { display: none; }
+  .high-steaks-scene-content { grid-template-rows: auto minmax(74px, 0.5fr) minmax(250px, 1.8fr) minmax(178px, 1.1fr); gap: 0.2rem; padding-top: 0.35rem; }
+  .high-steaks-scoreboard { gap: 0.4rem; padding-inline: 0.42rem; }
+  .high-steaks-scoreboard-side { gap: 0.3rem; }
+  .high-steaks-scoreboard-label { font-size: 0.5rem; }
+  .high-steaks-score-pips li { width: 14px; }
+  .high-steaks-opponent-nameplate { padding: 0.35rem 0.48rem; }
+  .high-steaks-opponent-nameplate span { display: none; }
+  .high-steaks-opponent-hand { transform: scale(0.82); transform-origin: center bottom; margin-inline: -8%; }
+  .high-steaks-table-layout { padding: 0.55rem 0.65rem; }
+  .high-steaks-play-zone-opponent { transform: scale(0.78); }
+  .high-steaks-play-zone-player { transform: scale(0.9); }
+  .high-steaks-play-card-row { min-height: 60px; }
+  .high-steaks-player-zone { padding-inline: 0.3rem; }
+  .high-steaks-player-heading { padding-inline: 0.2rem; }
+  .high-steaks-player-hand { padding-inline: 0.35rem; }
+  .high-steaks-player-hand > .high-steaks-card { flex-basis: 54px; width: 54px; margin-left: -12px; }
+}
+
+/* ==========================================================
+   4. SHORT LANDSCAPE
+========================================================== */
+
+@media (orientation: landscape) and (max-height: 560px) {
+  .high-steaks-overlay { padding: 0; }
+  .high-steaks-window { width: 100vw; height: 100dvh; border: 0; }
+  .high-steaks-title-bar { min-height: 40px; }
+  .high-steaks-scene-content { grid-template-columns: minmax(130px, 0.65fr) minmax(360px, 2fr) minmax(190px, 0.95fr); grid-template-rows: auto minmax(0, 1fr); gap: 0.4rem; }
+  .high-steaks-scoreboard { grid-column: 1 / -1; }
+  .high-steaks-opponent-zone { width: auto; grid-template-columns: 1fr; align-content: center; justify-items: center; }
+  .high-steaks-opponent-nameplate { width: 100%; text-align: center; }
+  .high-steaks-opponent-hand { width: 100%; transform: scale(0.68); transform-origin: center top; margin-top: -0.35rem; }
+  .high-steaks-table-stage { width: 100%; height: 100%; }
+  .high-steaks-table-layout { padding: 0.45rem 1.25rem; }
+  .high-steaks-player-zone { align-self: stretch; align-content: center; border-top: 0; border-left: 1px solid rgba(213, 164, 87, 0.34); }
+  .high-steaks-player-heading { align-items: start; }
+  .high-steaks-selection-limit { display: none; }
+  .high-steaks-player-hand { max-height: 105px; }
+  .high-steaks-player-hand > .high-steaks-card { flex-basis: 52px; width: 52px; margin-left: -14px; }
+  .high-steaks-player-controls { grid-template-columns: 1fr; }
+  .high-steaks-control-button { min-height: 32px; padding-block: 0.4rem; }
+}

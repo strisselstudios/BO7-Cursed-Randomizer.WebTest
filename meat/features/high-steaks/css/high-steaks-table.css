@@ -1,0 +1,112 @@
+/* ==========================================================
+   1. PERSPECTIVE TABLE STAGE
+========================================================== */
+
+.high-steaks-table-stage {
+  position: relative;
+  width: min(960px, 94%);
+  min-width: 0;
+  min-height: 0;
+  justify-self: center;
+  isolation: isolate;
+}
+
+.high-steaks-table-surface,
+.high-steaks-table-rail { position: absolute; pointer-events: none; }
+
+.high-steaks-table-surface {
+  inset: 0 2% 0;
+  z-index: 0;
+  clip-path: polygon(25% 0, 75% 0, 100% 100%, 0 100%);
+  background:
+    radial-gradient(ellipse at 50% 44%, rgba(213, 178, 104, 0.08), transparent 43%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0 1px, transparent 1px 7px),
+    #173527;
+  border: 1px solid #06140e;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.82), 0 18px 34px rgba(0, 0, 0, 0.75);
+}
+
+.high-steaks-table-rail {
+  inset: -8px 0 -10px;
+  z-index: -1;
+  clip-path: polygon(24% 0, 76% 0, 100% 100%, 0 100%);
+  background: linear-gradient(90deg, #4a2111, #8a4825 19%, #3d190e 50%, #8a4825 81%, #4a2111);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================================
+   2. TABLE PLAY LAYOUT
+========================================================== */
+
+.high-steaks-table-layout {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 1fr auto 1.05fr;
+  align-items: center;
+  gap: 0.15rem;
+  padding: clamp(0.7rem, 2.3vw, 1.5rem) clamp(1.2rem, 7vw, 5rem);
+}
+
+.high-steaks-play-zone { min-width: 0; display: grid; justify-items: center; gap: 0.3rem; }
+.high-steaks-play-zone-label { color: rgba(230, 211, 161, 0.48); font: 700 0.48rem/1 Arial, Helvetica, sans-serif; letter-spacing: 0.13em; }
+.high-steaks-play-card-row { min-height: clamp(64px, 10vh, 96px); display: flex; align-items: center; justify-content: center; gap: clamp(0.35rem, 1.1vw, 0.7rem); }
+.high-steaks-play-zone-opponent { transform: scale(0.84); transform-origin: center top; }
+.high-steaks-play-zone-player { transform: scale(1.04); transform-origin: center bottom; }
+
+.high-steaks-play-card-slot {
+  width: clamp(42px, 5.8vw, 64px);
+  aspect-ratio: 0.68;
+  display: grid;
+  place-items: center;
+  color: rgba(236, 218, 174, 0.28);
+  border: 1px dashed rgba(236, 218, 174, 0.3);
+  border-radius: 5px;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.28);
+  font: 700 1rem/1 Georgia, serif;
+}
+
+/* ==========================================================
+   3. TABLE CENTER STATUS
+========================================================== */
+
+.high-steaks-table-center { display: grid; justify-items: center; gap: 0.28rem; text-align: center; }
+
+.high-steaks-rule-card {
+  padding: 0.24rem 0.55rem;
+  background: rgba(21, 8, 4, 0.84);
+  color: #d4af70;
+  border: 1px solid rgba(207, 155, 81, 0.52);
+  font: 800 0.52rem/1 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.high-steaks-phase-text { color: rgba(245, 219, 168, 0.88); font: 800 clamp(0.58rem, 1.4vw, 0.78rem)/1.2 Georgia, serif; letter-spacing: 0.09em; }
+.high-steaks-round-history { display: flex; gap: 0.28rem; }
+
+.high-steaks-history-marker {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 4, 2, 0.7);
+  color: #85683f;
+  border: 1px solid rgba(185, 132, 62, 0.4);
+  border-radius: 50%;
+  font: 700 0.48rem/1 Arial, Helvetica, sans-serif;
+}
+
+.high-steaks-history-marker.is-player { background: #846122; color: #fff0c6; }
+.high-steaks-history-marker.is-opponent { background: #681f19; color: #ffe0ca; }
+.high-steaks-history-marker.is-tie { background: #484135; color: #f0e6cf; }
+
+/* ==========================================================
+   4. REVEAL STATE PLACEHOLDER
+========================================================== */
+
+.high-steaks-scene[data-high-steaks-scene-state="reveal"] .high-steaks-table-surface { box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.82), inset 0 0 26px rgba(206, 139, 56, 0.18), 0 18px 34px rgba(0, 0, 0, 0.75); }
+.high-steaks-scene[data-high-steaks-scene-state="reveal"] .high-steaks-play-zone-player { filter: drop-shadow(0 0 8px rgba(226, 174, 91, 0.34)); }
