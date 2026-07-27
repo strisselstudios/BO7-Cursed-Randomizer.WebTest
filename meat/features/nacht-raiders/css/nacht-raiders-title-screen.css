@@ -1,11 +1,14 @@
 /* ==========================================================
    1. TITLE SCREEN
+   ----------------------------------------------------------
+   Constrains the animated title artwork to the complete DOS
+   screen while preserving its original aspect ratio.
 ========================================================== */
 
 .nacht-raiders-title-screen {
   display: grid;
   place-items: stretch;
-  background: #010301;
+  background: #000000;
   overflow: hidden;
 }
 
@@ -18,15 +21,15 @@
 ========================================================== */
 
 .nacht-raiders-title-button {
+  position: relative;
   width: 100%;
   height: 100%;
   min-width: 0;
   min-height: 0;
-  display: grid;
-  place-items: center;
+  display: block;
   padding: 0;
   appearance: none;
-  background: #010301;
+  background: #000000;
   border: 0;
   border-radius: 0;
   cursor: pointer;
@@ -44,15 +47,23 @@
 
 /* ==========================================================
    3. ANIMATED TITLE IMAGE
+   ----------------------------------------------------------
+   Absolute positioning removes the GIF's intrinsic dimensions
+   from layout calculations. Contain preserves the full image
+   and exposes the black container as letterboxing.
 ========================================================== */
 
 .nacht-raiders-title-image {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   display: block;
   object-fit: contain;
-  object-position: center;
-  background: #010301;
+  object-position: center center;
+  background: transparent;
   image-rendering: pixelated;
   pointer-events: none;
   -webkit-user-drag: none;
@@ -63,8 +74,14 @@
 ========================================================== */
 
 @media (orientation: landscape) and (max-height: 520px) {
+  .nacht-raiders-title-screen,
+  .nacht-raiders-title-button {
+    background: #000000;
+  }
+
   .nacht-raiders-title-image {
     object-fit: contain;
+    object-position: center center;
   }
 }
 
@@ -73,7 +90,13 @@
 ========================================================== */
 
 @media (orientation: portrait) and (max-width: 760px) {
+  .nacht-raiders-title-screen,
+  .nacht-raiders-title-button {
+    background: #000000;
+  }
+
   .nacht-raiders-title-image {
     object-fit: contain;
+    object-position: center center;
   }
 }
