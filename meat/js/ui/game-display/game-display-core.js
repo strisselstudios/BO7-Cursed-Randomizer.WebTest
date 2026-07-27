@@ -68,7 +68,10 @@ function updateGameDisplay() {
     updateNachtRaidersLauncher();
   }
 
-  if (typeof updateHighSteaksLauncher === "function") {
+    if (
+    typeof updateHighSteaksLauncher ===
+    "function"
+  ) {
     updateHighSteaksLauncher();
   }
 
