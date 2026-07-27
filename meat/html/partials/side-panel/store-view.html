@@ -282,55 +282,48 @@
     </button>
 
    <div
-      id="sunkenMiningTownCardGroup"
-      class="high-steaks-card-group"
-    >
-      <button
-        class="producer-card"
-        type="button"
-        data-producer="sunkenMiningTown"
-      >
+  id="sunkenMiningTownCardGroup"
+  class="producer-card-group high-steaks-card-group"
+>
+  <button
+    class="producer-card"
+    type="button"
+    data-producer="sunkenMiningTown"
+  >
+    <span
+      class="producer-icon-slot"
+      aria-hidden="true"
+    ></span>
 
-        <span
-          class="producer-icon-slot"
-          aria-hidden="true"
-        ></span>
+    <span class="producer-information">
+      <strong>Sunken Mining Town</strong>
+      <small>
+        Produces 47 meat per second
+      </small>
+    </span>
 
-        <span class="producer-information">
+    <span class="producer-purchase">
+      <strong id="sunkenMiningTownCost">
+        12,000 MEAT
+      </strong>
+      <small id="sunkenMiningTownOwned">
+        Owned: 0
+      </small>
+    </span>
+  </button>
 
-          <strong>Sunken Mining Town</strong>
-
-          <small>
-            Produces 47 meat per second
-          </small>
-
-        </span>
-        <span class="producer-purchase">
-
-          <strong id="sunkenMiningTownCost">
-            12,000 MEAT
-          </strong>
-
-          <small id="sunkenMiningTownOwned">
-            Owned: 0
-          </small>
-
-        </span>
-
-      </button>
-
-      <button
-        id="highSteaksLauncherButton"
-        class="high-steaks-launcher-button"
-        type="button"
-        aria-label="Enter the Sunken Mining Town saloon"
-        hidden
-      >
-        <span class="high-steaks-launcher-label">
-          ENTER SALOON
-        </span>
-      </button>
-    </div>
+  <button
+    id="highSteaksLauncherButton"
+    class="high-steaks-launcher-button"
+    type="button"
+    aria-label="Enter the High Steaks saloon"
+    hidden
+  >
+    <span class="high-steaks-launcher-label">
+      ENTER SALOON
+    </span>
+  </button>
+</div>
 
     <button
       class="producer-card"
