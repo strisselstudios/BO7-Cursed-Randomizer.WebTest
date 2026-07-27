@@ -6,6 +6,7 @@
 ========================================================== */
 
 loadGame();
+initializeLocalSaveRecoveryUi();
 
 initializeNachtRaidersSimulation();
 
