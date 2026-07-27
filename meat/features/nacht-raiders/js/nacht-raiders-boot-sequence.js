@@ -781,10 +781,26 @@ document.addEventListener(
 );
 
 document.addEventListener(
-  "nacht-raiders:closed",
-  () => {
-    cancelNachtRaidersBootSequence(
-      true
-    );
+  "nacht-raiders:opened",
+  (event) => {
+    const windowMode =
+      normalizeNachtRaidersWindowMode(
+        event.detail?.mode ??
+        getNachtRaidersWindowMode()
+      );
+
+    if (
+      windowMode !==
+      NACHT_RAIDERS_WINDOW_MODE_FULL
+    ) {
+      cancelNachtRaidersBootSequence(
+        false
+      );
+
+      return;
+    }
+
+    startNachtRaidersBootSequence();
   }
+);
 );
