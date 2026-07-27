@@ -1,0 +1,237 @@
+/* ==========================================================
+   1. COMPACT-ONLY ELEMENTS
+========================================================== */
+
+.nacht-raiders-compact-hud,
+.nacht-raiders-compact-footer,
+.nacht-raiders-compact-feedback {
+  display: none;
+}
+
+/* ==========================================================
+   2. COMPACT SCREEN GRID
+========================================================== */
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-screen {
+  display: grid;
+  grid-template-rows:
+    auto
+    minmax(0, 1fr)
+    auto;
+  background: #010401;
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-hud,
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-footer {
+  display: none;
+}
+
+/* ==========================================================
+   3. OPERATIVE INTEGRITY HEADER
+========================================================== */
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-compact-hud {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  padding: 4px 5px 3px;
+  background: rgba(1, 6, 1, 0.98);
+  border-bottom: 1px solid rgba(155, 188, 15, 0.34);
+}
+
+.nacht-raiders-compact-progress-heading {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  color: rgba(202, 220, 159, 0.66);
+  font-size: 0.42rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.nacht-raiders-compact-progress-heading strong {
+  color: #cadc9f;
+  font-size: inherit;
+}
+
+.nacht-raiders-compact-meter {
+  height: 7px;
+}
+
+/* ==========================================================
+   4. COMPACT VIEWPORT
+========================================================== */
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-viewport {
+  min-height: 0;
+  background: #010401;
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-event {
+  display: none;
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-entity {
+  bottom: 6%;
+  gap: 0;
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-operative {
+  left: 15%;
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-enemy {
+  right: 14%;
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-object {
+  right: 15%;
+  left: auto;
+  transform: none;
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-entity-visual {
+  width: clamp(72px, 24vh, 94px);
+  filter:
+    drop-shadow(
+      0 0 6px rgba(155, 188, 15, 0.24)
+    );
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-entity-name,
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-game-enemy-health {
+  display: none;
+}
+
+/* ==========================================================
+   5. COMPACT PROGRESS FOOTER
+========================================================== */
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-compact-footer {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  padding: 4px 5px 5px;
+  background: rgba(1, 6, 1, 0.98);
+  border-top: 1px solid rgba(155, 188, 15, 0.34);
+}
+
+.nacht-raiders-compact-progress-group {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+/* ==========================================================
+   6. COMPACT REWARD FEEDBACK
+========================================================== */
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-compact-feedback {
+  position: absolute;
+  z-index: 9;
+  top: 8%;
+  left: 15%;
+  width: 105px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  pointer-events: none;
+}
+
+.nacht-raiders-compact-feedback-item {
+  max-width: 100%;
+  color: #cadc9f;
+  font-size: 0.52rem;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  text-shadow:
+    0 0 4px #000000,
+    0 0 7px rgba(155, 188, 15, 0.8);
+  animation:
+    nacht-raiders-compact-feedback-rise
+    1500ms
+    ease-out
+    forwards;
+}
+
+.nacht-raiders-compact-feedback-item.is-level {
+  color: #ffffff;
+}
+
+.nacht-raiders-compact-feedback-item.is-rare {
+  color: #df9a3a;
+}
+
+@keyframes nacht-raiders-compact-feedback-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  72% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+}
+
+/* ==========================================================
+   7. COMPACT ENVIRONMENT TUNING
+========================================================== */
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-environment-layer-ground {
+  height: 30%;
+}
+
+.nacht-raiders-overlay[data-window-mode="compact"]
+.nacht-raiders-environment-fallback-near {
+  top: 16%;
+}
+
+/* ==========================================================
+   8. REDUCED ANIMATION
+========================================================== */
+
+body.animations-disabled
+.nacht-raiders-compact-feedback-item {
+  animation: none;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nacht-raiders-compact-feedback-item {
+    animation: none;
+    opacity: 1;
+  }
+}
