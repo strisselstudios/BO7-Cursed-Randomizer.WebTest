@@ -140,9 +140,10 @@ function createNachtRaidersIncidentRecord(
     eventId: incident.id,
     source: typeof source === "string" && source ? source : "simulation",
 
-    presentation: {
+        presentation: {
       title: incident.title,
-      lines: [...incident.lines]
+      lines: [...incident.lines],
+      ...incident.presentation
     },
 
     tags: [...incident.tags],
@@ -199,12 +200,13 @@ function generateNachtRaidersTravelIncidents(nachtRaidersState, options = {}) {
       ? options.source
       : NACHT_RAIDERS_REPORT_REASON_ACTIVE;
 
-    const result = {
+      const result = {
     incidentRolls: 0,
     incidentsGenerated: 0,
     levelsGained: 0,
     reportsCreated: 0,
-    rewards: createEmptyNachtRaidersRewards()
+    rewards: createEmptyNachtRaidersRewards(),
+    records: []
   };
 
   if (completedDepthCount <= 0) return result;
@@ -257,6 +259,7 @@ function generateNachtRaidersTravelIncidents(nachtRaidersState, options = {}) {
     );
 
     appendNachtRaidersPendingRecord(nachtRaidersState, record);
+          result.records.push(record);
 
    const reportResult = finalizeNachtRaidersPendingReports(
       nachtRaidersState,
