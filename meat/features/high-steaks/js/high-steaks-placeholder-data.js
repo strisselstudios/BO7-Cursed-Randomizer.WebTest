@@ -1,16 +1,14 @@
 /* ==========================================================
    1. HIGH STEAKS PROTOTYPE NAMESPACE
    ----------------------------------------------------------
-   Keeps the temporary scene data isolated from the future
-   match engine, AI, economy, and persistent progression.
+   Keeps temporary scene data isolated from the future match
+   engine, AI, economy, card registry, and persistent state.
 ========================================================== */
-
 window.HighSteaks = window.HighSteaks || {};
 
 /* ==========================================================
    2. PLACEHOLDER CARD DEFINITIONS
 ========================================================== */
-
 HighSteaks.PLACEHOLDER_PLAYER_HAND = Object.freeze([
   Object.freeze({ id: "prototype-1-bone", value: 1, suit: "BONE", symbol: "I" }),
   Object.freeze({ id: "prototype-2-blood", value: 2, suit: "BLOOD", symbol: "II" }),
@@ -27,7 +25,6 @@ HighSteaks.PLACEHOLDER_PLAYER_HAND = Object.freeze([
 /* ==========================================================
    3. PLACEHOLDER STATE FACTORY
 ========================================================== */
-
 HighSteaks.createPlaceholderState = function createPlaceholderState() {
   return {
     sceneState: "table",
@@ -36,11 +33,11 @@ HighSteaks.createPlaceholderState = function createPlaceholderState() {
     winsRequired: 3,
     ruleName: "STANDARD DUEL",
     phaseText: "CHOOSE EXACTLY TWO CARDS",
-    opponent: { name: "THE DRIFTER", wins: 0, handSize: 10 },
+    deckCount: 20,
+    wagerLabel: "NO WAGER",
+    opponent: { name: "THE DRIFTER", wins: 0, handSize: 10, playedCards: [] },
     player: { wins: 0, hand: HighSteaks.PLACEHOLDER_PLAYER_HAND.map((card) => ({ ...card })), selectedCardIds: [] },
     history: [],
     locked: false
   };
 };
-
-HighSteaks.prototypeState = HighSteaks.createPlaceholderState();
