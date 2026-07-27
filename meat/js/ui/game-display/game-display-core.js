@@ -68,6 +68,10 @@ function updateGameDisplay() {
     updateNachtRaidersLauncher();
   }
 
+  if (typeof updateHighSteaksLauncher === "function") {
+    updateHighSteaksLauncher();
+    }
+
   if (typeof updateNachtRaidersBootSettingControl === "function") {
     updateNachtRaidersBootSettingControl();
   }
