@@ -17,12 +17,12 @@ let nachtRaidersPreviouslyFocusedElement = null;
 
 function getNachtRaidersScreenElements() {
   return new Map([
-  [NACHT_RAIDERS_SCREEN_LOADING, nachtRaidersLoadingScreen],
-  [NACHT_RAIDERS_SCREEN_TITLE, nachtRaidersTitleScreen],
-  [NACHT_RAIDERS_SCREEN_MENU, nachtRaidersMenuScreen],
-  [NACHT_RAIDERS_SCREEN_RECORDS, nachtRaidersRecordsScreen],
-  [NACHT_RAIDERS_SCREEN_GAME, nachtRaidersGameScreen]
-]);
+    [NACHT_RAIDERS_SCREEN_LOADING, nachtRaidersLoadingScreen],
+    [NACHT_RAIDERS_SCREEN_TITLE, nachtRaidersTitleScreen],
+    [NACHT_RAIDERS_SCREEN_MENU, nachtRaidersMenuScreen],
+    [NACHT_RAIDERS_SCREEN_RECORDS, nachtRaidersRecordsScreen],
+    [NACHT_RAIDERS_SCREEN_GAME, nachtRaidersGameScreen]
+  ]);
 }
 
 function showNachtRaidersScreen(screenName) {
@@ -30,52 +30,71 @@ function showNachtRaidersScreen(screenName) {
 
   const screens = getNachtRaidersScreenElements();
 
-  if (!screens.has(screenName) || [...screens.values()].some((screen) => !screen)) {
+  if (
+    !screens.has(screenName) ||
+    [...screens.values()].some((screen) => !screen)
+  ) {
     return false;
   }
 
   for (const [registeredScreenName, screen] of screens) {
-    screen.hidden = registeredScreenName !== screenName;
+    screen.hidden =
+      registeredScreenName !== screenName;
   }
 
-  nachtRaidersWindow.dataset.nachtRaidersScreen = screenName;
+  nachtRaidersWindow.dataset.nachtRaidersScreen =
+    screenName;
 
   document.dispatchEvent(
-    new CustomEvent("nacht-raiders:screen-changed", {
-      detail: {
-        screen: screenName
+    new CustomEvent(
+      "nacht-raiders:screen-changed",
+      {
+        detail: {
+          screen: screenName
+        }
       }
-    })
+    )
   );
 
   return true;
 }
 
 function showNachtRaidersLoadingScreen() {
-  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_LOADING);
+  return showNachtRaidersScreen(
+    NACHT_RAIDERS_SCREEN_LOADING
+  );
 }
 
 function showNachtRaidersTitleScreen() {
-  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_TITLE);
+  return showNachtRaidersScreen(
+    NACHT_RAIDERS_SCREEN_TITLE
+  );
 }
 
 function showNachtRaidersMenuScreen() {
-  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_MENU);
+  return showNachtRaidersScreen(
+    NACHT_RAIDERS_SCREEN_MENU
+  );
 }
 
 function showNachtRaidersRecordsScreen() {
-  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_RECORDS);
+  return showNachtRaidersScreen(
+    NACHT_RAIDERS_SCREEN_RECORDS
+  );
 }
 
 function showNachtRaidersGameScreen() {
-  return showNachtRaidersScreen(NACHT_RAIDERS_SCREEN_GAME);
+  return showNachtRaidersScreen(
+    NACHT_RAIDERS_SCREEN_GAME
+  );
 }
+
 /* ==========================================================
    3. WINDOW ACCESS
 ========================================================== */
 
 function isNachtRaidersWindowOpen() {
-  return (
+  return Boolean(
     nachtRaidersWindowIsOpen &&
     nachtRaidersOverlay &&
     !nachtRaidersOverlay.hidden
@@ -87,9 +106,7 @@ function isNachtRaidersWindowOpen() {
 ========================================================== */
 
 function getNachtRaidersFocusableElements() {
-  if (!nachtRaidersWindow) {
-    return [];
-  }
+  if (!nachtRaidersWindow) return [];
 
   const focusableSelector = [
     "button:not([disabled])",
@@ -104,23 +121,21 @@ function getNachtRaidersFocusableElements() {
     nachtRaidersWindow.querySelectorAll(
       focusableSelector
     )
-  ).filter(
-    (element) => {
-      return (
-        !element.hidden &&
-        element.getClientRects().length >
-          0
-      );
-    }
-  );
+  ).filter((element) => {
+    return (
+      !element.hidden &&
+      element.getClientRects().length > 0
+    );
+  });
 }
 
-function trapNachtRaidersFocus(
-  event
-) {
+function trapNachtRaidersFocus(event) {
   if (
     event.key !== "Tab" ||
-    !isNachtRaidersWindowOpen()
+    !isNachtRaidersWindowOpen() ||
+    typeof isNachtRaidersFullWindowMode !==
+      "function" ||
+    !isNachtRaidersFullWindowMode()
   ) {
     return;
   }
@@ -128,9 +143,7 @@ function trapNachtRaidersFocus(
   const focusableElements =
     getNachtRaidersFocusableElements();
 
-  if (
-    focusableElements.length === 0
-  ) {
+  if (focusableElements.length === 0) {
     event.preventDefault();
 
     nachtRaidersWindow?.focus({
@@ -210,53 +223,81 @@ function openNachtRaidersWindow() {
   }
 
   if (isNachtRaidersWindowOpen()) {
-    nachtRaidersCloseButton.focus({
-      preventScroll: true
-    });
+    if (
+      typeof focusNachtRaidersWindowForMode ===
+      "function"
+    ) {
+      focusNachtRaidersWindowForMode();
+    } else {
+      nachtRaidersCloseButton.focus({
+        preventScroll: true
+      });
+    }
 
     return true;
   }
 
   nachtRaidersPreviouslyFocusedElement =
-    document.activeElement instanceof
-      HTMLElement
+    document.activeElement instanceof HTMLElement
       ? document.activeElement
       : nachtRaidersLauncherButton;
 
-  /*
-   * Until the real boot controller is added, every launch
-   * begins on the prepared loading-screen shell.
-   */
-  showNachtRaidersScreen(
-    NACHT_RAIDERS_SCREEN_LOADING
-  );
+  const nachtRaidersState =
+    ensureNachtRaidersFeatureState();
 
-  nachtRaidersOverlay.hidden =
-    false;
+  const windowMode =
+    normalizeNachtRaidersWindowMode(
+      nachtRaidersState.window.mode
+    );
+
+  nachtRaidersWindowIsOpen = true;
+  nachtRaidersOverlay.hidden = false;
 
   nachtRaidersOverlay.setAttribute(
     "aria-hidden",
     "false"
   );
 
-  document.body.classList.add(
-    "nacht-raiders-window-open"
+  applyNachtRaidersWindowMode(
+    windowMode,
+    {
+      save: false,
+      prepareScreen: false
+    }
   );
 
-  nachtRaidersWindowIsOpen =
-    true;
+  if (
+    windowMode ===
+    NACHT_RAIDERS_WINDOW_MODE_FULL
+  ) {
+    showNachtRaidersLoadingScreen();
+  } else {
+    prepareNachtRaidersWindowScreenForMode(
+      windowMode
+    );
+  }
 
-  window.requestAnimationFrame(
-    () => {
+  window.requestAnimationFrame(() => {
+    if (
+      typeof focusNachtRaidersWindowForMode ===
+      "function"
+    ) {
+      focusNachtRaidersWindowForMode();
+    } else {
       nachtRaidersCloseButton.focus({
         preventScroll: true
       });
     }
-  );
+  });
 
   document.dispatchEvent(
     new CustomEvent(
-      "nacht-raiders:opened"
+      "nacht-raiders:opened",
+      {
+        detail: {
+          mode: windowMode
+        }
+      }
     )
   );
 
@@ -275,11 +316,15 @@ function closeNachtRaidersWindow() {
     return false;
   }
 
-  nachtRaidersWindowIsOpen =
-    false;
+  if (
+    typeof cancelNachtRaidersWindowDrag ===
+    "function"
+  ) {
+    cancelNachtRaidersWindowDrag();
+  }
 
-  nachtRaidersOverlay.hidden =
-    true;
+  nachtRaidersWindowIsOpen = false;
+  nachtRaidersOverlay.hidden = true;
 
   nachtRaidersOverlay.setAttribute(
     "aria-hidden",
@@ -287,7 +332,8 @@ function closeNachtRaidersWindow() {
   );
 
   document.body.classList.remove(
-    "nacht-raiders-window-open"
+    "nacht-raiders-window-open",
+    "nacht-raiders-window-floating"
   );
 
   document.dispatchEvent(
@@ -303,18 +349,15 @@ function closeNachtRaidersWindow() {
     null;
 
   if (
-    elementToRestore instanceof
-      HTMLElement &&
+    elementToRestore instanceof HTMLElement &&
     elementToRestore.isConnected &&
     !elementToRestore.hidden
   ) {
-    window.requestAnimationFrame(
-      () => {
-        elementToRestore.focus({
-          preventScroll: true
-        });
-      }
-    );
+    window.requestAnimationFrame(() => {
+      elementToRestore.focus({
+        preventScroll: true
+      });
+    });
   } else {
     nachtRaidersLauncherButton?.focus({
       preventScroll: true
@@ -328,14 +371,29 @@ function closeNachtRaidersWindow() {
    7. GLOBAL KEYBOARD INPUT
 ========================================================== */
 
-function handleNachtRaidersWindowKeydown(
-  event
-) {
+function handleNachtRaidersWindowKeydown(event) {
   if (!isNachtRaidersWindowOpen()) {
     return;
   }
 
   if (event.key === "Escape") {
+    const fullMode =
+      typeof isNachtRaidersFullWindowMode !==
+        "function" ||
+      isNachtRaidersFullWindowMode();
+
+    const focusIsInsideWindow =
+      nachtRaidersWindow?.contains(
+        document.activeElement
+      );
+
+    if (
+      !fullMode &&
+      !focusIsInsideWindow
+    ) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 
@@ -344,9 +402,7 @@ function handleNachtRaidersWindowKeydown(
     return;
   }
 
-  trapNachtRaidersFocus(
-    event
-  );
+  trapNachtRaidersFocus(event);
 }
 
 /* ==========================================================
@@ -355,9 +411,7 @@ function handleNachtRaidersWindowKeydown(
 
 document.addEventListener(
   "nacht-raiders:open-requested",
-  () => {
-    openNachtRaidersWindow();
-  }
+  openNachtRaidersWindow
 );
 
 nachtRaidersCloseButton
@@ -375,13 +429,14 @@ nachtRaidersOverlay
   ?.addEventListener(
     "click",
     (event) => {
-      /*
-       * Only close when the dark backdrop itself was clicked.
-       * Clicking anywhere inside the DOS window does nothing.
-       */
       if (
         event.target !==
-        nachtRaidersOverlay
+          nachtRaidersOverlay ||
+        (
+          typeof isNachtRaidersFullWindowMode ===
+            "function" &&
+          !isNachtRaidersFullWindowMode()
+        )
       ) {
         return;
       }
