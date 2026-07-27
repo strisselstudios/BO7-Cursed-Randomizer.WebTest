@@ -333,8 +333,12 @@ const nachtRaidersReportEntries = document.getElementById("nachtRaidersReportEnt
 /* ==========================================================
    8. HIGH STEAKS FEATURE ELEMENTS
    ----------------------------------------------------------
-   Caches the Tier III Sunken Mining Town launcher and the
-   asset-independent saloon prototype window.
+   Caches the Tier III Sunken Mining Town launcher, saloon
+   window, perspective scene, table zones, and prototype hand.
+========================================================== */
+
+/* ==========================================================
+   8.1 LAUNCHER AND WINDOW
 ========================================================== */
 
 const sunkenMiningTownCardGroup = document.getElementById("sunkenMiningTownCardGroup");
@@ -342,6 +346,26 @@ const highSteaksLauncherButton = document.getElementById("highSteaksLauncherButt
 const highSteaksOverlay = document.getElementById("highSteaksOverlay");
 const highSteaksWindow = document.getElementById("highSteaksWindow");
 const highSteaksCloseButton = document.getElementById("highSteaksCloseButton");
+const highSteaksScene = document.getElementById("highSteaksScene");
+
+/* ==========================================================
+   8.2 SCOREBOARD, TABLE, AND HAND
+========================================================== */
+
+const highSteaksOpponentName = document.getElementById("highSteaksOpponentName");
+const highSteaksOpponentPortrait = document.getElementById("highSteaksOpponentPortrait");
+const highSteaksOpponentHand = document.getElementById("highSteaksOpponentHand");
+const highSteaksOpponentWins = document.getElementById("highSteaksOpponentWins");
+const highSteaksPlayerWins = document.getElementById("highSteaksPlayerWins");
+const highSteaksRoundValue = document.getElementById("highSteaksRoundValue");
+const highSteaksPhaseText = document.getElementById("highSteaksPhaseText");
+const highSteaksRuleCard = document.getElementById("highSteaksRuleCard");
+const highSteaksOpponentPlayZone = document.getElementById("highSteaksOpponentPlayZone");
+const highSteaksPlayerPlayZone = document.getElementById("highSteaksPlayerPlayZone");
+const highSteaksRoundHistory = document.getElementById("highSteaksRoundHistory");
+const highSteaksPlayerHand = document.getElementById("highSteaksPlayerHand");
+const highSteaksConfirmButton = document.getElementById("highSteaksConfirmButton");
+const highSteaksClearButton = document.getElementById("highSteaksClearButton");
 
 /* ==========================================================
    9. PRODUCER DISPLAY MAP
