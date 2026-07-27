@@ -120,6 +120,47 @@
 
   </header>
 
+
+   <!-- ========================================================
+       2.1 COMPACT FIELD MONITOR HUD
+  ========================================================= -->
+
+  <header
+    id="nachtRaidersCompactHud"
+    class="nacht-raiders-compact-hud"
+    aria-hidden="true"
+  >
+
+    <div class="nacht-raiders-compact-progress-heading">
+
+      <span>
+        OPERATIVE INTEGRITY
+      </span>
+
+      <strong id="nachtRaidersCompactHealthText">
+        100 / 100
+      </strong>
+
+    </div>
+
+    <div
+      class="nacht-raiders-game-meter nacht-raiders-compact-meter"
+      role="progressbar"
+      aria-label="Compact operative integrity"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="100"
+    >
+
+      <span
+        id="nachtRaidersCompactHealthFill"
+        class="nacht-raiders-game-meter-fill nacht-raiders-game-health-fill"
+      ></span>
+
+    </div>
+
+  </header>
+
   <!-- ========================================================
        3. EXPEDITION VIEWPORT
   ========================================================= -->
@@ -182,6 +223,13 @@
       <strong class="nacht-raiders-game-entity-name">
         OPERATIVE
       </strong>
+
+		    <div
+      id="nachtRaidersCompactFeedback"
+      class="nacht-raiders-compact-feedback"
+      aria-live="polite"
+      aria-atomic="false"
+    ></div>
 
     </article>
 
@@ -350,6 +398,82 @@
       </div>
 
     </dl>
+
+  </footer>
+
+	  <!-- ========================================================
+       4.1 COMPACT FIELD MONITOR PROGRESS
+  ========================================================= -->
+
+  <footer
+    id="nachtRaidersCompactFooter"
+    class="nacht-raiders-compact-footer"
+    aria-hidden="true"
+  >
+
+    <div class="nacht-raiders-compact-progress-group">
+
+      <div class="nacht-raiders-compact-progress-heading">
+
+        <span>
+          EXPERIENCE
+        </span>
+
+        <strong id="nachtRaidersCompactXpText">
+          0 / 50
+        </strong>
+
+      </div>
+
+      <div
+        class="nacht-raiders-game-meter nacht-raiders-compact-meter"
+        role="progressbar"
+        aria-label="Compact operative experience"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+
+        <span
+          id="nachtRaidersCompactXpFill"
+          class="nacht-raiders-game-meter-fill nacht-raiders-game-xp-fill"
+        ></span>
+
+      </div>
+
+    </div>
+
+    <div class="nacht-raiders-compact-progress-group">
+
+      <div class="nacht-raiders-compact-progress-heading">
+
+        <span>
+          NEXT DEPTH
+        </span>
+
+        <strong id="nachtRaidersCompactTravelText">
+          0 / 6
+        </strong>
+
+      </div>
+
+      <div
+        class="nacht-raiders-game-meter nacht-raiders-compact-meter"
+        role="progressbar"
+        aria-label="Compact progress to next depth"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      >
+
+        <span
+          id="nachtRaidersCompactTravelFill"
+          class="nacht-raiders-game-meter-fill nacht-raiders-game-travel-fill"
+        ></span>
+
+      </div>
+
+    </div>
 
   </footer>
 
