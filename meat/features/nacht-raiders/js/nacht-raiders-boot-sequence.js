@@ -564,7 +564,7 @@ function completeNachtRaidersBootImmediately() {
   return true;
 }
 
-function proceedFromNachtRaidersBootToMenu() {
+function proceedFromNachtRaidersBootToTitle() {
   if (
     !nachtRaidersBootIsComplete ||
     typeof showNachtRaidersScreen !==
@@ -577,8 +577,8 @@ function proceedFromNachtRaidersBootToMenu() {
     false;
 
   showNachtRaidersScreen(
-    NACHT_RAIDERS_SCREEN_MENU
-  );
+  NACHT_RAIDERS_SCREEN_TITLE
+);
 
   document.dispatchEvent(
     new CustomEvent(
@@ -606,7 +606,7 @@ function handleNachtRaidersBootActivation() {
   }
 
   if (nachtRaidersBootIsComplete) {
-    proceedFromNachtRaidersBootToMenu();
+    proceedFromNachtRaidersBootToTitle();
   }
 }
 
@@ -633,11 +633,11 @@ async function startNachtRaidersBootSequence() {
   }
 
   if (
-    shouldBypassNachtRaidersBootScreen()
-  ) {
-    showNachtRaidersScreen(
-      NACHT_RAIDERS_SCREEN_MENU
-    );
+  shouldBypassNachtRaidersBootScreen()
+) {
+  showNachtRaidersScreen(
+    NACHT_RAIDERS_SCREEN_TITLE
+  );
 
     document.dispatchEvent(
       new CustomEvent(
