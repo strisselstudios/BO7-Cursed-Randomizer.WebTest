@@ -6,7 +6,7 @@ const NACHT_RAIDERS_SCREEN_LOADING = "loading";
 const NACHT_RAIDERS_SCREEN_TITLE = "title";
 const NACHT_RAIDERS_SCREEN_MENU = "menu";
 const NACHT_RAIDERS_SCREEN_RECORDS = "records";
-const NACHT_RAIDERS_SCREEN_GAME = "game";;
+const NACHT_RAIDERS_SCREEN_GAME = "game";
 
 let nachtRaidersWindowIsOpen = false;
 let nachtRaidersPreviouslyFocusedElement = null;
