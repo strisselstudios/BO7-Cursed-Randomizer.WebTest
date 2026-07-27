@@ -171,96 +171,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 72% 36%, rgba(111, 135, 53, 0.12), transparent 24%),
-    linear-gradient(#071006 0%, #030803 62%, #010301 100%);
-}
-
-.nacht-raiders-game-landscape,
-.nacht-raiders-game-ground {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.nacht-raiders-game-landscape-far {
-  z-index: 0;
-  opacity: 0.42;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 120px,
-      rgba(105, 125, 75, 0.18) 121px,
-      rgba(105, 125, 75, 0.04) 150px,
-      transparent 151px,
-      transparent 240px
-    );
-  animation: nacht-raiders-landscape-far 22s linear infinite;
-}
-
-.nacht-raiders-game-landscape-near {
-  z-index: 1;
-  top: 28%;
-  opacity: 0.58;
-  background:
-    repeating-linear-gradient(
-      100deg,
-      transparent 0,
-      transparent 68px,
-      rgba(31, 52, 15, 0.48) 69px,
-      rgba(31, 52, 15, 0.08) 100px,
-      transparent 101px,
-      transparent 170px
-    );
-  animation: nacht-raiders-landscape-near 9s linear infinite;
-}
-
-.nacht-raiders-game-ground {
-  z-index: 2;
-  top: auto;
-  height: 26%;
-  background:
-    linear-gradient(rgba(155, 188, 15, 0.12), transparent 2px),
-    repeating-linear-gradient(
-      100deg,
-      #020702 0,
-      #020702 34px,
-      #071006 35px,
-      #071006 66px
-    );
-  border-top: 1px solid rgba(155, 188, 15, 0.28);
-  animation: nacht-raiders-ground 2.8s linear infinite;
-}
-
-@keyframes nacht-raiders-landscape-far {
-  from {
-    background-position-x: 0;
-  }
-
-  to {
-    background-position-x: -240px;
-  }
-}
-
-@keyframes nacht-raiders-landscape-near {
-  from {
-    background-position-x: 0;
-  }
-
-  to {
-    background-position-x: -170px;
-  }
-}
-
-@keyframes nacht-raiders-ground {
-  from {
-    background-position-x: 0;
-  }
-
-  to {
-    background-position-x: -66px;
-  }
+  background: #010401;
 }
 
 /* ==========================================================
@@ -662,11 +573,9 @@
 ========================================================== */
 
 body.animations-disabled
-.nacht-raiders-game-landscape,
-body.animations-disabled
-.nacht-raiders-game-ground,
-body.animations-disabled
 .nacht-raiders-game-operative
+.nacht-raiders-game-entity-visual,
+
 body.animations-disabled
 .nacht-raiders-game-entity.is-attacking,
 
@@ -676,17 +585,18 @@ body.animations-disabled
   animation: none;
 }
 
-
-
 body.animations-disabled
 .nacht-raiders-game-meter-fill {
   transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nacht-raiders-game-landscape,
-  .nacht-raiders-game-ground,
   .nacht-raiders-game-operative
+  .nacht-raiders-game-entity-visual,
+
+  .nacht-raiders-game-entity.is-attacking,
+
+  .nacht-raiders-game-entity.is-hit
   .nacht-raiders-game-entity-visual {
     animation: none;
   }
