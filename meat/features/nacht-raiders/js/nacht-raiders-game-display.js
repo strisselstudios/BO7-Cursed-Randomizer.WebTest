@@ -64,6 +64,11 @@ function updateNachtRaidersGameMeter(
 function renderNachtRaidersGameState() {
   const nachtRaidersState =
     ensureNachtRaidersFeatureState();
+  const zoneId =
+    nachtRaidersState.expedition.zoneId ||
+    NACHT_RAIDERS_STARTING_ZONE_ID;
+
+  renderNachtRaidersEnvironment(zoneId);
 
   const operative =
     nachtRaidersState.operative;
@@ -93,14 +98,11 @@ function renderNachtRaidersGameState() {
         travelUnits
       : 0;
 
-  if (nachtRaidersGameZone) {
+    if (nachtRaidersGameZone) {
     nachtRaidersGameZone.textContent =
-      String(
-        nachtRaidersState.expedition.zoneId ||
-        NACHT_RAIDERS_STARTING_ZONE_ID
-      ).toUpperCase();
+      getNachtRaidersZoneDisplayLabel(zoneId);
   }
-
+   
   if (nachtRaidersGameDepth) {
     nachtRaidersGameDepth.textContent =
       formatNachtRaidersGameValue(
