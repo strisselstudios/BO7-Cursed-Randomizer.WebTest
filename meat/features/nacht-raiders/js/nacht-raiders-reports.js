@@ -19,11 +19,13 @@ function cloneNachtRaidersFieldRecord(record) {
         }
       : createEmptyNachtRaidersRewards();
 
-  clonedRecord.presentation =
+    clonedRecord.presentation =
     record.presentation &&
     typeof record.presentation === "object" &&
     !Array.isArray(record.presentation)
       ? {
+          ...record.presentation,
+
           title:
             typeof record.presentation.title === "string"
               ? record.presentation.title
@@ -36,9 +38,10 @@ function cloneNachtRaidersFieldRecord(record) {
         }
       : {
           title: "",
-          lines: []
+          lines: [],
+          visualize: false
         };
-
+   
     clonedRecord.tags =
     Array.isArray(record.tags)
       ? [...record.tags]
