@@ -755,7 +755,153 @@ function validateNachtRaidersSaveState(
 }
 
 /* ==========================================================
-   7. COMPLETE GAME-STATE VALIDATION
+   7. STORED STATE PRE-MIGRATION VALIDATION
+   ----------------------------------------------------------
+   Validates every field that exists in an older local save
+   without requiring fields that migration is responsible for
+   creating.
+========================================================== */
+
+function validateStoredGameStateBeforeMigration(saveState) {
+  requirePlainSaveObject(saveState, "The stored save data");
+  validateSaveDataSafety(saveState);
+
+  requireSaveNumber(saveState.saveVersion, "The stored save version", {
+    integer: true,
+    maximum: CURRENT_SAVE_VERSION
+  });
+
+  requireSaveNumber(saveState.saveIntegrityVersion, "The stored save integrity version", {
+    integer: true,
+    maximum: CURRENT_SAVE_INTEGRITY_VERSION
+  });
+
+  requireSaveBoolean(saveState.modifiedSave, "The stored modified-save state");
+
+  if (saveState.modifiedSaveReasons !== undefined) {
+    requireSaveArray(
+      saveState.modifiedSaveReasons,
+      "The stored modified-save reasons",
+      MAX_MODIFIED_SAVE_REASONS
+    );
+
+    saveState.modifiedSaveReasons.forEach((reason) => {
+      requireSaveString(reason, "A stored modified-save reason", {
+        allowUndefined: false,
+        maximumLength: MAX_MODIFIED_SAVE_REASON_LENGTH
+      });
+    });
+  }
+
+  [
+    "meat",
+    "totalMeat",
+    "meatPerClick",
+    "meatPerSecond",
+    "meatRemainder",
+    "totalMeatRemainder"
+  ].forEach((propertyName) => {
+    requireSaveNumber(
+      saveState[propertyName],
+      `The stored ${propertyName} value`
+    );
+  });
+
+  requireSaveNumber(saveState.totalClicks, "The stored total click count", {
+    integer: true,
+    maximum: Number.MAX_SAFE_INTEGER
+  });
+
+  requireSaveBoolean(saveState.infiniteMeat, "The stored infinite-MEAT state");
+
+  requireSaveNumber(
+    saveState.highestRevealedProducerIndex,
+    "The stored producer reveal index",
+    {
+      integer: true,
+      minimum: -1,
+      maximum: producerOrder.length - 1
+    }
+  );
+
+  if (saveState.producers !== undefined) {
+    validateProducerSaveMap(
+      saveState.producers,
+      "The stored producer ownership data",
+      (value, producerKey) => {
+        requireSaveNumber(value, `The stored ${producerKey} ownership amount`, {
+          allowUndefined: false,
+          integer: true,
+          maximum: Number.MAX_SAFE_INTEGER
+        });
+      }
+    );
+  }
+
+  if (saveState.producerLifetimeMeat !== undefined) {
+    validateProducerSaveMap(
+      saveState.producerLifetimeMeat,
+      "The stored producer lifetime data",
+      (value, producerKey) => {
+        requireSaveNumber(value, `The stored ${producerKey} lifetime amount`, {
+          allowUndefined: false
+        });
+      }
+    );
+  }
+
+  if (saveState.producerHighestTier !== undefined) {
+    validateProducerSaveMap(
+      saveState.producerHighestTier,
+      "The stored producer tier-history data",
+      (value, producerKey) => {
+        requireSaveNumber(value, `The stored ${producerKey} highest tier`, {
+          allowUndefined: false,
+          integer: true,
+          maximum: 3
+        });
+      }
+    );
+  }
+
+  requireSaveNumber(saveState.runStartedAt, "The stored run-start timestamp", {
+    integer: true,
+    maximum: Number.MAX_SAFE_INTEGER
+  });
+
+  requireSaveNumber(saveState.lastSavedAt, "The stored last-save timestamp", {
+    integer: true,
+    maximum: Number.MAX_SAFE_INTEGER
+  });
+
+  if (saveState.features !== undefined) {
+    requirePlainSaveObject(saveState.features, "The stored feature data");
+
+    if (saveState.features.harvester !== undefined) {
+      validateHarvesterSaveState(saveState.features.harvester);
+    }
+
+    if (saveState.features.nachtRaiders !== undefined) {
+      validateNachtRaidersSaveState(saveState.features.nachtRaiders);
+    }
+  }
+
+  if (saveState.settings !== undefined) {
+    requirePlainSaveObject(saveState.settings, "The stored settings data");
+
+    requireSaveBoolean(saveState.settings.sound, "The stored sound setting");
+    requireSaveBoolean(saveState.settings.animations, "The stored animation setting");
+    requireSaveBoolean(
+      saveState.settings.nachtRaidersBootScreen,
+      "The stored Nacht Raiders boot-screen setting"
+    );
+  }
+
+  return true;
+}
+
+/* ==========================================================
+   8. COMPLETE GAME-STATE VALIDATION
 ========================================================== */
 
 function validateGameStateStructure(
@@ -1018,7 +1164,7 @@ function validateGameStateStructure(
 }
 
 /* ==========================================================
-   8. IMPOSSIBLE-STATE COMPARISON
+   9. IMPOSSIBLE-STATE COMPARISON
 ========================================================== */
 
 function isMeaningfullyGreater(
@@ -1041,7 +1187,7 @@ function isMeaningfullyGreater(
 }
 
 /* ==========================================================
-   9. IMPOSSIBLE-STATE INSPECTION
+   10. IMPOSSIBLE-STATE INSPECTION
    ----------------------------------------------------------
    Identifies contradictory but structurally valid progression.
    These findings mark a save as modified instead of deleting it.
