@@ -269,7 +269,7 @@ checkTransferCodeButton.addEventListener(
       transferPreview.hidden = false;
 
       transferReceiveStatus.textContent =
-        "TRANSFER FOUND";
+         "VERIFIED TRANSFER FOUND";
     } catch (error) {
       transferReceiveStatus.textContent =
         error.message;
