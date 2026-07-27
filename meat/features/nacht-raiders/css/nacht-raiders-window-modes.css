@@ -1,0 +1,223 @@
+/* ==========================================================
+   1. WINDOW CONTROL GROUP
+========================================================== */
+
+.nacht-raiders-window-controls {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.nacht-raiders-window-control-button {
+  flex: 0 0 27px;
+  width: 27px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  appearance: none;
+  background: #c0c0c0;
+  color: #000000;
+  border: 2px solid #ffffff;
+  border-right-color: #202020;
+  border-bottom-color: #202020;
+  font: 700 0.82rem/1 Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.nacht-raiders-window-control-button:hover,
+.nacht-raiders-window-control-button:focus-visible {
+  background: #d7d7d7;
+}
+
+.nacht-raiders-window-control-button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: -4px;
+}
+
+.nacht-raiders-window-control-button:active {
+  padding: 2px 0 0 2px;
+  background: #a5a5a5;
+  border-color: #202020;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+.nacht-raiders-window-control-button[hidden] {
+  display: none;
+}
+
+.nacht-raiders-close-button {
+  font-size: 1.15rem;
+}
+
+.nacht-raiders-terminal-button {
+  font-family: "Courier New", monospace;
+  font-size: 0.67rem;
+  letter-spacing: -0.08em;
+}
+
+/* ==========================================================
+   2. FLOATING OVERLAY BEHAVIOR
+========================================================== */
+
+.nacht-raiders-overlay.is-floating {
+  display: block;
+  padding: 0;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  overflow: visible;
+  pointer-events: none;
+  touch-action: auto;
+  animation: none !important;
+}
+
+.nacht-raiders-overlay.is-floating[hidden] {
+  display: none;
+}
+
+.nacht-raiders-overlay.is-floating .nacht-raiders-window {
+  position: fixed;
+  margin: 0;
+  max-width: calc(100vw - 8px);
+  max-height: calc(100dvh - 8px);
+  pointer-events: auto;
+  transform: translate(-50%, -50%) !important;
+  animation: none !important;
+  box-shadow:
+    inset 1px 1px 0 #ffffff,
+    inset -1px -1px 0 #808080,
+    0 8px 28px rgba(0, 0, 0, 0.62);
+}
+
+/* ==========================================================
+   3. COMPACT GRAPHICAL WINDOW
+========================================================== */
+
+.nacht-raiders-overlay.is-floating[data-window-mode="compact"]
+.nacht-raiders-window {
+  width: min(430px, calc(100vw - 12px));
+  height: min(260px, calc(100dvh - 12px));
+}
+
+/* ==========================================================
+   4. TERMINAL-SIZED WINDOW
+   ----------------------------------------------------------
+   Step 15C will replace the temporary reused content with the
+   dedicated rolling field-link terminal.
+========================================================== */
+
+.nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
+.nacht-raiders-window {
+  width: min(360px, calc(100vw - 12px));
+  height: min(210px, calc(100dvh - 12px));
+}
+
+.nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
+.nacht-raiders-window-icon {
+  display: none;
+}
+
+.nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
+.nacht-raiders-window-identity strong {
+  font-size: 0.68rem;
+}
+
+/* ==========================================================
+   5. FLOATING TITLE-BAR DRAGGING
+========================================================== */
+
+.nacht-raiders-overlay.is-floating
+.nacht-raiders-title-bar {
+  cursor: grab;
+  touch-action: none;
+}
+
+.nacht-raiders-overlay.is-floating
+.nacht-raiders-window.is-dragging
+.nacht-raiders-title-bar {
+  cursor: grabbing;
+}
+
+.nacht-raiders-overlay.is-floating
+.nacht-raiders-window-control-button {
+  cursor: pointer;
+}
+
+/* ==========================================================
+   6. FLOATING MOBILE PRESENTATION
+========================================================== */
+
+@media (max-width: 760px) {
+  .nacht-raiders-overlay.is-floating
+  .nacht-raiders-window {
+    border: 2px solid #dfdfdf;
+    border-right-color: #202020;
+    border-bottom-color: #202020;
+    box-shadow:
+      inset 1px 1px 0 #ffffff,
+      inset -1px -1px 0 #808080,
+      0 6px 20px rgba(0, 0, 0, 0.58);
+  }
+
+  .nacht-raiders-overlay.is-floating[data-window-mode="compact"]
+  .nacht-raiders-window {
+    width: min(92vw, 430px);
+    height: min(34dvh, 260px);
+  }
+
+  .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
+  .nacht-raiders-window {
+    width: min(88vw, 360px);
+    height: min(28dvh, 210px);
+  }
+
+  .nacht-raiders-overlay.is-floating
+  .nacht-raiders-title-bar {
+    min-height: 30px;
+    padding: 2px 2px 2px 5px;
+  }
+
+  .nacht-raiders-overlay.is-floating
+  .nacht-raiders-window-body {
+    padding: 2px;
+  }
+}
+
+/* ==========================================================
+   7. SHORT LANDSCAPE FLOATING PRESENTATION
+========================================================== */
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .nacht-raiders-overlay.is-floating[data-window-mode="compact"]
+  .nacht-raiders-window {
+    width: min(54vw, 430px);
+    height: min(62dvh, 260px);
+  }
+
+  .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
+  .nacht-raiders-window {
+    width: min(46vw, 360px);
+    height: min(48dvh, 210px);
+  }
+}
+
+/* ==========================================================
+   8. REDUCED ANIMATION
+========================================================== */
+
+body.animations-disabled
+.nacht-raiders-overlay.is-floating
+.nacht-raiders-window {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nacht-raiders-overlay.is-floating
+  .nacht-raiders-window {
+    animation: none;
+  }
+}
