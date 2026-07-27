@@ -1,15 +1,10 @@
 /* ==========================================================
    1. TABLET AND NARROW DESKTOP
 ========================================================== */
-@media (max-width: 1000px) {
-  .high-steaks-opponent-zone { top: 8%; width: min(300px, 37vw); height: 49%; }
-  .high-steaks-table-stage { top: 50%; right: -11%; bottom: -12%; left: -11%; }
-  .high-steaks-opponent-hand { width: 60%; transform: translateX(-50%) perspective(920px) rotateX(48deg) scale(0.73); }
-  .high-steaks-table-playfield { width: 47%; }
-  .high-steaks-table-wager { left: 22%; }
-  .high-steaks-table-deck { right: 22%; }
-  .high-steaks-player-zone { height: 30%; }
-  .high-steaks-player-hand > .high-steaks-card { width: clamp(68px, 9.4vw, 104px); }
+@media (max-width: 900px) {
+  .high-steaks-scoreboard { width: 50%; }
+  .high-steaks-table-status { width: 17%; }
+  .high-steaks-player-controls { width: 14%; }
 }
 
 /* ==========================================================
@@ -18,75 +13,38 @@
 @media (max-width: 760px) {
   .high-steaks-overlay { padding: 0; }
   .high-steaks-window { width: 100vw; height: 100dvh; max-width: none; max-height: none; border: 0; box-shadow: none; }
-  .high-steaks-title-bar { min-height: 42px; grid-template-columns: minmax(0, 1fr) minmax(34px, auto); padding-top: max(4px, env(safe-area-inset-top)); padding-right: max(4px, env(safe-area-inset-right)); padding-left: max(5px, env(safe-area-inset-left)); }
-  .high-steaks-title-status { display: none; }
-  .high-steaks-window-identity > div > span { display: none; }
-  .high-steaks-scoreboard { top: 0.4rem; width: min(500px, calc(100% - 4.8rem)); gap: 0.4rem; padding-inline: 0.45rem; }
-  .high-steaks-scoreboard-side { gap: 0.3rem; }
-  .high-steaks-scoreboard-label { font-size: 0.48rem; }
-  .high-steaks-score-pips li { width: 14px; }
-  .high-steaks-scoreboard-round { padding-inline: 0.45rem; }
-  .high-steaks-opponent-zone { top: 8%; width: min(250px, 42vw); height: 45%; }
-  .high-steaks-opponent-nameplate { min-width: 125px; padding: 0.28rem 0.45rem; }
-  .high-steaks-opponent-nameplate span { display: none; }
-  .high-steaks-table-stage { top: 48%; right: -18%; bottom: -14%; left: -18%; }
-  .high-steaks-opponent-hand { top: 0; width: 67%; transform: translateX(-50%) perspective(920px) rotateX(51deg) scale(0.66); }
-  .high-steaks-table-playfield { top: 13%; width: 49%; height: 62%; }
-  .high-steaks-table-wager { left: 21%; transform: perspective(850px) rotateX(48deg) rotateZ(-4deg) scale(0.72); }
-  .high-steaks-table-deck { right: 21%; transform: perspective(850px) rotateX(50deg) rotateZ(7deg) scale(0.76); }
-  .high-steaks-player-zone { height: 31%; }
-  .high-steaks-player-hand > .high-steaks-card { width: clamp(64px, 12.5vw, 92px); transform: translateX(calc(-50% + var(--high-steaks-card-offset, 0) * clamp(29px, 7.4vw, 54px))) translateY(calc(var(--high-steaks-card-depth, 0) * 3px + var(--high-steaks-card-lift))) rotateZ(calc(var(--high-steaks-card-offset, 0) * 3.2deg)) perspective(950px) rotateX(7deg); }
-  .high-steaks-player-controls { right: max(0.4rem, env(safe-area-inset-right)); bottom: max(0.4rem, env(safe-area-inset-bottom)); left: max(0.4rem, env(safe-area-inset-left)); grid-template-columns: minmax(68px, auto) 1fr minmax(84px, auto); gap: 0.35rem; }
-  .high-steaks-control-button { min-height: 34px; padding: 0.45rem 0.55rem; font-size: 0.52rem; }
-  .high-steaks-selection-limit { font-size: 0.42rem; }
+  .high-steaks-title-bar { padding-top: max(5px, env(safe-area-inset-top)); padding-right: max(5px, env(safe-area-inset-right)); padding-left: max(8px, env(safe-area-inset-left)); }
+  .high-steaks-scoreboard { top: 1.2%; width: 54%; padding: 0.26rem 0.42rem; }
+  .high-steaks-scoreboard-label { display: none; }
+  .high-steaks-opponent-nameplate { top: 55.5%; min-width: 112px; }
+  .high-steaks-table-status { left: 8%; width: 18%; }
+  .high-steaks-player-controls { right: 8%; width: 18%; }
+  .high-steaks-control-button { min-height: 30px; padding: 0.34rem; }
+  .high-steaks-player-hand { width: 76%; }
 }
 
 /* ==========================================================
-   3. MOBILE PORTRAIT
+   3. MOBILE PORTRAIT CROPPING
+   ----------------------------------------------------------
+   The shared art canvas remains wide and is cropped around the
+   center table. This preserves perspective instead of flattening
+   the card layout into a portrait UI panel.
 ========================================================== */
 @media (max-width: 560px) and (orientation: portrait) {
-  .high-steaks-room-left-structure,
-  .high-steaks-room-right-structure { width: 17%; }
-  .high-steaks-scoreboard { width: calc(100% - 4.2rem); }
-  .high-steaks-scoreboard-label { display: none; }
-  .high-steaks-opponent-zone { top: 9%; width: min(230px, 58vw); height: 39%; }
-  .high-steaks-opponent-placeholder { width: min(190px, 76%); }
-  .high-steaks-table-stage { top: 43%; right: -32%; bottom: -9%; left: -32%; }
-  .high-steaks-table-surface { clip-path: polygon(31% 0, 69% 0, 100% 100%, 0 100%); }
-  .high-steaks-table-rail { clip-path: polygon(30.4% 0, 69.6% 0, 100% 100%, 0 100%); }
-  .high-steaks-opponent-hand { width: 57%; transform: translateX(-50%) perspective(920px) rotateX(53deg) scale(0.62); }
-  .high-steaks-table-playfield { top: 15%; width: 38%; height: 61%; }
-  .high-steaks-play-zone-opponent { transform: translateX(-50%) perspective(850px) rotateX(52deg) scale(0.68); }
-  .high-steaks-play-zone-player { transform: translateX(-50%) perspective(850px) rotateX(42deg) scale(0.83); }
-  .high-steaks-table-wager { top: 35%; left: 28%; transform: perspective(850px) rotateX(48deg) rotateZ(-4deg) scale(0.58); }
-  .high-steaks-table-deck { top: 31%; right: 28%; transform: perspective(850px) rotateX(50deg) rotateZ(7deg) scale(0.62); }
-  .high-steaks-table-center { transform: translate(-50%, -50%) scale(0.84); }
-  .high-steaks-player-zone { height: 34%; }
-  .high-steaks-player-hand > .high-steaks-card { width: clamp(62px, 19vw, 84px); transform: translateX(calc(-50% + var(--high-steaks-card-offset, 0) * clamp(24px, 9.6vw, 42px))) translateY(calc(var(--high-steaks-card-depth, 0) * 3px + var(--high-steaks-card-lift))) rotateZ(calc(var(--high-steaks-card-offset, 0) * 3.4deg)) perspective(950px) rotateX(7deg); }
-  .high-steaks-selection-limit { display: none; }
-  .high-steaks-player-controls { grid-template-columns: 1fr 1fr; }
-  .high-steaks-control-button-secondary { grid-column: 1; }
-  .high-steaks-control-button-primary { grid-column: 2; }
+  .high-steaks-perspective-stage { height: 100%; width: auto; }
+  .high-steaks-scoreboard { width: 45%; }
+  .high-steaks-table-status { left: 22%; top: 67.5%; width: 15%; }
+  .high-steaks-player-controls { right: 22%; top: 72.5%; width: 15%; }
+  .high-steaks-opponent-hand { width: 62%; }
+  .high-steaks-player-hand { width: 58%; }
 }
 
 /* ==========================================================
    4. SHORT LANDSCAPE
 ========================================================== */
-@media (orientation: landscape) and (max-height: 590px) {
-  .high-steaks-overlay { padding: 0; }
-  .high-steaks-window { width: 100vw; height: 100dvh; border: 0; }
-  .high-steaks-title-bar { min-height: 38px; }
-  .high-steaks-window-mark { width: 28px; height: 28px; }
-  .high-steaks-scoreboard { top: 0.25rem; padding-block: 0.24rem; }
-  .high-steaks-opponent-zone { top: 7%; width: min(250px, 25vw); height: 47%; }
-  .high-steaks-opponent-nameplate { bottom: 0.15rem; }
-  .high-steaks-table-stage { top: 48%; right: -8%; bottom: -16%; left: -8%; }
-  .high-steaks-opponent-hand { width: 49%; transform: translateX(-50%) perspective(920px) rotateX(52deg) scale(0.62); }
-  .high-steaks-table-playfield { width: 35%; height: 62%; }
-  .high-steaks-table-wager { left: 27%; transform: perspective(850px) rotateX(48deg) rotateZ(-4deg) scale(0.68); }
-  .high-steaks-table-deck { right: 27%; transform: perspective(850px) rotateX(50deg) rotateZ(7deg) scale(0.7); }
-  .high-steaks-player-zone { height: 32%; }
-  .high-steaks-player-hand > .high-steaks-card { width: clamp(60px, 8.5vw, 86px); transform: translateX(calc(-50% + var(--high-steaks-card-offset, 0) * clamp(33px, 6.2vw, 58px))) translateY(calc(var(--high-steaks-card-depth, 0) * 2.5px + var(--high-steaks-card-lift))) rotateZ(calc(var(--high-steaks-card-offset, 0) * 3deg)) perspective(950px) rotateX(7deg); }
-  .high-steaks-player-controls { bottom: 0.3rem; }
-  .high-steaks-control-button { min-height: 30px; padding-block: 0.35rem; }
+@media (max-height: 560px) and (orientation: landscape) {
+  .high-steaks-title-bar { min-height: 40px; }
+  .high-steaks-window-mark { width: 28px; height: 28px; flex-basis: 28px; }
+  .high-steaks-scoreboard { top: 1%; padding-block: 0.22rem; }
+  .high-steaks-control-button { min-height: 28px; }
 }
