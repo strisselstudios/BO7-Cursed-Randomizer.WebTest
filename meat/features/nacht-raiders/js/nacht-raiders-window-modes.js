@@ -196,6 +196,58 @@ function focusNachtRaidersWindowForMode() {
 }
 
 /* ==========================================================
+   5.1 MODE-SPECIFIC MONITOR DISPLAY
+========================================================== */
+
+function updateNachtRaidersModeSpecificDisplays(
+  mode
+) {
+  const compactMode =
+    mode ===
+    NACHT_RAIDERS_WINDOW_MODE_COMPACT;
+
+  const terminalMode =
+    mode ===
+    NACHT_RAIDERS_WINDOW_MODE_TERMINAL;
+
+  nachtRaidersCompactHud?.setAttribute(
+    "aria-hidden",
+    String(!compactMode)
+  );
+
+  nachtRaidersCompactFooter?.setAttribute(
+    "aria-hidden",
+    String(!compactMode)
+  );
+
+  if (nachtRaidersTerminalMonitor) {
+    nachtRaidersTerminalMonitor.hidden =
+      !terminalMode;
+
+    nachtRaidersTerminalMonitor.setAttribute(
+      "aria-hidden",
+      String(!terminalMode)
+    );
+  }
+
+  if (
+    compactMode &&
+    typeof renderNachtRaidersCompactMonitorState ===
+      "function"
+  ) {
+    renderNachtRaidersCompactMonitorState();
+  }
+
+  if (
+    terminalMode &&
+    typeof renderNachtRaidersTerminalMonitor ===
+      "function"
+  ) {
+    renderNachtRaidersTerminalMonitor();
+  }
+}
+
+/* ==========================================================
    6. WINDOW MODE APPLICATION
 ========================================================== */
 
@@ -286,6 +338,10 @@ function applyNachtRaidersWindowMode(
   );
 
   updateNachtRaidersWindowModeControls(
+    normalizedMode
+  );
+
+     updateNachtRaidersModeSpecificDisplays(
     normalizedMode
   );
 
