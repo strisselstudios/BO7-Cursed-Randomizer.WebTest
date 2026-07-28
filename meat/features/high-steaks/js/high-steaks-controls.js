@@ -69,7 +69,8 @@ HighSteaks.clearPrototypeSelection = function clearPrototypeSelection() {
 };
 
 HighSteaks.confirmPrototypeSelection = function confirmPrototypeSelection() {
-  const state = HighSteaks.prototypeState;
+  const state =
+    HighSteaks.prototypeState;
 
   if (
     !state ||
@@ -79,64 +80,92 @@ HighSteaks.confirmPrototypeSelection = function confirmPrototypeSelection() {
     return false;
   }
 
-     const placementMotion =
-    typeof HighSteaks
-      .capturePlayerCardPlacementMotion ===
-      "function"
-      ? HighSteaks
-          .capturePlayerCardPlacementMotion(
-            state.player.selectedCardIds
-          )
-      : [];
+  const selectedCardIds =
+    new Set(
+      state.player.selectedCardIds
+    );
 
-  const selectedCardIds = new Set(
-    state.player.selectedCardIds
-  );
-
-  const selectedCards = state.player.hand.filter(
-    (card) => selectedCardIds.has(card.id)
-  );
+  const selectedCards =
+    state.player.hand.filter(
+      (card) =>
+        selectedCardIds.has(
+          card.id
+        )
+    );
 
   if (selectedCards.length !== 2) {
     return false;
   }
 
-  state.player.playedCards = selectedCards;
+  const placementMotion =
+    typeof HighSteaks.capturePlayerCardPlacementMotion ===
+      "function"
+      ? HighSteaks.capturePlayerCardPlacementMotion(
+          state.player.selectedCardIds
+        )
+      : [];
 
-  state.player.hand = state.player.hand.filter(
-    (card) => !selectedCardIds.has(card.id)
-  );
+  const handReflowMotion =
+    typeof HighSteaks.capturePlayerHandReflowMotion ===
+      "function"
+      ? HighSteaks.capturePlayerHandReflowMotion(
+          state.player.selectedCardIds
+        )
+      : [];
+
+  state.player.playedCards =
+    selectedCards;
+
+  state.player.hand =
+    state.player.hand.filter(
+      (card) =>
+        !selectedCardIds.has(
+          card.id
+        )
+    );
 
   state.player.selectedCardIds = [];
   state.locked = true;
   state.sceneState = "reveal";
-  state.phaseText = "CARDS PLACED. AWAITING OPPONENT";
 
-    HighSteaks.renderPrototype();
+  state.phaseText =
+    "CARDS PLACED. AWAITING OPPONENT";
 
-  if (
-    placementMotion.length > 0 &&
-    typeof HighSteaks
-      .animatePlacedCards ===
-      "function"
-  ) {
-    window.requestAnimationFrame(
-      () => {
+  HighSteaks.renderPrototype();
+
+  window.requestAnimationFrame(
+    () => {
+      if (
+        typeof HighSteaks.animatePlayerHandReflow ===
+          "function"
+      ) {
+        HighSteaks.animatePlayerHandReflow(
+          handReflowMotion
+        );
+      }
+
+      if (
+        typeof HighSteaks.animatePlacedCards ===
+          "function"
+      ) {
         HighSteaks.animatePlacedCards(
           placementMotion
         );
       }
-    );
-  }
+    }
+  );
 
   document.dispatchEvent(
     new CustomEvent(
       "high-steaks:prototype-pair-locked",
       {
         detail: {
-          cards: selectedCards.map(
-            (card) => ({ ...card })
-          )
+          cards:
+            selectedCards.map(
+              (card) => ({
+                ...card
+              })
+            )
         }
       }
     )
