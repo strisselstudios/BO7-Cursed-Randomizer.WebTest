@@ -14,53 +14,42 @@
 }
 
 /* ==========================================================
-   2. PLACEHOLDER CARD BACKS
+   2. STANDARD BLUE CARD BACK
 ========================================================== */
 
 .high-steaks-card-back {
-  margin-left: clamp(-24px, -2vw, -13px);
+  flex: 0 0 7.3%;
+  width: 7.3%;
   background:
-    linear-gradient(
+    repeating-linear-gradient(
       45deg,
-      transparent 42%,
-      rgba(240, 205, 145, 0.18) 43% 56%,
-      transparent 57%
+      rgba(255, 255, 255, 0.1) 0 2px,
+      transparent 2px 6px
     ),
-    linear-gradient(
+    repeating-linear-gradient(
       -45deg,
-      transparent 42%,
-      rgba(240, 205, 145, 0.18) 43% 56%,
-      transparent 57%
+      rgba(255, 255, 255, 0.08) 0 2px,
+      transparent 2px 6px
     ),
-    #5e1d12;
-  background-size: 12px 12px;
-  border: 2px solid #d5b172;
+    #2a315e;
+  border: 2px solid #f0eadc;
   box-shadow:
-    inset 0 0 0 2px #4e150d,
-    inset 0 0 0 3px #b98747,
+    inset 0 0 0 2px #2a315e,
+    inset 0 0 0 4px #d8d0bc,
     0 4px 9px rgba(0, 0, 0, 0.56);
 }
 
-.high-steaks-card-back:first-child {
-  margin-left: 0;
-}
-
-.high-steaks-card-back::after {
-  content: "HS";
-  place-self: center;
-  width: 58%;
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  background: #200805;
-  color: #efd094;
-  border: 1px solid #c69854;
-  border-radius: 50%;
-  font:
-    800 clamp(0.4rem, 1vw, 0.62rem) / 1
-    Georgia,
-    serif;
-  letter-spacing: 0.05em;
+.high-steaks-card-back::before {
+  content: "";
+  position: absolute;
+  inset: 13%;
+  border: 2px solid rgba(242, 235, 219, 0.78);
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(235, 226, 205, 0.28),
+      transparent 45%
+    );
 }
 
 /* ==========================================================
@@ -96,9 +85,10 @@ button.high-steaks-card-face {
   cursor: pointer;
   touch-action: manipulation;
   transition:
-    transform 120ms ease,
-    filter 120ms ease,
-    box-shadow 120ms ease;
+    left 380ms cubic-bezier(0.22, 0.78, 0.2, 1),
+    transform 380ms cubic-bezier(0.22, 0.78, 0.2, 1),
+    filter 140ms ease,
+    box-shadow 180ms ease;
 }
 
 .high-steaks-card-corner {
@@ -208,16 +198,33 @@ button.high-steaks-card-face {
 
 .high-steaks-player-hand >
 .high-steaks-card {
-  margin-left:
-    clamp(
-      -20px,
-      -1.5vw,
-      -9px
+  position: absolute;
+  left:
+    calc(
+      50% +
+      var(
+        --high-steaks-card-x,
+        0%
+      )
     );
+  bottom: 0;
+  z-index:
+    var(
+      --high-steaks-card-z,
+      1
+    );
+  width:
+    clamp(
+      54px,
+      10%,
+      106px
+    );
+  margin: 0;
   transform:
+    translateX(-50%)
     translateY(
       var(
-        --high-steaks-card-depth,
+        --high-steaks-card-drop,
         0px
       )
     )
@@ -226,26 +233,27 @@ button.high-steaks-card-face {
         --high-steaks-card-rotation,
         0deg
       )
-    );
-  transform-origin: 50% 115%;
+    )
+    perspective(900px)
+    rotateX(-5deg);
+  transform-origin: 50% 118%;
 }
 
 .high-steaks-player-hand >
-.high-steaks-card:first-child {
-  margin-left: 0;
-}
+button.high-steaks-card-face:hover:not(:disabled):not(.is-selected),
 
-button.high-steaks-card-face:hover:not(:disabled),
-button.high-steaks-card-face:focus-visible:not(:disabled) {
-  z-index: 4;
+.high-steaks-player-hand >
+button.high-steaks-card-face:focus-visible:not(:disabled):not(.is-selected) {
+  z-index: 30;
   transform:
+    translateX(-50%)
     translateY(
       calc(
         var(
-          --high-steaks-card-depth,
+          --high-steaks-card-drop,
           0px
         ) -
-        10px
+        14px
       )
     )
     rotate(
@@ -253,42 +261,56 @@ button.high-steaks-card-face:focus-visible:not(:disabled) {
         --high-steaks-card-rotation,
         0deg
       )
-    );
-  filter: brightness(1.08);
+    )
+    perspective(900px)
+    rotateX(-5deg);
+  filter: brightness(1.05);
   box-shadow:
-    0 10px 18px
-    rgba(0, 0, 0, 0.62);
+    0 12px 20px rgba(0, 0, 0, 0.68);
+}
+
+.high-steaks-player-hand >
+button.high-steaks-card-face.is-selected,
+
+.high-steaks-player-hand >
+button.high-steaks-card-face.is-selected:hover,
+
+.high-steaks-player-hand >
+button.high-steaks-card-face.is-selected:focus-visible {
+  z-index:
+    var(
+      --high-steaks-card-z,
+      1
+    );
+  transform:
+    translateX(-50%)
+    translateY(
+      calc(
+        var(
+          --high-steaks-card-drop,
+          0px
+        ) -
+        36px
+      )
+    )
+    rotate(
+      var(
+        --high-steaks-card-rotation,
+        0deg
+      )
+    )
+    perspective(900px)
+    rotateX(-5deg);
+  filter: brightness(1.07);
+  box-shadow:
+    0 0 0 2px #d99b44,
+    0 16px 25px rgba(0, 0, 0, 0.76),
+    0 0 18px rgba(217, 155, 68, 0.45);
 }
 
 button.high-steaks-card-face:focus-visible {
   outline: 2px solid #ffd58d;
   outline-offset: 2px;
-}
-
-button.high-steaks-card-face.is-selected {
-  z-index: 5;
-  transform:
-    translateY(
-      calc(
-        var(
-          --high-steaks-card-depth,
-          0px
-        ) -
-        16px
-      )
-    )
-    rotate(
-      var(
-        --high-steaks-card-rotation,
-        0deg
-      )
-    );
-  box-shadow:
-    0 0 0 3px #d6963d,
-    0 10px 21px
-    rgba(0, 0, 0, 0.72),
-    0 0 20px
-    rgba(217, 148, 55, 0.42);
 }
 
 button.high-steaks-card-face:disabled {
@@ -356,16 +378,60 @@ button.high-steaks-card-face:disabled {
 }
 
 /* ==========================================================
-   7. REDUCED MOTION
+   7. CARD PLACEMENT MOTION
+========================================================== */
+
+.high-steaks-card-motion-clone {
+  position: fixed !important;
+  z-index: 10050 !important;
+  display: block !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  transform-origin: center center !important;
+  transition: none !important;
+  will-change: transform;
+}
+
+.is-high-steaks-placement-target {
+  visibility: hidden;
+}
+
+/* ==========================================================
+   8. HAND RECENTERING
+========================================================== */
+
+.high-steaks-player-hand >
+.high-steaks-card {
+  will-change:
+    left,
+    transform;
+}
+
+/* ==========================================================
+   9. REDUCED MOTION
 ========================================================== */
 
 body.animations-disabled
-button.high-steaks-card-face {
+button.high-steaks-card-face,
+
+body.animations-disabled
+.high-steaks-player-hand >
+.high-steaks-card {
   transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  button.high-steaks-card-face {
+  button.high-steaks-card-face,
+  .high-steaks-player-hand >
+  .high-steaks-card {
     transition: none;
+  }
+
+  .high-steaks-card-motion-clone {
+    display: none !important;
+  }
+
+  .is-high-steaks-placement-target {
+    visibility: visible;
   }
 }
