@@ -5,6 +5,43 @@
 let nachtRaidersLastFullScreenName = null;
 
 /* ==========================================================
+   1.1 FLOATING-MODE DISPLAY REQUIREMENTS
+   ----------------------------------------------------------
+   Compact and terminal modes are restricted to large landscape
+   layouts. Portrait devices and short phone-landscape layouts
+   always use the complete full-window interface.
+========================================================== */
+
+const nachtRaidersFloatingModeMediaQuery =
+  window.matchMedia(
+    "(orientation: landscape) and (min-width: 900px) and (min-height: 540px)"
+  );
+
+function canUseNachtRaidersFloatingWindowModes() {
+  return nachtRaidersFloatingModeMediaQuery.matches;
+}
+
+function resolveNachtRaidersAvailableWindowMode(
+  mode
+) {
+  const normalizedMode =
+    normalizeNachtRaidersWindowMode(
+      mode
+    );
+
+  if (
+    isNachtRaidersFloatingWindowMode(
+      normalizedMode
+    ) &&
+    !canUseNachtRaidersFloatingWindowModes()
+  ) {
+    return NACHT_RAIDERS_WINDOW_MODE_FULL;
+  }
+
+  return normalizedMode;
+}
+
+/* ==========================================================
    2. WINDOW MODE ACCESS
 ========================================================== */
 
@@ -23,7 +60,7 @@ function getNachtRaidersWindowMode() {
   const nachtRaidersState =
     ensureNachtRaidersFeatureState();
 
-  return normalizeNachtRaidersWindowMode(
+    return resolveNachtRaidersAvailableWindowMode(
     nachtRaidersState.window.mode
   );
 }
@@ -139,16 +176,22 @@ function prepareNachtRaidersWindowScreenForMode(
 function updateNachtRaidersWindowModeControls(
   mode
 ) {
-  if (nachtRaidersCompactButton) {
+     const floatingModesAvailable =
+    canUseNachtRaidersFloatingWindowModes();
+   
+   if (nachtRaidersCompactButton) {
     nachtRaidersCompactButton.hidden =
+      !floatingModesAvailable ||
       mode ===
-      NACHT_RAIDERS_WINDOW_MODE_COMPACT;
+        NACHT_RAIDERS_WINDOW_MODE_COMPACT;
   }
 
   if (nachtRaidersTerminalButton) {
     nachtRaidersTerminalButton.hidden =
+      !floatingModesAvailable ||
       mode ===
-      NACHT_RAIDERS_WINDOW_MODE_TERMINAL;
+        NACHT_RAIDERS_WINDOW_MODE_TERMINAL;
+  }
   }
 
   if (nachtRaidersFullButton) {
@@ -262,8 +305,8 @@ function applyNachtRaidersWindowMode(
     return false;
   }
 
-  const normalizedMode =
-    normalizeNachtRaidersWindowMode(
+    const normalizedMode =
+    resolveNachtRaidersAvailableWindowMode(
       mode
     );
 
@@ -337,11 +380,7 @@ function applyNachtRaidersWindowMode(
     )
   );
 
-  updateNachtRaidersWindowModeControls(
-    normalizedMode
-  );
-
-     updateNachtRaidersModeSpecificDisplays(
+    updateNachtRaidersWindowModeControls(
     normalizedMode
   );
 
@@ -350,6 +389,14 @@ function applyNachtRaidersWindowMode(
     options.prepareScreen !== false
   ) {
     prepareNachtRaidersWindowScreenForMode(
+      normalizedMode
+    );
+  }
+
+  if (
+    options.refreshDisplays !== false
+  ) {
+    updateNachtRaidersModeSpecificDisplays(
       normalizedMode
     );
   }
@@ -418,7 +465,71 @@ function setNachtRaidersWindowMode(
 }
 
 /* ==========================================================
-   7. WINDOW MODE INPUT
+   7. WINDOW MODE AVAILABILITY
+========================================================== */
+
+function enforceNachtRaidersWindowModeAvailability() {
+  const renderedMode =
+    normalizeNachtRaidersWindowMode(
+      nachtRaidersWindow
+        ?.dataset
+        .windowMode ||
+      ensureNachtRaidersFeatureState()
+        .window
+        .mode
+    );
+
+  if (
+    !canUseNachtRaidersFloatingWindowModes() &&
+    isNachtRaidersFloatingWindowMode(
+      renderedMode
+    )
+  ) {
+    applyNachtRaidersWindowMode(
+      NACHT_RAIDERS_WINDOW_MODE_FULL,
+      {
+        save: true,
+        prepareScreen: true,
+        refreshDisplays: true
+      }
+    );
+
+    return true;
+  }
+
+  updateNachtRaidersWindowModeControls(
+    getNachtRaidersWindowMode()
+  );
+
+  return false;
+}
+
+nachtRaidersFloatingModeMediaQuery
+  .addEventListener(
+    "change",
+    enforceNachtRaidersWindowModeAvailability
+  );
+
+window.addEventListener(
+  "orientationchange",
+  () => {
+    window.requestAnimationFrame(
+      enforceNachtRaidersWindowModeAvailability
+    );
+  }
+);
+
+window.visualViewport
+  ?.addEventListener(
+    "resize",
+    () => {
+      window.requestAnimationFrame(
+        enforceNachtRaidersWindowModeAvailability
+      );
+    }
+  );
+/* ==========================================================
+   8. WINDOW MODE INPUT
 ========================================================== */
 
 nachtRaidersCompactButton
