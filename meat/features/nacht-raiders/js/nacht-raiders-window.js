@@ -245,8 +245,8 @@ function openNachtRaidersWindow() {
   const nachtRaidersState =
     ensureNachtRaidersFeatureState();
 
-  const windowMode =
-    normalizeNachtRaidersWindowMode(
+    const windowMode =
+    resolveNachtRaidersAvailableWindowMode(
       nachtRaidersState.window.mode
     );
 
@@ -258,11 +258,12 @@ function openNachtRaidersWindow() {
     "false"
   );
 
-  applyNachtRaidersWindowMode(
+    applyNachtRaidersWindowMode(
     windowMode,
     {
       save: false,
-      prepareScreen: false
+      prepareScreen: false,
+      refreshDisplays: false
     }
   );
 
@@ -277,7 +278,33 @@ function openNachtRaidersWindow() {
     );
   }
 
+  updateNachtRaidersModeSpecificDisplays(
+    windowMode
+  );
+
   window.requestAnimationFrame(() => {
+    if (
+      windowMode ===
+        NACHT_RAIDERS_WINDOW_MODE_COMPACT &&
+      typeof renderNachtRaidersGameDisplay ===
+        "function"
+    ) {
+      renderNachtRaidersGameDisplay();
+
+      renderNachtRaidersCompactMonitorState(
+        nachtRaidersState
+      );
+    }
+
+    if (
+      windowMode ===
+        NACHT_RAIDERS_WINDOW_MODE_TERMINAL &&
+      typeof renderNachtRaidersTerminalMonitor ===
+        "function"
+    ) {
+      renderNachtRaidersTerminalMonitor();
+    }
+
     if (
       typeof focusNachtRaidersWindowForMode ===
       "function"
