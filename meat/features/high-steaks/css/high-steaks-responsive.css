@@ -1,50 +1,257 @@
 /* ==========================================================
    1. TABLET AND NARROW DESKTOP
 ========================================================== */
+
 @media (max-width: 900px) {
-  .high-steaks-scoreboard { width: 50%; }
-  .high-steaks-table-status { width: 17%; }
-  .high-steaks-player-controls { width: 14%; }
+  .high-steaks-scoreboard {
+    width: 50%;
+  }
+
+  .high-steaks-table-status {
+    width: 17%;
+  }
+
+  .high-steaks-player-controls {
+    width: 14%;
+  }
 }
 
 /* ==========================================================
-   2. MOBILE WINDOW
+   2. MOBILE WINDOW SHELL
 ========================================================== */
+
 @media (max-width: 760px) {
-  .high-steaks-overlay { padding: 0; }
-  .high-steaks-window { width: 100vw; height: 100dvh; max-width: none; max-height: none; border: 0; box-shadow: none; }
-  .high-steaks-title-bar { padding-top: max(5px, env(safe-area-inset-top)); padding-right: max(5px, env(safe-area-inset-right)); padding-left: max(8px, env(safe-area-inset-left)); }
-  .high-steaks-scoreboard { top: 1.2%; width: 54%; padding: 0.26rem 0.42rem; }
-  .high-steaks-scoreboard-label { display: none; }
-  .high-steaks-opponent-nameplate { top: 55.5%; min-width: 112px; }
-  .high-steaks-table-status { left: 8%; width: 18%; }
-  .high-steaks-player-controls { right: 8%; width: 18%; }
-  .high-steaks-control-button { min-height: 30px; padding: 0.34rem; }
-  .high-steaks-player-hand { width: 76%; }
+  .high-steaks-overlay {
+    padding: 0;
+  }
+
+  .high-steaks-window {
+    --high-steaks-title-bar-height: 44px;
+
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    border: 0;
+    box-shadow: none;
+    grid-template-rows:
+      var(
+        --high-steaks-title-bar-height
+      )
+      minmax(0, 1fr);
+  }
+
+  .high-steaks-title-bar {
+    padding-top:
+      max(
+        5px,
+        env(safe-area-inset-top)
+      );
+
+    padding-right:
+      max(
+        5px,
+        env(safe-area-inset-right)
+      );
+
+    padding-left:
+      max(
+        8px,
+        env(safe-area-inset-left)
+      );
+  }
+
+  .high-steaks-scene {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .high-steaks-scoreboard-label {
+    display: none;
+  }
+
+  .high-steaks-control-button {
+    min-height: 30px;
+    padding: 0.34rem;
+  }
 }
 
 /* ==========================================================
-   3. MOBILE PORTRAIT CROPPING
+   3. MOBILE LANDSCAPE
    ----------------------------------------------------------
-   The shared art canvas remains wide and is cropped around the
-   center table. This preserves perspective instead of flattening
-   the card layout into a portrait UI panel.
+   Landscape retains the complete saloon canvas. Any unused
+   horizontal space becomes letterboxing rather than cropping.
 ========================================================== */
-@media (max-width: 560px) and (orientation: portrait) {
-  .high-steaks-perspective-stage { height: 100%; width: auto; }
-  .high-steaks-scoreboard { width: 45%; }
-  .high-steaks-table-status { left: 22%; top: 67.5%; width: 15%; }
-  .high-steaks-player-controls { right: 22%; top: 72.5%; width: 15%; }
-  .high-steaks-opponent-hand { width: 62%; }
-  .high-steaks-player-hand { width: 58%; }
+
+@media
+  (max-width: 760px)
+  and
+  (orientation: landscape) {
+  .high-steaks-perspective-stage {
+    width: auto;
+    height: 100%;
+  }
+
+  .high-steaks-scoreboard {
+    top: 1%;
+    width: 54%;
+    padding: 0.24rem 0.4rem;
+  }
+
+  .high-steaks-player-hand {
+    width: 72%;
+  }
+
+  .high-steaks-table-status {
+    left: 8%;
+    width: 18%;
+  }
+
+  .high-steaks-player-controls {
+    right: 8%;
+    width: 18%;
+  }
 }
 
 /* ==========================================================
-   4. SHORT LANDSCAPE
+   4. MOBILE PORTRAIT FOCUS CROP
+   ----------------------------------------------------------
+   Portrait deliberately crops the environment horizontally,
+   but keeps the opponent, four play slots, player hand, score,
+   status, and controls inside the visible center section.
 ========================================================== */
-@media (max-height: 560px) and (orientation: landscape) {
-  .high-steaks-title-bar { min-height: 40px; }
-  .high-steaks-window-mark { width: 28px; height: 28px; flex-basis: 28px; }
-  .high-steaks-scoreboard { top: 1%; padding-block: 0.22rem; }
-  .high-steaks-control-button { min-height: 28px; }
+
+@media
+  (max-width: 560px)
+  and
+  (orientation: portrait) {
+  .high-steaks-window-identity > div > span {
+    display: none;
+  }
+
+  .high-steaks-perspective-stage {
+    width: auto;
+    height: 100%;
+    max-width: none;
+  }
+
+  .high-steaks-scoreboard {
+    top: 1%;
+    width: 32%;
+    gap: 0.28rem;
+    padding: 0.24rem 0.3rem;
+  }
+
+  .high-steaks-scoreboard-side {
+    gap: 0.2rem;
+  }
+
+  .high-steaks-score-pips {
+    gap: 0.15rem;
+  }
+
+  .high-steaks-score-pips li {
+    width: 12px;
+    height: 6px;
+  }
+
+  .high-steaks-scoreboard-round {
+    padding-inline: 0.25rem;
+  }
+
+  .high-steaks-opponent-nameplate {
+    top: 54.5%;
+    min-width: 0;
+    width: 24%;
+    padding: 0.22rem 0.3rem;
+  }
+
+  .high-steaks-opponent-nameplate span {
+    display: none;
+  }
+
+  .high-steaks-opponent-hand {
+    width: 34%;
+  }
+
+  .high-steaks-player-hand {
+    width: 34%;
+    height: 27%;
+  }
+
+  .high-steaks-player-hand >
+  .high-steaks-card {
+    width:
+      clamp(
+        46px,
+        13%,
+        70px
+      );
+  }
+
+  .high-steaks-table-status {
+    left: 33%;
+    top: 68%;
+    width: 14%;
+  }
+
+  .high-steaks-player-controls {
+    right: 33%;
+    top: 73%;
+    width: 14%;
+  }
+
+  .high-steaks-control-button {
+    min-height: 28px;
+    padding: 0.3rem 0.25rem;
+    font-size: 0.46rem;
+  }
+}
+
+/* ==========================================================
+   5. SHORT LANDSCAPE
+========================================================== */
+
+@media
+  (max-height: 560px)
+  and
+  (orientation: landscape) {
+  .high-steaks-window {
+    --high-steaks-title-bar-height: 40px;
+  }
+
+  .high-steaks-title-bar {
+    min-height:
+      var(
+        --high-steaks-title-bar-height
+      );
+  }
+
+  .high-steaks-window-mark {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+
+  .high-steaks-scoreboard {
+    top: 0.8%;
+    padding-block: 0.2rem;
+  }
+
+  .high-steaks-control-button {
+    min-height: 27px;
+  }
+}
+
+/* ==========================================================
+   6. REDUCED MOTION
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .high-steaks-player-hand >
+  .high-steaks-card,
+  .high-steaks-control-button,
+  .high-steaks-close-button {
+    transition: none;
+  }
 }
