@@ -245,10 +245,15 @@ function openNachtRaidersWindow() {
   const nachtRaidersState =
     ensureNachtRaidersFeatureState();
 
-    const windowMode =
-    resolveNachtRaidersAvailableWindowMode(
-      nachtRaidersState.window.mode
-    );
+  const windowMode =
+    typeof resolveNachtRaidersAvailableWindowMode ===
+      "function"
+      ? resolveNachtRaidersAvailableWindowMode(
+          nachtRaidersState.window.mode
+        )
+      : normalizeNachtRaidersWindowMode(
+          nachtRaidersState.window.mode
+        );
 
   nachtRaidersWindowIsOpen = true;
   nachtRaidersOverlay.hidden = false;
@@ -258,7 +263,7 @@ function openNachtRaidersWindow() {
     "false"
   );
 
-    applyNachtRaidersWindowMode(
+  applyNachtRaidersWindowMode(
     windowMode,
     {
       save: false,
@@ -278,22 +283,32 @@ function openNachtRaidersWindow() {
     );
   }
 
-  updateNachtRaidersModeSpecificDisplays(
-    windowMode
-  );
+  if (
+    typeof updateNachtRaidersModeSpecificDisplays ===
+      "function"
+  ) {
+    updateNachtRaidersModeSpecificDisplays(
+      windowMode
+    );
+  }
 
   window.requestAnimationFrame(() => {
     if (
       windowMode ===
         NACHT_RAIDERS_WINDOW_MODE_COMPACT &&
-      typeof renderNachtRaidersGameDisplay ===
+      typeof renderNachtRaidersGameState ===
         "function"
     ) {
-      renderNachtRaidersGameDisplay();
+      renderNachtRaidersGameState();
 
-      renderNachtRaidersCompactMonitorState(
-        nachtRaidersState
-      );
+      if (
+        typeof renderNachtRaidersCompactMonitorState ===
+          "function"
+      ) {
+        renderNachtRaidersCompactMonitorState(
+          nachtRaidersState
+        );
+      }
     }
 
     if (
@@ -307,7 +322,7 @@ function openNachtRaidersWindow() {
 
     if (
       typeof focusNachtRaidersWindowForMode ===
-      "function"
+        "function"
     ) {
       focusNachtRaidersWindowForMode();
     } else {
