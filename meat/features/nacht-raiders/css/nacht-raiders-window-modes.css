@@ -175,65 +175,25 @@
 }
 
 /* ==========================================================
-   7. MOBILE FLOATING MODES
+   7. UNSUPPORTED FLOATING LAYOUTS
+   ----------------------------------------------------------
+   Portrait layouts and small landscape layouts use full mode.
+   JavaScript performs the mode change; these rules prevent a
+   brief display of unavailable floating controls.
 ========================================================== */
 
-@media (max-width: 760px) {
-  .nacht-raiders-overlay.is-floating
-  .nacht-raiders-window {
-    border: 2px solid #dfdfdf;
-    border-right-color: #202020;
-    border-bottom-color: #202020;
-    box-shadow:
-      inset 1px 1px 0 #ffffff,
-      inset -1px -1px 0 #808080,
-      0 6px 20px rgba(0, 0, 0, 0.58);
-  }
-
-  .nacht-raiders-overlay.is-floating[data-window-mode="compact"]
-  .nacht-raiders-window {
-    width: min(94vw, 394px);
-    height: min(40dvh, 238px);
-  }
-
-  .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
-.nacht-raiders-window {
-  width: min(94vw, 350px);
-  height: min(30dvh, 174px);
-}
-
-  .nacht-raiders-overlay.is-floating
-  .nacht-raiders-title-bar {
-    min-height: 29px;
-    padding: 2px 2px 2px 5px;
-  }
-
-  .nacht-raiders-overlay.is-floating
-  .nacht-raiders-window-body {
-    padding: 3px;
+@media
+  (orientation: portrait),
+  (max-width: 899px),
+  (max-height: 539px) {
+  #nachtRaidersCompactButton,
+  #nachtRaidersTerminalButton {
+    display: none;
   }
 }
 
 /* ==========================================================
-   8. SHORT LANDSCAPE
-========================================================== */
-
-@media (orientation: landscape) and (max-height: 520px) {
-  .nacht-raiders-overlay.is-floating[data-window-mode="compact"]
-  .nacht-raiders-window {
-    width: min(58vw, 394px);
-    height: min(68dvh, 238px);
-  }
-
-  .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
-.nacht-raiders-window {
-  width: min(54vw, 350px);
-  height: min(52dvh, 174px);
-   }
-}
-
-/* ==========================================================
-   9. REDUCED ANIMATION
+   8. REDUCED ANIMATION
 ========================================================== */
 
 body.animations-disabled
