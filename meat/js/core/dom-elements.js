@@ -384,6 +384,7 @@ const highSteaksOpponentName = document.getElementById("highSteaksOpponentName")
 const highSteaksOpponentHand = document.getElementById("highSteaksOpponentHand");
 const highSteaksOpponentPlayZone = document.getElementById("highSteaksOpponentPlayZone");
 const highSteaksPlayerPlayZone = document.getElementById("highSteaksPlayerPlayZone");
+const highSteaksCardMotionLayer = document.getElementById("highSteaksCardMotionLayer");
 const highSteaksRoundHistory = document.getElementById("highSteaksRoundHistory");
 const highSteaksRuleCard = document.getElementById("highSteaksRuleCard");
 const highSteaksPhaseText = document.getElementById("highSteaksPhaseText");
