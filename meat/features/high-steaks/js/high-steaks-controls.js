@@ -79,6 +79,16 @@ HighSteaks.confirmPrototypeSelection = function confirmPrototypeSelection() {
     return false;
   }
 
+     const placementMotion =
+    typeof HighSteaks
+      .capturePlayerCardPlacementMotion ===
+      "function"
+      ? HighSteaks
+          .capturePlayerCardPlacementMotion(
+            state.player.selectedCardIds
+          )
+      : [];
+
   const selectedCardIds = new Set(
     state.player.selectedCardIds
   );
@@ -102,7 +112,22 @@ HighSteaks.confirmPrototypeSelection = function confirmPrototypeSelection() {
   state.sceneState = "reveal";
   state.phaseText = "CARDS PLACED. AWAITING OPPONENT";
 
-  HighSteaks.renderPrototype();
+    HighSteaks.renderPrototype();
+
+  if (
+    placementMotion.length > 0 &&
+    typeof HighSteaks
+      .animatePlacedCards ===
+      "function"
+  ) {
+    window.requestAnimationFrame(
+      () => {
+        HighSteaks.animatePlacedCards(
+          placementMotion
+        );
+      }
+    );
+  }
 
   document.dispatchEvent(
     new CustomEvent(
