@@ -378,25 +378,38 @@ button.high-steaks-card-face:disabled {
 
 /* ==========================================================
    7. CARD PLACEMENT MOTION
+   ----------------------------------------------------------
+   The motion layer sits above the table play area but below the
+   foreground hand. Moving cards therefore pass behind the row
+   of cards as they leave the hand.
 ========================================================== */
 
+.high-steaks-card-motion-layer {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
 .high-steaks-card-motion-clone {
-  position: fixed !important;
-  z-index: 22050 !important;
+  position: absolute !important;
   box-sizing: border-box !important;
   display: grid !important;
   margin: 0 !important;
-  opacity: 1 !important;
+  opacity: 1;
   visibility: visible !important;
   pointer-events: none !important;
-  transform-origin: center center !important;
+  transform-origin: 0 0 !important;
   backface-visibility: hidden;
   transition: none !important;
-  will-change: transform;
+  will-change:
+    transform,
+    opacity;
 }
 
 .is-high-steaks-placement-target {
-  visibility: hidden;
+  opacity: 0;
 }
 
 /* ==========================================================
@@ -434,7 +447,7 @@ body.animations-disabled
     display: none !important;
   }
 
-  .is-high-steaks-placement-target {
-    visibility: visible;
+    .is-high-steaks-placement-target {
+    opacity: 1;
   }
 }
