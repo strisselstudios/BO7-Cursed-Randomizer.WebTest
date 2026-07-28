@@ -376,62 +376,28 @@ HighSteaks.animatePlacedCard =
       "is-high-steaks-placement-target"
     );
 
-    const destinationRevealAnimation =
-      typeof destinationCard.animate ===
-        "function"
-        ? destinationCard.animate(
-            [
-              {
-                offset: 0,
-                opacity: 0
-              },
+    
+        const cleanup = () => {
+      /*
+       * Reveal the real card and remove the moving copy in the
+       * same JavaScript task. The browser paints only the real
+       * destination card on the following frame.
+       */
 
-              {
-                offset: 0.84,
-                opacity: 0
-              },
-
-              {
-                offset: 1,
-                opacity: 1
-              }
-            ],
-            {
-              duration:
-                HIGH_STEAKS_CARD_PLACEMENT_DURATION_MS,
-
-              delay,
-
-              easing:
-                "linear",
-
-              fill:
-                "both"
-            }
-          )
-        : null;
-
-    const cleanup = () => {
       destinationCard.classList.remove(
         "is-high-steaks-placement-target"
       );
 
-      destinationRevealAnimation
-        ?.cancel();
-
       motionClone.remove();
     };
-
     const animation =
       motionClone.animate(
-        [
+            [
           {
             offset: 0,
 
             transform:
-              "translate3d(0, 0, 0) scale(1, 1) rotate(0deg)",
-
-            opacity: 1
+              "translate3d(0, 0, 0) scale(1, 1) rotate(0deg)"
           },
 
           {
@@ -443,9 +409,7 @@ HighSteaks.animatePlacedCard =
                 `${middleTranslationY}px, 0)`,
                 `scale(${middleScaleX}, ${middleScaleY})`,
                 `rotate(${rotationDirection}deg)`
-              ].join(" "),
-
-            opacity: 1
+              ].join(" ")
           },
 
           {
@@ -457,9 +421,7 @@ HighSteaks.animatePlacedCard =
                 `${translationY - 3}px, 0)`,
                 `scale(${scaleX * 1.02}, ${scaleY * 1.02})`,
                 "rotate(0deg)"
-              ].join(" "),
-
-            opacity: 1
+              ].join(" ")
           },
 
           {
@@ -471,9 +433,7 @@ HighSteaks.animatePlacedCard =
                 `${translationY}px, 0)`,
                 `scale(${scaleX}, ${scaleY})`,
                 "rotate(0deg)"
-              ].join(" "),
-
-            opacity: 1
+              ].join(" ")
           },
 
           {
@@ -485,9 +445,7 @@ HighSteaks.animatePlacedCard =
                 `${translationY}px, 0)`,
                 `scale(${scaleX}, ${scaleY})`,
                 "rotate(0deg)"
-              ].join(" "),
-
-            opacity: 0
+              ].join(" ")
           }
         ],
         {
