@@ -15,8 +15,8 @@
    2. STANDARD CARD BACK
 ========================================================== */
 .high-steaks-card-back {
-  flex: 0 0 8.4%;
-  width: 8.4%;
+  flex: 0 0 7.3%;
+  width: 7.3%;
   background:
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 6px),
     repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 6px),
@@ -129,11 +129,14 @@ button.high-steaks-card-face { cursor: pointer; touch-action: manipulation; tran
   z-index: 31;
   transform:
     translateX(-50%)
-    translateY(calc(var(--high-steaks-card-drop) - 24px))
+    translateY(calc(var(--high-steaks-card-drop) - 18px))
     rotate(var(--high-steaks-card-rotation))
     perspective(900px)
     rotateX(-5deg);
-  box-shadow: 0 0 0 3px #d99b44, 0 13px 23px rgba(0, 0, 0, 0.76), 0 0 20px rgba(217, 155, 68, 0.44);
+  box-shadow:
+    0 0 0 2px #d99b44,
+    0 10px 18px rgba(0, 0, 0, 0.68),
+    0 0 13px rgba(217, 155, 68, 0.36);
 }
 button.high-steaks-card-face:focus-visible { outline: 2px solid #ffd58d; outline-offset: 2px; }
 button.high-steaks-card-face:disabled { cursor: default; }
