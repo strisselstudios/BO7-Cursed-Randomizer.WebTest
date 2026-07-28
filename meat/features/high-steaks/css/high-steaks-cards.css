@@ -409,7 +409,7 @@ button.high-steaks-card-face:disabled {
 }
 
 .is-high-steaks-placement-target {
-  opacity: 0;
+  visibility: hidden;
 }
 
 /* ==========================================================
@@ -447,7 +447,7 @@ body.animations-disabled
     display: none !important;
   }
 
-    .is-high-steaks-placement-target {
-    opacity: 1;
-  }
+   .is-high-steaks-placement-target {
+  visibility: visible;
+   }
 }
