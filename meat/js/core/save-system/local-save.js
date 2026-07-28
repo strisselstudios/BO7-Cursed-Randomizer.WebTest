@@ -300,13 +300,27 @@ function saveGame() {
   try {
     gameState.lastSavedAt = Date.now();
 
-    validateGameStateStructure(
+        validateGameStateStructure(
       gameState
     );
 
+    const serializedGameState =
+      JSON.stringify(gameState);
+
+    if (
+      new Blob([
+        serializedGameState
+      ]).size >
+      MAX_SAVE_FILE_SIZE_BYTES
+    ) {
+      throw new Error(
+        "The active save exceeds the maximum supported size."
+      );
+    }
+
     localStorage.setItem(
       MEAT_SAVE_KEY,
-      JSON.stringify(gameState)
+      serializedGameState
     );
 
     return true;
