@@ -40,7 +40,12 @@
 .high-steaks-perspective-stage {
   position: relative;
   flex: 0 0 auto;
-  width: 100%;
+  width:
+    min(
+      1528px,
+      calc(100vw - 2rem)
+    );
+  height: auto;
   aspect-ratio: 1528 / 1079;
   overflow: hidden;
   background: #020104;
@@ -189,8 +194,26 @@
 .high-steaks-control-button:disabled { opacity: 0.42; cursor: default; }
 
 /* ==========================================================
-   8. WIDE VIEWPORT FIT
+   8. DESKTOP HEIGHT-CONSTRAINED FIT
+   ----------------------------------------------------------
+   Desktop and landscape screens size the complete saloon from
+   the available vertical space. This prevents bottom cropping.
 ========================================================== */
-@media (min-aspect-ratio: 1528 / 1079) {
-  .high-steaks-perspective-stage { width: 100%; height: auto; }
+
+@media (min-aspect-ratio: 4 / 3) {
+  .high-steaks-perspective-stage {
+    width: auto;
+    height:
+      min(
+        1079px,
+        calc(
+          100dvh -
+          2rem -
+          var(
+            --high-steaks-title-bar-height,
+            46px
+          )
+        )
+      );
+  }
 }
