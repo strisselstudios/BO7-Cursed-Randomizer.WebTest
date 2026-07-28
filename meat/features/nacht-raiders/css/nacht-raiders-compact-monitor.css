@@ -13,13 +13,13 @@
 ========================================================== */
 
 .nacht-raiders-overlay[data-window-mode="compact"]
-.nacht-raiders-game-screen {
+.nacht-raiders-compact-hud {
+  min-width: 0;
   display: grid;
-  grid-template-rows:
-    auto
-    minmax(0, 1fr)
-    auto;
-  background: #010401;
+  gap: 4px;
+  padding: 5px 6px 4px;
+  background: rgba(1, 6, 1, 0.98);
+  border-bottom: 1px solid rgba(155, 188, 15, 0.44);
 }
 
 .nacht-raiders-overlay[data-window-mode="compact"]
@@ -50,21 +50,23 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.4rem;
-  color: rgba(202, 220, 159, 0.66);
-  font-size: 0.42rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.03em;
+  color: #cadc9f;
+  font-size: 0.55rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: 0.025em;
   white-space: nowrap;
+  text-shadow:
+    0 0 4px rgba(155, 188, 15, 0.32);
 }
 
 .nacht-raiders-compact-progress-heading strong {
-  color: #cadc9f;
-  font-size: inherit;
+  color: #f1ffd1;
+  font-size: 0.57rem;
 }
 
 .nacht-raiders-compact-meter {
-  height: 7px;
+  height: 8px;
 }
 
 /* ==========================================================
@@ -130,10 +132,10 @@
 .nacht-raiders-compact-footer {
   min-width: 0;
   display: grid;
-  gap: 4px;
-  padding: 4px 5px 5px;
+  gap: 5px;
+  padding: 5px 6px;
   background: rgba(1, 6, 1, 0.98);
-  border-top: 1px solid rgba(155, 188, 15, 0.34);
+  border-top: 1px solid rgba(155, 188, 15, 0.44);
 }
 
 .nacht-raiders-compact-progress-group {
