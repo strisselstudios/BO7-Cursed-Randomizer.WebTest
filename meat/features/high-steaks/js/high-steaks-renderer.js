@@ -139,51 +139,218 @@ HighSteaks.renderOpponentHand = function renderOpponentHand(state) {
   highSteaksOpponentHand.setAttribute("aria-label", `Opponent hand: ${state.opponent.handSize} hidden cards`);
 };
 
+/* ==========================================================
+   3.1 PLAYER HAND CARD STATE
+   ----------------------------------------------------------
+   Updates an existing card without destroying and recreating
+   its DOM element. Persistent elements permit CSS transitions
+   when cards move, raise, lower, or close gaps in the hand.
+========================================================== */
+
+HighSteaks.updatePlayerHandCardElement = function updatePlayerHandCardElement(
+  cardElement,
+  card,
+  options = {}
+) {
+  if (!(cardElement instanceof HTMLButtonElement)) {
+    return false;
+  }
+
+  const selected =
+    options.selected === true;
+
+  cardElement.className =
+    `high-steaks-card high-steaks-card-face is-${card.color}`;
+
+  cardElement.classList.toggle(
+    "is-selected",
+    selected
+  );
+
+  cardElement.dataset.highSteaksCardId =
+    card.id;
+
+  cardElement.dataset.highSteaksCardValue =
+    String(card.value);
+
+  cardElement.dataset.highSteaksCardSuit =
+    card.suit;
+
+  cardElement.setAttribute(
+    "aria-label",
+    `${card.rank} of ${card.suit}`
+  );
+
+  cardElement.setAttribute(
+    "aria-pressed",
+    selected
+      ? "true"
+      : "false"
+  );
+
+  cardElement.disabled =
+    options.disabled === true;
+
+  return true;
+};
+
+/* ==========================================================
+   3.2 PLAYER HAND RENDERING
+========================================================== */
+
 HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
   if (!highSteaksPlayerHand) return;
 
-  highSteaksPlayerHand.replaceChildren();
+  const existingCardsById =
+    new Map();
 
-  const cardCount = state.player.hand.length;
-  const handCenter = (cardCount - 1) / 2;
-  const maximumDistance = Math.max(1, handCenter);
-  const fanSpread = Math.min(41, Math.max(0, (cardCount - 1) * 4.55));
-  const fanDrop = Math.min(22, Math.max(0, (cardCount - 1) * 2.45));
-  const fanRotation = Math.min(10, Math.max(0, (cardCount - 1) * 1.1));
+  for (
+    const cardElement of
+    highSteaksPlayerHand.children
+  ) {
+    const cardId =
+      cardElement.dataset
+        ?.highSteaksCardId;
 
-  state.player.hand.forEach((card, index) => {
-    const selected = state.player.selectedCardIds.includes(card.id);
+    if (cardId) {
+      existingCardsById.set(
+        cardId,
+        cardElement
+      );
+    }
+  }
 
-    const cardElement = HighSteaks.createCardFaceElement(card, {
-      interactive: true,
-      selected,
-      disabled: state.locked
-    });
-
-    const normalizedOffset = (index - handCenter) / maximumDistance;
-
-    cardElement.style.setProperty(
-      "--high-steaks-card-x",
-      `${normalizedOffset * fanSpread}%`
+  const activeCardIds =
+    new Set(
+      state.player.hand.map(
+        (card) => card.id
+      )
     );
 
-    cardElement.style.setProperty(
-      "--high-steaks-card-drop",
-      `${Math.abs(normalizedOffset) * fanDrop}px`
+  for (
+    const [
+      cardId,
+      cardElement
+    ] of existingCardsById
+  ) {
+    if (!activeCardIds.has(cardId)) {
+      cardElement.remove();
+      existingCardsById.delete(cardId);
+    }
+  }
+
+  const cardCount =
+    state.player.hand.length;
+
+  const handCenter =
+    (cardCount - 1) / 2;
+
+  const maximumDistance =
+    Math.max(
+      1,
+      handCenter
     );
 
-    cardElement.style.setProperty(
-      "--high-steaks-card-rotation",
-      `${normalizedOffset * fanRotation}deg`
+  const fanSpread =
+    Math.min(
+      41,
+      Math.max(
+        0,
+        (cardCount - 1) * 4.55
+      )
     );
 
-    cardElement.style.setProperty(
-      "--high-steaks-card-z",
-      String(index + 1)
+  const fanDrop =
+    Math.min(
+      22,
+      Math.max(
+        0,
+        (cardCount - 1) * 2.45
+      )
     );
 
-    highSteaksPlayerHand.append(cardElement);
-  });
+  const fanRotation =
+    Math.min(
+      10,
+      Math.max(
+        0,
+        (cardCount - 1) * 1.1
+      )
+    );
+
+  state.player.hand.forEach(
+    (card, index) => {
+      const selected =
+        state.player.selectedCardIds
+          .includes(card.id);
+
+      let cardElement =
+        existingCardsById.get(
+          card.id
+        );
+
+      if (
+        !(
+          cardElement instanceof
+          HTMLButtonElement
+        )
+      ) {
+        cardElement =
+          HighSteaks
+            .createCardFaceElement(
+              card,
+              {
+                interactive: true,
+                selected,
+                disabled:
+                  state.locked
+              }
+            );
+      } else {
+        HighSteaks
+          .updatePlayerHandCardElement(
+            cardElement,
+            card,
+            {
+              selected,
+              disabled:
+                state.locked
+            }
+          );
+      }
+
+      const normalizedOffset =
+        (
+          index -
+          handCenter
+        ) /
+        maximumDistance;
+
+      cardElement.style.setProperty(
+        "--high-steaks-card-x",
+        `${normalizedOffset * fanSpread}%`
+      );
+
+      cardElement.style.setProperty(
+        "--high-steaks-card-drop",
+        `${Math.abs(normalizedOffset) * fanDrop}px`
+      );
+
+      cardElement.style.setProperty(
+        "--high-steaks-card-rotation",
+        `${normalizedOffset * fanRotation}deg`
+      );
+
+      cardElement.style.setProperty(
+        "--high-steaks-card-z",
+        String(index + 1)
+      );
+
+      highSteaksPlayerHand.append(
+        cardElement
+      );
+    }
+  );
 };
 
 /* ==========================================================
