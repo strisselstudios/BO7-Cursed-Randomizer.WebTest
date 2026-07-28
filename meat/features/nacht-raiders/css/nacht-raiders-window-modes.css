@@ -121,8 +121,8 @@
 
 .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
 .nacht-raiders-window {
-  width: min(330px, calc(100vw - 12px));
-  height: min(192px, calc(100dvh - 12px));
+  width: min(350px, calc(100vw - 12px));
+  height: min(174px, calc(100dvh - 12px));
 }
 
 .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
@@ -137,7 +137,7 @@
 
 .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
 .nacht-raiders-window-identity strong {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
 }
 
 /* ==========================================================
@@ -197,10 +197,10 @@
   }
 
   .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
-  .nacht-raiders-window {
-    width: min(92vw, 330px);
-    height: min(34dvh, 192px);
-  }
+.nacht-raiders-window {
+  width: min(94vw, 350px);
+  height: min(30dvh, 174px);
+}
 
   .nacht-raiders-overlay.is-floating
   .nacht-raiders-title-bar {
@@ -226,10 +226,10 @@
   }
 
   .nacht-raiders-overlay.is-floating[data-window-mode="terminal"]
-  .nacht-raiders-window {
-    width: min(50vw, 330px);
-    height: min(58dvh, 192px);
-  }
+.nacht-raiders-window {
+  width: min(54vw, 350px);
+  height: min(52dvh, 174px);
+   }
 }
 
 /* ==========================================================
