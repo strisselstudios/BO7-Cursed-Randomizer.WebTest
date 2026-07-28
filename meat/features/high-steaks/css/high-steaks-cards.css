@@ -44,7 +44,15 @@
 }
 .high-steaks-card-face.is-red { color: #b20f1f; }
 .high-steaks-card-face.is-black { color: #111318; }
-button.high-steaks-card-face { cursor: pointer; touch-action: manipulation; transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease; }
+button.high-steaks-card-face {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    left 380ms cubic-bezier(0.22, 0.78, 0.2, 1),
+    transform 380ms cubic-bezier(0.22, 0.78, 0.2, 1),
+    filter 140ms ease,
+    box-shadow 180ms ease;
+}
 .high-steaks-card-corner {
   position: absolute;
   z-index: 2;
@@ -113,8 +121,8 @@ button.high-steaks-card-face { cursor: pointer; touch-action: manipulation; tran
     rotateX(-5deg);
   transform-origin: 50% 118%;
 }
-.high-steaks-player-hand > button.high-steaks-card-face:hover:not(:disabled),
-.high-steaks-player-hand > button.high-steaks-card-face:focus-visible:not(:disabled) {
+.high-steaks-player-hand > button.high-steaks-card-face:hover:not(:disabled):not(.is-selected),
+.high-steaks-player-hand > button.high-steaks-card-face:focus-visible:not(:disabled):not(.is-selected) {
   z-index: 30;
   transform:
     translateX(-50%)
@@ -123,20 +131,35 @@ button.high-steaks-card-face { cursor: pointer; touch-action: manipulation; tran
     perspective(900px)
     rotateX(-5deg);
   filter: brightness(1.05);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.68);
+  box-shadow:
+    0 12px 20px rgba(0, 0, 0, 0.68);
 }
-.high-steaks-player-hand > button.high-steaks-card-face.is-selected {
-  z-index: 31;
+.high-steaks-player-hand > button.high-steaks-card-face.is-selected,
+.high-steaks-player-hand > button.high-steaks-card-face.is-selected:hover,
+.high-steaks-player-hand > button.high-steaks-card-face.is-selected:focus-visible {
+  z-index:
+    var(--high-steaks-card-z);
+
   transform:
     translateX(-50%)
-    translateY(calc(var(--high-steaks-card-drop) - 18px))
-    rotate(var(--high-steaks-card-rotation))
+    translateY(
+      calc(
+        var(--high-steaks-card-drop) -
+        36px
+      )
+    )
+    rotate(
+      var(--high-steaks-card-rotation)
+    )
     perspective(900px)
     rotateX(-5deg);
+
+  filter: brightness(1.07);
+
   box-shadow:
     0 0 0 2px #d99b44,
-    0 10px 18px rgba(0, 0, 0, 0.68),
-    0 0 13px rgba(217, 155, 68, 0.36);
+    0 16px 25px rgba(0, 0, 0, 0.76),
+    0 0 18px rgba(217, 155, 68, 0.45);
 }
 button.high-steaks-card-face:focus-visible { outline: 2px solid #ffd58d; outline-offset: 2px; }
 button.high-steaks-card-face:disabled { cursor: default; }
