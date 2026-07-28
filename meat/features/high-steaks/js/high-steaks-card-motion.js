@@ -41,6 +41,7 @@ HighSteaks.capturePlayerCardPlacementMotion =
   ) {
     if (
       !highSteaksPlayerHand ||
+      !highSteaksCardMotionLayer ||
       !Array.isArray(cardIds) ||
       !HighSteaks.shouldAnimateCardMotion()
     ) {
@@ -51,6 +52,13 @@ HighSteaks.capturePlayerCardPlacementMotion =
       new Set(cardIds);
 
     const capturedCards = [];
+
+    const motionLayerBounds =
+      highSteaksCardMotionLayer
+        .getBoundingClientRect();
+
+    highSteaksCardMotionLayer
+      .replaceChildren();
 
     for (
       const cardElement of
@@ -104,10 +112,16 @@ HighSteaks.capturePlayerCardPlacementMotion =
       );
 
       motionClone.style.left =
-        `${bounds.left}px`;
+        `${
+          bounds.left -
+          motionLayerBounds.left
+        }px`;
 
       motionClone.style.top =
-        `${bounds.top}px`;
+        `${
+          bounds.top -
+          motionLayerBounds.top
+        }px`;
 
       motionClone.style.width =
         `${bounds.width}px`;
@@ -115,7 +129,24 @@ HighSteaks.capturePlayerCardPlacementMotion =
       motionClone.style.height =
         `${bounds.height}px`;
 
-      document.body.append(
+      const sourceZIndex =
+        Number.parseInt(
+          window
+            .getComputedStyle(
+              cardElement
+            )
+            .zIndex,
+          10
+        );
+
+      motionClone.style.zIndex =
+        Number.isFinite(sourceZIndex)
+          ? String(sourceZIndex)
+          : String(
+              capturedCards.length + 1
+            );
+
+      highSteaksCardMotionLayer.append(
         motionClone
       );
 
@@ -269,7 +300,8 @@ HighSteaks.animatePlacedCard =
     }
 
     const destinationBounds =
-      destinationCard.getBoundingClientRect();
+      destinationCard
+        .getBoundingClientRect();
 
     if (
       destinationBounds.width <= 0 ||
@@ -279,6 +311,12 @@ HighSteaks.animatePlacedCard =
 
       return false;
     }
+
+    /*
+     * The clone uses top-left transform origin. These coordinate
+     * differences therefore place its final top-left corner at
+     * the destination card's exact rendered top-left corner.
+     */
 
     const translationX =
       destinationBounds.left -
@@ -314,30 +352,72 @@ HighSteaks.animatePlacedCard =
 
     const arcHeight =
       Math.max(
-        12,
-        sourceBounds.height * 0.16
+        10,
+        sourceBounds.height * 0.12
       );
 
     const middleTranslationX =
-      translationX * 0.72;
+      translationX * 0.7;
 
     const middleTranslationY =
-      translationY * 0.7 -
+      translationY * 0.68 -
       arcHeight;
 
     const rotationDirection =
       index % 2 === 0
-        ? -3.5
-        : 3.5;
+        ? -2.5
+        : 2.5;
+
+    const delay =
+      index *
+      HIGH_STEAKS_CARD_PLACEMENT_STAGGER_MS;
 
     destinationCard.classList.add(
       "is-high-steaks-placement-target"
     );
 
+    const destinationRevealAnimation =
+      typeof destinationCard.animate ===
+        "function"
+        ? destinationCard.animate(
+            [
+              {
+                offset: 0,
+                opacity: 0
+              },
+
+              {
+                offset: 0.84,
+                opacity: 0
+              },
+
+              {
+                offset: 1,
+                opacity: 1
+              }
+            ],
+            {
+              duration:
+                HIGH_STEAKS_CARD_PLACEMENT_DURATION_MS,
+
+              delay,
+
+              easing:
+                "linear",
+
+              fill:
+                "both"
+            }
+          )
+        : null;
+
     const cleanup = () => {
       destinationCard.classList.remove(
         "is-high-steaks-placement-target"
       );
+
+      destinationRevealAnimation
+        ?.cancel();
 
       motionClone.remove();
     };
@@ -349,11 +429,13 @@ HighSteaks.animatePlacedCard =
             offset: 0,
 
             transform:
-              "translate3d(0, 0, 0) scale(1, 1) rotate(0deg)"
+              "translate3d(0, 0, 0) scale(1, 1) rotate(0deg)",
+
+            opacity: 1
           },
 
           {
-            offset: 0.72,
+            offset: 0.7,
 
             transform:
               [
@@ -361,19 +443,37 @@ HighSteaks.animatePlacedCard =
                 `${middleTranslationY}px, 0)`,
                 `scale(${middleScaleX}, ${middleScaleY})`,
                 `rotate(${rotationDirection}deg)`
-              ].join(" ")
+              ].join(" "),
+
+            opacity: 1
           },
 
           {
-            offset: 0.9,
+            offset: 0.88,
 
             transform:
               [
                 `translate3d(${translationX}px,`,
-                `${translationY - 4}px, 0)`,
-                `scale(${scaleX * 1.025}, ${scaleY * 1.025})`,
+                `${translationY - 3}px, 0)`,
+                `scale(${scaleX * 1.02}, ${scaleY * 1.02})`,
                 "rotate(0deg)"
-              ].join(" ")
+              ].join(" "),
+
+            opacity: 1
+          },
+
+          {
+            offset: 0.94,
+
+            transform:
+              [
+                `translate3d(${translationX}px,`,
+                `${translationY}px, 0)`,
+                `scale(${scaleX}, ${scaleY})`,
+                "rotate(0deg)"
+              ].join(" "),
+
+            opacity: 1
           },
 
           {
@@ -385,16 +485,16 @@ HighSteaks.animatePlacedCard =
                 `${translationY}px, 0)`,
                 `scale(${scaleX}, ${scaleY})`,
                 "rotate(0deg)"
-              ].join(" ")
+              ].join(" "),
+
+            opacity: 0
           }
         ],
         {
           duration:
             HIGH_STEAKS_CARD_PLACEMENT_DURATION_MS,
 
-          delay:
-            index *
-            HIGH_STEAKS_CARD_PLACEMENT_STAGGER_MS,
+          delay,
 
           easing:
             "cubic-bezier(0.2, 0.82, 0.22, 1)",
@@ -411,7 +511,6 @@ HighSteaks.animatePlacedCard =
 
     return true;
   };
-
 /* ==========================================================
    7. COMPLETE PAIR PLACEMENT
 ========================================================== */
