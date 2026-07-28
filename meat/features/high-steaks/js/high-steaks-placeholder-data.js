@@ -39,10 +39,11 @@ HighSteaks.createPlaceholderState = function createPlaceholderState() {
     phaseText: "CHOOSE EXACTLY TWO CARDS",
     opponent: { name: "THE DRIFTER", wins: 0, handSize: 10, playedCards: [] },
     player: {
-      wins: 0,
-      hand: HighSteaks.PLACEHOLDER_PLAYER_HAND.map((card) => ({ ...card })),
-      selectedCardIds: []
-    },
+  wins: 0,
+  hand: HighSteaks.PLACEHOLDER_PLAYER_HAND.map((card) => ({ ...card })),
+  selectedCardIds: [],
+  playedCards: []
+},
     history: [],
     locked: false
   };
