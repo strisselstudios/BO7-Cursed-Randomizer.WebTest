@@ -173,3 +173,58 @@ button.high-steaks-card-face:disabled { cursor: default; }
    6. REDUCED MOTION
 ========================================================== */
 body.animations-disabled button.high-steaks-card-face { transition: none; }
+
+/* ==========================================================
+   7. CARD PLACEMENT MOTION
+========================================================== */
+
+.high-steaks-card-motion-clone {
+  position: fixed !important;
+  z-index: 10050 !important;
+  display: block !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  transform-origin: center center !important;
+  transition: none !important;
+  will-change: transform;
+}
+
+.is-high-steaks-placement-target {
+  visibility: hidden;
+}
+
+/* ==========================================================
+   8. HAND RECENTERING
+========================================================== */
+
+.high-steaks-player-hand
+> .high-steaks-card {
+  will-change:
+    left,
+    transform;
+}
+
+/* ==========================================================
+   9. REDUCED CARD MOTION
+========================================================== */
+
+body.animations-disabled
+.high-steaks-player-hand
+> .high-steaks-card {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .high-steaks-player-hand
+  > .high-steaks-card {
+    transition: none;
+  }
+
+  .high-steaks-card-motion-clone {
+    display: none !important;
+  }
+
+  .is-high-steaks-placement-target {
+    visibility: visible;
+  }
+}
