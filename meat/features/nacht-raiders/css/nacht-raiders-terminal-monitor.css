@@ -13,8 +13,8 @@
     auto
     auto
     minmax(0, 1fr);
-  gap: 4px;
-  padding: 6px 7px 5px;
+  gap: 3px;
+  padding: 5px 6px 4px;
   background:
     linear-gradient(
       rgba(0, 9, 0, 0.96),
@@ -47,7 +47,7 @@
 
 .nacht-raiders-field-link-title {
   color: #16e52b;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   line-height: 1;
   letter-spacing: 0.02em;
 }
@@ -57,9 +57,9 @@
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 0.15rem 0.3rem;
+  gap: 0.12rem 0.28rem;
   color: #16e52b;
-  font-size: 0.52rem;
+  font-size: 0.59rem;
   font-weight: 700;
   line-height: 1.1;
 }
@@ -70,7 +70,7 @@
 }
 
 #nachtRaidersTerminalZone {
-  font-size: 0.76rem;
+  font-size: 0.8rem;
 }
 
 /* ==========================================================
@@ -81,7 +81,7 @@
   min-width: 0;
   display: grid;
   gap: 2px;
-  padding-bottom: 3px;
+  padding-bottom: 2px;
   border-bottom: 1px solid rgba(22, 229, 43, 0.2);
 }
 
@@ -90,8 +90,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  color: rgba(22, 229, 43, 0.72);
-  font-size: 0.42rem;
+  color: rgba(22, 229, 43, 0.82);
+  font-size: 0.52rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -101,10 +101,10 @@
 }
 
 .nacht-raiders-field-link-meter {
-  width: calc(100% - 24px);
-  height: 7px;
+  width: calc(100% - 18px);
+  height: 8px;
   margin-inline: auto;
-  border-color: rgba(155, 188, 15, 0.4);
+  border-color: rgba(155, 188, 15, 0.5);
 }
 
 /* ==========================================================
@@ -114,7 +114,7 @@
 .nacht-raiders-field-link-log {
   min-width: 0;
   min-height: 0;
-  padding: 2px 8px 2px 1px;
+  padding: 3px 5px 1px 1px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -140,8 +140,8 @@
 
 .nacht-raiders-field-link-record {
   display: grid;
-  gap: 1px;
-  margin: 0 0 7px;
+  gap: 2px;
+  margin: 0;
 }
 
 .nacht-raiders-field-link-record:last-child {
@@ -152,15 +152,15 @@
 .nacht-raiders-field-link-empty {
   margin: 0;
   color: #16e52b;
-  font-size: 0.5rem;
+  font-size: 0.61rem;
   font-weight: 700;
-  line-height: 1.24;
+  line-height: 1.28;
   overflow-wrap: anywhere;
 }
 
 .nacht-raiders-field-link-record-reward {
-  padding-left: 1rem;
-  color: #9bbc0f !important;
+  padding-top: 1px;
+  color: #b4ef4e !important;
   text-align: center;
 }
 
