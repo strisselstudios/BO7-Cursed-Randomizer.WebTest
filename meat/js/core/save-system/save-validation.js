@@ -7,7 +7,7 @@
 
 const MAX_SAVE_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 const MAX_SAVE_OBJECT_DEPTH = 40;
-const MAX_SAVE_OBJECT_ENTRIES = 50000;
+const MAX_SAVE_OBJECT_ENTRIES = 250000;
 const MAX_SAVE_STRING_LENGTH = 1000000;
 const SAVE_FUTURE_TIMESTAMP_TOLERANCE_MS =
   7 * 24 * 60 * 60 * 1000;
@@ -229,12 +229,12 @@ function validateSaveDataSafety(
   tracker.entries +=
     entries.length;
 
-  if (
+   if (
     tracker.entries >
     MAX_SAVE_OBJECT_ENTRIES
   ) {
     throw new Error(
-      "The save data contains too many entries."
+      `The save data contains too many entries near ${path} (${tracker.entries} > ${MAX_SAVE_OBJECT_ENTRIES}).`
     );
   }
 
