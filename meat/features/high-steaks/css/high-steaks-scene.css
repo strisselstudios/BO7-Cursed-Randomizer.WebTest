@@ -130,15 +130,18 @@
 .high-steaks-opponent-nameplate h2 { margin: 0.14rem 0 0; color: #edd3aa; font: 800 clamp(0.66rem, 1.15vw, 0.9rem)/1 Georgia, serif; letter-spacing: 0.08em; }
 .high-steaks-opponent-hand {
   position: absolute;
-  top: 63.9%;
+  top: 64.2%;
   left: 50%;
-  width: 70%;
-  height: 8.6%;
+  width: 63%;
+  height: 7.7%;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 0.8%;
-  transform: translateX(-50%) perspective(1000px) rotateX(54deg);
+  gap: 0.65%;
+  transform:
+    translateX(-50%)
+    perspective(1000px)
+    rotateX(54deg);
   transform-origin: center top;
   pointer-events: none;
 }
