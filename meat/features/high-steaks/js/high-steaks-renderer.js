@@ -143,17 +143,45 @@ HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
   if (!highSteaksPlayerHand) return;
 
   highSteaksPlayerHand.replaceChildren();
-  const handCenter = (state.player.hand.length - 1) / 2;
+
+  const cardCount = state.player.hand.length;
+  const handCenter = (cardCount - 1) / 2;
   const maximumDistance = Math.max(1, handCenter);
+  const fanSpread = Math.min(41, Math.max(0, (cardCount - 1) * 4.55));
+  const fanDrop = Math.min(22, Math.max(0, (cardCount - 1) * 2.45));
+  const fanRotation = Math.min(10, Math.max(0, (cardCount - 1) * 1.1));
 
   state.player.hand.forEach((card, index) => {
     const selected = state.player.selectedCardIds.includes(card.id);
-    const cardElement = HighSteaks.createCardFaceElement(card, { interactive: true, selected, disabled: state.locked });
+
+    const cardElement = HighSteaks.createCardFaceElement(card, {
+      interactive: true,
+      selected,
+      disabled: state.locked
+    });
+
     const normalizedOffset = (index - handCenter) / maximumDistance;
-    cardElement.style.setProperty("--high-steaks-card-x", `${normalizedOffset * 41}%`);
-    cardElement.style.setProperty("--high-steaks-card-drop", `${Math.abs(normalizedOffset) * 22}px`);
-    cardElement.style.setProperty("--high-steaks-card-rotation", `${normalizedOffset * 10}deg`);
-    cardElement.style.setProperty("--high-steaks-card-z", String(index + 1));
+
+    cardElement.style.setProperty(
+      "--high-steaks-card-x",
+      `${normalizedOffset * fanSpread}%`
+    );
+
+    cardElement.style.setProperty(
+      "--high-steaks-card-drop",
+      `${Math.abs(normalizedOffset) * fanDrop}px`
+    );
+
+    cardElement.style.setProperty(
+      "--high-steaks-card-rotation",
+      `${normalizedOffset * fanRotation}deg`
+    );
+
+    cardElement.style.setProperty(
+      "--high-steaks-card-z",
+      String(index + 1)
+    );
+
     highSteaksPlayerHand.append(cardElement);
   });
 };
@@ -188,15 +216,27 @@ HighSteaks.renderRoundHistory = function renderRoundHistory(state) {
 };
 
 HighSteaks.renderTable = function renderTable(state) {
-  const selectedCards = state.player.selectedCardIds
-    .map((cardId) => state.player.hand.find((card) => card.id === cardId))
-    .filter(Boolean);
+  HighSteaks.renderPlayZone(
+    highSteaksOpponentPlayZone,
+    state.opponent.playedCards || [],
+    "Opponent"
+  );
 
-  HighSteaks.renderPlayZone(highSteaksOpponentPlayZone, state.opponent.playedCards || [], "Opponent");
-  HighSteaks.renderPlayZone(highSteaksPlayerPlayZone, selectedCards, "Player");
+  HighSteaks.renderPlayZone(
+    highSteaksPlayerPlayZone,
+    state.player.playedCards || [],
+    "Player"
+  );
+
   HighSteaks.renderRoundHistory(state);
-  if (highSteaksRuleCard) highSteaksRuleCard.textContent = state.ruleName;
-  if (highSteaksPhaseText) highSteaksPhaseText.textContent = state.phaseText;
+
+  if (highSteaksRuleCard) {
+    highSteaksRuleCard.textContent = state.ruleName;
+  }
+
+  if (highSteaksPhaseText) {
+    highSteaksPhaseText.textContent = state.phaseText;
+  }
 };
 
 /* ==========================================================
@@ -206,13 +246,25 @@ HighSteaks.renderControls = function renderControls(state) {
   const selectionCount = state.player.selectedCardIds.length;
 
   if (highSteaksConfirmButton) {
-    highSteaksConfirmButton.disabled = selectionCount !== 2 || state.locked;
-    highSteaksConfirmButton.textContent = state.locked ? "PAIR LOCKED" : "PLAY PAIR";
+    highSteaksConfirmButton.disabled =
+      selectionCount !== 2 ||
+      state.locked;
+
+    highSteaksConfirmButton.textContent =
+      state.locked
+        ? "CARDS PLACED"
+        : "PLACE CARDS";
   }
 
   if (highSteaksClearButton) {
-    highSteaksClearButton.disabled = selectionCount === 0 && !state.locked;
-    highSteaksClearButton.textContent = state.locked ? "RESET PAIR" : "CLEAR";
+    highSteaksClearButton.disabled =
+      selectionCount === 0 &&
+      !state.locked;
+
+    highSteaksClearButton.textContent =
+      state.locked
+        ? "RESET PAIR"
+        : "CLEAR";
   }
 };
 
