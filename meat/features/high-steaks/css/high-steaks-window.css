@@ -1,16 +1,21 @@
 /* ==========================================================
    1. HIGH STEAKS OVERLAY
+   ----------------------------------------------------------
+   Centers the complete saloon window without allowing the
+   browser viewport to crop any part of the scene on desktop.
 ========================================================== */
+
 .high-steaks-overlay {
   position: fixed;
   inset: 0;
   z-index: 21000;
   width: 100%;
   height: 100dvh;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(0.5rem, 2vw, 1.5rem);
+  padding: 0.75rem;
   background: rgba(0, 0, 0, 0.82);
   -webkit-backdrop-filter: blur(7px) brightness(0.46);
   backdrop-filter: blur(7px) brightness(0.46);
@@ -18,24 +23,43 @@
   touch-action: none;
 }
 
-.high-steaks-overlay[hidden] { display: none; }
-body.high-steaks-window-open { overflow: hidden; }
+.high-steaks-overlay[hidden] {
+  display: none;
+}
+
+body.high-steaks-window-open {
+  overflow: hidden;
+}
 
 /* ==========================================================
    2. SALOON WINDOW FRAME
+   ----------------------------------------------------------
+   Width and height are derived from the perspective stage.
+   They are not independently stretched to arbitrary limits.
 ========================================================== */
+
 .high-steaks-window {
+  --high-steaks-title-bar-height: 46px;
+
   position: relative;
-  width: min(1440px, calc(100vw - 1rem));
-  height: min(900px, calc(100dvh - 1rem));
+  width: auto;
+  height: auto;
+  max-width: calc(100vw - 1.5rem);
+  max-height: calc(100dvh - 1.5rem);
   min-width: 0;
   min-height: 0;
+  box-sizing: border-box;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows:
+    var(--high-steaks-title-bar-height)
+    auto;
   background: #090306;
   color: #f3dbad;
   border: 2px solid #a56b3d;
-  box-shadow: inset 0 0 0 2px #261008, inset 0 0 42px rgba(0, 0, 0, 0.72), 0 24px 90px rgba(0, 0, 0, 0.9);
+  box-shadow:
+    inset 0 0 0 2px #261008,
+    inset 0 0 42px rgba(0, 0, 0, 0.72),
+    0 24px 90px rgba(0, 0, 0, 0.9);
   overflow: hidden;
   outline: none;
   touch-action: manipulation;
@@ -44,28 +68,82 @@ body.high-steaks-window-open { overflow: hidden; }
 /* ==========================================================
    3. TITLE BAR
 ========================================================== */
-grid-template-columns: minmax(0, 1fr) auto; {
+
+.high-steaks-title-bar {
   position: relative;
   z-index: 30;
+  width: 100%;
+  height: var(--high-steaks-title-bar-height);
   min-width: 0;
-  min-height: 46px;
+  min-height: var(--high-steaks-title-bar-height);
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(38px, 1fr);
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
   align-items: center;
   gap: 0.75rem;
   padding: 5px;
-  background: linear-gradient(180deg, #643018, #281009);
+  background:
+    linear-gradient(
+      180deg,
+      #643018,
+      #281009
+    );
   color: #f6dfb2;
   border-bottom: 1px solid #a76c37;
-  box-shadow: inset 0 1px 0 rgba(255, 236, 190, 0.18), 0 3px 15px rgba(0, 0, 0, 0.42);
-  font-family: Georgia, "Times New Roman", serif;
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 236, 190, 0.18),
+    0 3px 15px
+    rgba(0, 0, 0, 0.42);
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
   user-select: none;
 }
 
-.high-steaks-window-identity { min-width: 0; display: flex; align-items: center; gap: 0.65rem; padding-left: 0.3rem; }
-.high-steaks-window-identity > div { min-width: 0; display: grid; gap: 0.08rem; }
-.high-steaks-window-identity span { overflow: hidden; color: #c89c65; font: 700 0.55rem/1 Arial, Helvetica, sans-serif; letter-spacing: 0.12em; text-overflow: ellipsis; white-space: nowrap; }
-.high-steaks-window-identity strong { overflow: hidden; font-size: clamp(0.88rem, 1.7vw, 1.15rem); line-height: 1; letter-spacing: 0.13em; text-overflow: ellipsis; white-space: nowrap; }
+.high-steaks-window-identity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding-left: 0.3rem;
+}
+
+.high-steaks-window-identity > div {
+  min-width: 0;
+  display: grid;
+  gap: 0.08rem;
+}
+
+.high-steaks-window-identity span {
+  overflow: hidden;
+  color: #c89c65;
+  font:
+    700 0.55rem/1
+    Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0.12em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.high-steaks-window-identity strong {
+  overflow: hidden;
+  font-size:
+    clamp(
+      0.88rem,
+      1.7vw,
+      1.15rem
+    );
+  line-height: 1;
+  letter-spacing: 0.13em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .high-steaks-window-mark {
   flex: 0 0 32px;
@@ -77,17 +155,20 @@ grid-template-columns: minmax(0, 1fr) auto; {
   color: #e1b16f;
   border: 1px solid #bd8247;
   border-radius: 50%;
-  box-shadow: inset 0 0 10px rgba(229, 186, 115, 0.12);
-  font: 800 0.6rem/1 Georgia, serif;
+  box-shadow:
+    inset 0 0 10px
+    rgba(229, 186, 115, 0.12);
+  font:
+    800 0.6rem/1
+    Georgia,
+    serif;
   letter-spacing: 0.04em;
 }
-
-.high-steaks-title-status { min-width: 0; justify-self: center; padding: 0.32rem 0.75rem; background: rgba(13, 4, 4, 0.48); border: 1px solid rgba(215, 159, 86, 0.3); }
-.high-steaks-phase-text { display: block; overflow: hidden; color: #e9c58d; font: 800 clamp(0.52rem, 1.1vw, 0.68rem)/1 Arial, Helvetica, sans-serif; letter-spacing: 0.11em; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ==========================================================
    4. CLOSE BUTTON
 ========================================================== */
+
 .high-steaks-close-button {
   justify-self: end;
   width: 36px;
@@ -99,48 +180,106 @@ grid-template-columns: minmax(0, 1fr) auto; {
   background: #25100a;
   color: #efd29b;
   border: 1px solid #a96d37;
-  font: 700 1.25rem/1 Arial, Helvetica, sans-serif;
+  font:
+    700 1.25rem/1
+    Arial,
+    Helvetica,
+    sans-serif;
   cursor: pointer;
   touch-action: manipulation;
 }
 
 .high-steaks-close-button:hover,
-.high-steaks-close-button:focus-visible { background: #7b261b; color: #fff3d1; }
-.high-steaks-close-button:focus-visible { outline: 2px solid #f0c780; outline-offset: -4px; }
-.high-steaks-close-button:active { transform: translateY(1px); }
+.high-steaks-close-button:focus-visible {
+  background: #7b261b;
+  color: #fff3d1;
+}
+
+.high-steaks-close-button:focus-visible {
+  outline: 2px solid #f0c780;
+  outline-offset: -4px;
+}
+
+.high-steaks-close-button:active {
+  transform: translateY(1px);
+}
 
 /* ==========================================================
    5. OPENING MOTION
 ========================================================== */
-.high-steaks-overlay:not([hidden]) { animation: high-steaks-overlay-open 150ms ease-out both; }
-.high-steaks-overlay:not([hidden]) .high-steaks-window { animation: high-steaks-window-open 190ms ease-out both; }
+
+.high-steaks-overlay:not([hidden]) {
+  animation:
+    high-steaks-overlay-open
+    150ms ease-out both;
+}
+
+.high-steaks-overlay:not([hidden])
+.high-steaks-window {
+  animation:
+    high-steaks-window-open
+    190ms ease-out both;
+}
 
 @keyframes high-steaks-overlay-open {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes high-steaks-window-open {
-  from { opacity: 0; transform: scale(0.975) translateY(9px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform:
+      scale(0.975)
+      translateY(9px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      scale(1)
+      translateY(0);
+  }
 }
 
 /* ==========================================================
    6. REDUCED MOTION
 ========================================================== */
-body.animations-disabled .high-steaks-overlay:not([hidden]),
-body.animations-disabled .high-steaks-overlay:not([hidden]) .high-steaks-window { animation: none; }
-body.animations-disabled .high-steaks-close-button:active { transform: none; }
+
+body.animations-disabled
+.high-steaks-overlay:not([hidden]),
+body.animations-disabled
+.high-steaks-overlay:not([hidden])
+.high-steaks-window {
+  animation: none;
+}
+
+body.animations-disabled
+.high-steaks-close-button:active {
+  transform: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .high-steaks-overlay:not([hidden]),
-  .high-steaks-overlay:not([hidden]) .high-steaks-window { animation: none; }
-  .high-steaks-close-button:active { transform: none; }
+  .high-steaks-overlay:not([hidden])
+  .high-steaks-window {
+    animation: none;
+  }
+
+  .high-steaks-close-button:active {
+    transform: none;
+  }
 }
 
 /* ==========================================================
    7. ACCESSIBLE HIDDEN TEXT
 ========================================================== */
+
 .high-steaks-visually-hidden {
   position: absolute;
   width: 1px;
