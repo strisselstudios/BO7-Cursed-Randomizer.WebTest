@@ -176,10 +176,10 @@ function prepareNachtRaidersWindowScreenForMode(
 function updateNachtRaidersWindowModeControls(
   mode
 ) {
-     const floatingModesAvailable =
+  const floatingModesAvailable =
     canUseNachtRaidersFloatingWindowModes();
-   
-   if (nachtRaidersCompactButton) {
+
+  if (nachtRaidersCompactButton) {
     nachtRaidersCompactButton.hidden =
       !floatingModesAvailable ||
       mode ===
@@ -192,12 +192,11 @@ function updateNachtRaidersWindowModeControls(
       mode ===
         NACHT_RAIDERS_WINDOW_MODE_TERMINAL;
   }
-  }
 
   if (nachtRaidersFullButton) {
     nachtRaidersFullButton.hidden =
       mode ===
-      NACHT_RAIDERS_WINDOW_MODE_FULL;
+        NACHT_RAIDERS_WINDOW_MODE_FULL;
   }
 
   if (!nachtRaidersWindowTitle) {
