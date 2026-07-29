@@ -47,13 +47,122 @@
       </button>
     </header>
 
-        <div
+           <div
       id="highSteaksScene"
       class="high-steaks-scene"
       data-high-steaks-scene-state="lobby"
       data-high-steaks-screen="lobby"
+      data-high-steaks-phase="idle"
     >
 
+      <!-- ====================================================
+           1.1 HIGH STEAKS LOBBY
+      ===================================================== -->
+
+      <section
+        id="highSteaksLobbyScreen"
+        class="high-steaks-menu-screen high-steaks-lobby-screen"
+        aria-labelledby="highSteaksLobbyHeading"
+      >
+
+        <div class="high-steaks-menu-panel">
+
+          <span class="high-steaks-menu-eyebrow">
+            SUNKEN MINING TOWN SALOON
+          </span>
+
+          <h2 id="highSteaksLobbyHeading">
+            HIGH STEAKS
+          </h2>
+
+          <button
+            id="highSteaksPlayButton"
+            class="high-steaks-menu-primary-button"
+            type="button"
+          >
+            Play 'High-Steaks'
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- ====================================================
+           1.2 DEALER AND DIFFICULTY SELECTION
+      ===================================================== -->
+
+      <section
+        id="highSteaksDealerSelectScreen"
+        class="high-steaks-menu-screen high-steaks-dealer-select-screen"
+        aria-labelledby="highSteaksDealerSelectHeading"
+        hidden
+      >
+
+        <div class="high-steaks-dealer-select-panel">
+
+          <header class="high-steaks-dealer-select-header">
+
+            <span class="high-steaks-menu-eyebrow">
+              CHOOSE YOUR TABLE
+            </span>
+
+            <h2 id="highSteaksDealerSelectHeading">
+              SELECT DEALER / DIFFICULTY
+            </h2>
+
+          </header>
+
+          <button
+            id="highSteaksTeddStandardButton"
+            class="high-steaks-dealer-card"
+            type="button"
+            data-high-steaks-dealer-id="tedd"
+            data-high-steaks-difficulty-id="standard"
+          >
+
+            <img
+              src="meat/features/high-steaks/images/opponents/dealer-1.png"
+              alt=""
+              aria-hidden="true"
+              draggable="false"
+            >
+
+            <span class="high-steaks-dealer-card-details">
+
+              <strong>
+                T.E.D.D.
+              </strong>
+
+              <span class="high-steaks-dealer-difficulty">
+                STANDARD
+              </span>
+
+              <span class="high-steaks-dealer-description">
+                A balanced opponent who manages his remaining
+                cards without seeing your selected pair.
+              </span>
+
+            </span>
+
+          </button>
+
+          <button
+            id="highSteaksDealerBackButton"
+            class="high-steaks-menu-secondary-button"
+            type="button"
+          >
+            BACK
+          </button>
+
+        </div>
+
+      </section>
+
+      <div
+        id="highSteaksPerspectiveStage"
+        class="high-steaks-perspective-stage"
+        aria-hidden="true"
+      >
       <!-- ====================================================
            1.1 HIGH STEAKS LOBBY
       ===================================================== -->
@@ -351,6 +460,58 @@
             PLACE CARDS
           </button>
         </div>
+
+                   <!-- ==================================================
+             1.8 MATCH RESULT
+        =================================================== -->
+
+        <section
+          id="highSteaksResultsPanel"
+          class="high-steaks-match-results"
+          aria-labelledby="highSteaksResultHeading"
+          hidden
+        >
+
+          <div class="high-steaks-match-results-panel">
+
+            <span
+              id="highSteaksResultEyebrow"
+              class="high-steaks-menu-eyebrow"
+            >
+              TABLE SETTLED
+            </span>
+
+            <h2 id="highSteaksResultHeading">
+              MATCH COMPLETE
+            </h2>
+
+            <p id="highSteaksResultSummary">
+              Final score unavailable.
+            </p>
+
+            <div class="high-steaks-match-results-controls">
+
+              <button
+                id="highSteaksRematchButton"
+                class="high-steaks-menu-primary-button"
+                type="button"
+              >
+                PLAY AGAIN
+              </button>
+
+              <button
+                id="highSteaksResultsMenuButton"
+                class="high-steaks-menu-secondary-button"
+                type="button"
+              >
+                RETURN TO SALOON
+              </button>
+
+            </div>
+
+          </div>
+
+        </section>
       </div>
     </div>
   </section>
