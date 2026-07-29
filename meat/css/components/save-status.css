@@ -1,0 +1,105 @@
+/* ==========================================================
+   1. PERSISTENT SAVE FAILURE BANNER
+   ----------------------------------------------------------
+   Remains above the application but below blocking dialogs.
+========================================================== */
+
+.save-failure-banner {
+  position: fixed;
+  left: 50%;
+  bottom:
+    calc(
+      var(--safe-bottom) +
+      1rem
+    );
+
+  z-index: 950;
+
+  width:
+    min(
+      720px,
+      calc(100% - 2rem)
+    );
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  padding: 0.85rem 1rem;
+
+  transform:
+    translateX(-50%);
+
+  border:
+    2px solid
+    var(--accent-bright);
+
+  background:
+    rgba(
+      20,
+      4,
+      4,
+      0.98
+    );
+
+  color:
+    var(--primary-text);
+
+  box-shadow:
+    0 0 0 1px #000000,
+    0 0 18px
+    rgba(
+      197,
+      44,
+      44,
+      0.65
+    );
+
+  text-align: left;
+  pointer-events: none;
+}
+
+.save-failure-banner[hidden] {
+  display: none;
+}
+
+.save-failure-title {
+  color:
+    var(--accent-bright);
+
+  letter-spacing:
+    0.08em;
+}
+
+.save-failure-message {
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* ==========================================================
+   2. MOBILE POSITIONING
+   ----------------------------------------------------------
+   Keeps the warning above the fixed bottom navigation.
+========================================================== */
+
+@media (max-width: 767px) {
+  .save-failure-banner {
+    bottom:
+      calc(
+        var(--mobile-navigation-height) +
+        var(--safe-bottom) +
+        0.75rem
+      );
+
+    width:
+      calc(100% - 1rem);
+
+    padding:
+      0.75rem;
+
+    font-size:
+      0.78rem;
+  }
+}
