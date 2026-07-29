@@ -32,6 +32,15 @@ function getProducerInfoDisplayName(
     return displayedName;
   }
 
+    if (
+    typeof getProducerDisplayNameForCurrentTier ===
+    "function"
+  ) {
+    return getProducerDisplayNameForCurrentTier(
+      producerKey
+    );
+  }
+
   return (
     producerData[producerKey]?.name ??
     "Unknown Producer"
