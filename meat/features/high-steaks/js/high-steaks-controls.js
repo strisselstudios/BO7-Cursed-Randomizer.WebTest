@@ -2,44 +2,71 @@
    1. PLAYER CARD SELECTION
 ========================================================== */
 
-HighSteaks.togglePrototypeCardSelection = function togglePrototypeCardSelection(cardId) {
-    const state =
-    HighSteaks.prototypeState;
-
-  if (
-    !state ||
-    state.locked ||
-    state.phase !==
-      HighSteaks.PHASE_PLAYER_TURN
+HighSteaks.togglePrototypeCardSelection =
+  function togglePrototypeCardSelection(
+    cardId
   ) {
-    return false;
-  }
+    const state =
+      HighSteaks.prototypeState;
 
-  const selectedCardIndex = state.player.selectedCardIds.indexOf(cardId);
+    if (
+      !state ||
+      state.locked ||
+      state.phase !==
+        HighSteaks.PHASE_PLAYER_TURN
+    ) {
+      return false;
+    }
 
-  if (selectedCardIndex >= 0) {
-    state.player.selectedCardIds.splice(selectedCardIndex, 1);
-    state.phaseText = "CHOOSE EXACTLY TWO CARDS";
+    const selectedCardIndex =
+      state.player.selectedCardIds
+        .indexOf(cardId);
+
+    if (selectedCardIndex >= 0) {
+      state.player.selectedCardIds.splice(
+        selectedCardIndex,
+        1
+      );
+
+      state.phaseText =
+        "CHOOSE EXACTLY TWO CARDS";
+
+      HighSteaks.renderPrototype();
+
+      return true;
+    }
+
+    if (
+      state.player.selectedCardIds
+        .length >=
+      HighSteaks.MATCH_SETTINGS
+        .cardsPerPlay
+    ) {
+      state.phaseText =
+        "ONLY TWO CARDS MAY BE PLAYED";
+
+      HighSteaks.renderPrototype();
+
+      return false;
+    }
+
+    state.player.selectedCardIds.push(
+      cardId
+    );
+
+    state.phaseText =
+      state.player.selectedCardIds.length ===
+        HighSteaks.MATCH_SETTINGS.cardsPerPlay
+        ? "PAIR READY. PLACE CARDS"
+        : "CHOOSE ONE MORE CARD";
+
     HighSteaks.renderPrototype();
+
     return true;
-  }
-
-  if (state.player.selectedCardIds.length >= 2) {
-    state.phaseText = "ONLY TWO CARDS MAY BE PLAYED";
-    HighSteaks.renderPrototype();
-    return false;
-  }
-
-  state.player.selectedCardIds.push(cardId);
-  state.phaseText = state.player.selectedCardIds.length === 2
-  ? "PAIR READY. PLACE CARDS"
-  : "CHOOSE ONE MORE CARD";
-  HighSteaks.renderPrototype();
-  return true;
-};
+  };
 
 /* ==========================================================
-   2. PROTOTYPE PAIR CONTROLS
+   2. CLEAR SELECTION
 ========================================================== */
 
 HighSteaks.clearPrototypeSelection =
@@ -66,134 +93,170 @@ HighSteaks.clearPrototypeSelection =
     return true;
   };
 
-HighSteaks.confirmPrototypeSelection = function confirmPrototypeSelection() {
-  const state =
-    HighSteaks.prototypeState;
+/* ==========================================================
+   3. PLACE PLAYER CARDS
+========================================================== */
 
-  if (
-    !state ||
-    state.locked ||
-    state.player.selectedCardIds.length !== 2
-  ) {
-    return false;
-  }
+HighSteaks.confirmPrototypeSelection =
+  function confirmPrototypeSelection() {
+    const state =
+      HighSteaks.prototypeState;
 
-  const selectedCardIds =
-    new Set(
-      state.player.selectedCardIds
-    );
+    if (
+      !state ||
+      state.locked ||
+      state.phase !==
+        HighSteaks.PHASE_PLAYER_TURN ||
+      state.player.selectedCardIds.length !==
+        HighSteaks.MATCH_SETTINGS.cardsPerPlay
+    ) {
+      return false;
+    }
 
-  const selectedCards =
-    state.player.hand.filter(
-      (card) =>
-        selectedCardIds.has(
-          card.id
-        )
-    );
+    const selectedCardIds =
+      new Set(
+        state.player.selectedCardIds
+      );
 
-  if (selectedCards.length !== 2) {
-    return false;
-  }
+    const selectedCards =
+      state.player.hand.filter(
+        (card) =>
+          selectedCardIds.has(
+            card.id
+          )
+      );
 
-  const placementMotion =
-    typeof HighSteaks.capturePlayerCardPlacementMotion ===
-      "function"
-      ? HighSteaks.capturePlayerCardPlacementMotion(
-          state.player.selectedCardIds
-        )
-      : [];
+    if (
+      selectedCards.length !==
+      HighSteaks.MATCH_SETTINGS
+        .cardsPerPlay
+    ) {
+      return false;
+    }
 
-  const handReflowMotion =
-    typeof HighSteaks.capturePlayerHandReflowMotion ===
-      "function"
-      ? HighSteaks.capturePlayerHandReflowMotion(
-          state.player.selectedCardIds
-        )
-      : [];
+    const placementMotion =
+      HighSteaks.capturePlayerCardPlacementMotion(
+        state.player.selectedCardIds
+      );
 
-  state.player.playedCards =
-    selectedCards;
+    const handReflowMotion =
+      HighSteaks.capturePlayerHandReflowMotion(
+        state.player.selectedCardIds
+      );
 
-  state.player.hand =
-    state.player.hand.filter(
-      (card) =>
-        !selectedCardIds.has(
-          card.id
-        )
-    );
+    state.player.playedCards =
+      selectedCards;
 
-  state.player.selectedCardIds = [];
-  state.locked = true;
-  state.sceneState = "reveal";
+    state.player.hand =
+      state.player.hand.filter(
+        (card) =>
+          !selectedCardIds.has(
+            card.id
+          )
+      );
 
-  state.phaseText =
-    "CARDS PLACED. AWAITING OPPONENT";
+    state.player.selectedCardIds = [];
+
+    state.phase =
+      HighSteaks.PHASE_DEALER_TURN;
+
+    state.sceneState =
+      "reveal";
+
+    state.locked = true;
+
+    state.phaseText =
+      "T.E.D.D. IS CHOOSING";
 
     HighSteaks.renderPrototype();
 
-  /*
-   * Install the real-card placement animations immediately
-   * after layout changes and before this event task ends.
-   * The browser never paints the cards sitting in their final
-   * positions before their starting transforms are active.
-   */
-
-  if (
-    typeof HighSteaks.animatePlacedCards ===
-      "function"
-  ) {
     HighSteaks.animatePlacedCards(
       placementMotion
     );
-  }
 
-  if (
-    typeof HighSteaks.animatePlayerHandReflow ===
-      "function"
-  ) {
     HighSteaks.animatePlayerHandReflow(
       handReflowMotion
     );
-  }
-  document.dispatchEvent(
-    new CustomEvent(
-      "high-steaks:prototype-pair-locked",
-      {
-        detail: {
-          cards:
-            selectedCards.map(
-              (card) => ({
-                ...card
-              })
-            )
-        }
-      }
-    )
-  );
 
-  return true;
-};
+    HighSteaks.startTeddTurn(
+      state
+    );
+
+    document.dispatchEvent(
+      new CustomEvent(
+        "high-steaks:player-cards-placed",
+        {
+          detail: {
+            cards:
+              selectedCards.map(
+                (card) => ({
+                  ...card
+                })
+              )
+          }
+        }
+      )
+    );
+
+    return true;
+  };
 
 /* ==========================================================
-   3. PROTOTYPE INPUT BINDINGS
+   4. PLAYER INPUT
 ========================================================== */
 
-highSteaksPlayerHand?.addEventListener("click", (event) => {
-  if (!(event.target instanceof Element)) return;
+highSteaksPlayerHand
+  ?.addEventListener(
+    "click",
+    (event) => {
+      if (
+        !(event.target instanceof Element)
+      ) {
+        return;
+      }
 
-  const cardButton = event.target.closest("[data-high-steaks-card-id]");
-  if (!(cardButton instanceof HTMLButtonElement) || !highSteaksPlayerHand.contains(cardButton)) return;
+      const cardButton =
+        event.target.closest(
+          "[data-high-steaks-card-id]"
+        );
 
-  event.preventDefault();
-  HighSteaks.togglePrototypeCardSelection(cardButton.dataset.highSteaksCardId);
-});
+      if (
+        !(
+          cardButton instanceof
+          HTMLButtonElement
+        ) ||
+        !highSteaksPlayerHand.contains(
+          cardButton
+        )
+      ) {
+        return;
+      }
 
-highSteaksClearButton?.addEventListener("click", (event) => {
-  event.preventDefault();
-  HighSteaks.clearPrototypeSelection();
-});
+      event.preventDefault();
 
-highSteaksConfirmButton?.addEventListener("click", (event) => {
-  event.preventDefault();
-  HighSteaks.confirmPrototypeSelection();
-});
+      HighSteaks.togglePrototypeCardSelection(
+        cardButton.dataset
+          .highSteaksCardId
+      );
+    }
+  );
+
+highSteaksClearButton
+  ?.addEventListener(
+    "click",
+    (event) => {
+      event.preventDefault();
+
+      HighSteaks.clearPrototypeSelection();
+    }
+  );
+
+highSteaksConfirmButton
+  ?.addEventListener(
+    "click",
+    (event) => {
+      event.preventDefault();
+
+      HighSteaks.confirmPrototypeSelection();
+    }
+  );
