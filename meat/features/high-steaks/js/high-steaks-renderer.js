@@ -313,11 +313,29 @@ HighSteaks.renderWinPips = function renderWinPips(container, wins, label) {
   container.setAttribute("aria-label", `${label} round wins: ${wins}`);
 };
 
-HighSteaks.renderScoreboard = function renderScoreboard(state) {
-  if (highSteaksRoundValue) highSteaksRoundValue.textContent = `${state.round} / ${state.maximumRounds}`;
-  HighSteaks.renderWinPips(highSteaksOpponentWins, state.opponent.wins, "Opponent");
-  HighSteaks.renderWinPips(highSteaksPlayerWins, state.player.wins, "Player");
-};
+HighSteaks.renderScoreboard =
+  function renderScoreboard(
+    state
+  ) {
+    if (highSteaksRoundValue) {
+      highSteaksRoundValue.textContent =
+        state.suddenDeath
+          ? `SUDDEN DEATH ${state.suddenDeathRound}`
+          : `${state.round} / ${state.maximumRounds}`;
+    }
+
+    HighSteaks.renderWinPips(
+      highSteaksOpponentWins,
+      state.opponent.wins,
+      "Opponent"
+    );
+
+    HighSteaks.renderWinPips(
+      highSteaksPlayerWins,
+      state.player.wins,
+      "Player"
+    );
+  };
 
 HighSteaks.renderOpponentHand =
   function renderOpponentHand(
@@ -680,34 +698,64 @@ HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
    5. TABLE AND CONTROL RENDERING
 ========================================================== */
 
-HighSteaks.renderPlayZone = function renderPlayZone(
-  container,
-  cards,
-  ownerLabel
-) {
-  if (!container) return;
-
-  container.replaceChildren();
-
-  for (
-    let slotIndex = 0;
-    slotIndex < 2;
-    slotIndex += 1
+HighSteaks.renderPlayZone =
+  function renderPlayZone(
+    container,
+    cards,
+    ownerLabel,
+    options = {}
   ) {
-    const card =
-      cards[slotIndex];
+    if (!container) return;
 
-    container.append(
-      card
-        ? HighSteaks.createCardFaceElement(
-            card
-          )
-        : HighSteaks.createEmptyPlaySlot(
+    const faceDown =
+      options.faceDown === true;
+
+    const cardClass =
+      typeof options.cardClass === "string"
+        ? options.cardClass
+        : "";
+
+    container.replaceChildren();
+
+    for (
+      let slotIndex = 0;
+      slotIndex < 2;
+      slotIndex += 1
+    ) {
+      const card =
+        cards[slotIndex];
+
+      if (!card) {
+        container.append(
+          HighSteaks.createEmptyPlaySlot(
             `${ownerLabel} card slot ${slotIndex + 1}`
           )
-    );
-  }
-};
+        );
+
+        continue;
+      }
+
+      const cardElement =
+        faceDown
+          ? HighSteaks.createCardBackElement(
+              card,
+              slotIndex
+            )
+          : HighSteaks.createCardFaceElement(
+              card
+            );
+
+      if (cardClass) {
+        cardElement.classList.add(
+          cardClass
+        );
+      }
+
+      container.append(
+        cardElement
+      );
+    }
+  };
 
 HighSteaks.renderRoundHistory = function renderRoundHistory(state) {
   if (!highSteaksRoundHistory) return;
@@ -745,33 +793,61 @@ HighSteaks.renderRoundHistory = function renderRoundHistory(state) {
   }
 };
 
-HighSteaks.renderTable = function renderTable(state) {
-  HighSteaks.renderPlayZone(
-    highSteaksOpponentPlayZone,
-    state.opponent.playedCards || [],
-    "Opponent"
-  );
-
-  HighSteaks.renderPlayZone(
-    highSteaksPlayerPlayZone,
-    state.player.playedCards || [],
-    "Player"
-  );
-
-  HighSteaks.renderRoundHistory(
+HighSteaks.renderOpponentPlayZone =
+  function renderOpponentPlayZone(
     state
-  );
+  ) {
+    HighSteaks.renderPlayZone(
+      highSteaksOpponentPlayZone,
+      state.opponent.playedCards || [],
+      "Opponent",
+      {
+        faceDown:
+          !state.opponent.cardsRevealed,
 
-  if (highSteaksRuleCard) {
-    highSteaksRuleCard.textContent =
-      state.ruleName;
-  }
+        cardClass:
+          "high-steaks-opponent-played-card"
+      }
+    );
+  };
 
-  if (highSteaksPhaseText) {
-    highSteaksPhaseText.textContent =
-      state.phaseText;
-  }
-};
+HighSteaks.renderPlayerPlayZone =
+  function renderPlayerPlayZone(
+    state
+  ) {
+    HighSteaks.renderPlayZone(
+      highSteaksPlayerPlayZone,
+      state.player.playedCards || [],
+      "Player"
+    );
+  };
+
+HighSteaks.renderTable =
+  function renderTable(
+    state
+  ) {
+    HighSteaks.renderOpponentPlayZone(
+      state
+    );
+
+    HighSteaks.renderPlayerPlayZone(
+      state
+    );
+
+    HighSteaks.renderRoundHistory(
+      state
+    );
+
+    if (highSteaksRuleCard) {
+      highSteaksRuleCard.textContent =
+        state.ruleName;
+    }
+
+    if (highSteaksPhaseText) {
+      highSteaksPhaseText.textContent =
+        state.phaseText;
+    }
+  };
 
 HighSteaks.renderControls =
   function renderControls(
@@ -810,6 +886,48 @@ HighSteaks.renderControls =
   };
 
 /* ==========================================================
+   5.1 MATCH RESULT RENDERING
+========================================================== */
+
+HighSteaks.renderMatchResult =
+  function renderMatchResult(
+    state
+  ) {
+    if (!highSteaksResultsPanel) {
+      return;
+    }
+
+    const resultVisible =
+      state.screen ===
+        HighSteaks.SCREEN_RESULTS &&
+      Boolean(state.matchResult);
+
+    highSteaksResultsPanel.hidden =
+      !resultVisible;
+
+    if (!resultVisible) {
+      return;
+    }
+
+    if (highSteaksResultEyebrow) {
+      highSteaksResultEyebrow.textContent =
+        state.matchResult.suddenDeath
+          ? "SUDDEN DEATH SETTLED"
+          : "TABLE SETTLED";
+    }
+
+    if (highSteaksResultHeading) {
+      highSteaksResultHeading.textContent =
+        state.matchResult.heading;
+    }
+
+    if (highSteaksResultSummary) {
+      highSteaksResultSummary.textContent =
+        state.matchResult.summary;
+    }
+  };
+
+/* ==========================================================
    6. COMPLETE PROTOTYPE RENDER
 ========================================================== */
 
@@ -843,6 +961,7 @@ HighSteaks.renderPrototype = function renderPrototype() {
   HighSteaks.renderPlayerHand(state);
   HighSteaks.renderTable(state);
   HighSteaks.renderControls(state);
+  HighSteaks.renderMatchResult(state);
 
   if (typeof HighSteaks.applySceneState === "function") {
     HighSteaks.applySceneState(state.sceneState);
