@@ -277,6 +277,9 @@ HighSteaks.createLobbyState =
       winsRequired:
         HighSteaks.MATCH_SETTINGS
           .winsRequired,
+          suddenDeath: false,
+
+          suddenDeathRound: 0,
 
       ruleName:
         "STANDARD DUEL",
@@ -330,19 +333,19 @@ HighSteaks.createMatchState =
       HighSteaks.DIFFICULTY_DEFINITIONS
         .standard;
 
-    const sharedCards =
-  HighSteaks.createSharedOpeningHand();
+    c    const sharedCards =
+      HighSteaks.createSharedOpeningHand();
 
-const playerHandOrder =
-  HighSteaks.createParticipantHandOrder(
-    sharedCards
-  );
+    const playerHandOrder =
+      HighSteaks.createParticipantHandOrder(
+        sharedCards
+      );
 
-const opponentHandOrder =
-  HighSteaks.createParticipantHandOrder(
-    sharedCards,
-    playerHandOrder
-  );
+    const opponentHandOrder =
+      HighSteaks.createParticipantHandOrder(
+        sharedCards,
+        playerHandOrder
+      );
     return {
       screen:
         HighSteaks.SCREEN_TABLE,
@@ -369,23 +372,26 @@ const opponentHandOrder =
         HighSteaks.MATCH_SETTINGS
           .winsRequired,
 
+         suddenDeath: false,
+
+         suddenDeathRound: 0,
+
       ruleName:
         `${difficultyDefinition.label} DUEL`,
 
       phaseText:
         "PREPARING THE TABLE",
 
-      opponent:
-  HighSteaks.createOpponentState(
-    dealerDefinition,
-    opponentHandOrder
-  ),
+            opponent:
+        HighSteaks.createOpponentState(
+          dealerDefinition,
+          opponentHandOrder
+        ),
 
-player:
-  HighSteaks.createPlayerState(
-    playerHandOrder
-  ),
-
+      player:
+        HighSteaks.createPlayerState(
+          playerHandOrder
+        ),
       deal: {
         playerVisible: 0,
         opponentVisible: 0,
