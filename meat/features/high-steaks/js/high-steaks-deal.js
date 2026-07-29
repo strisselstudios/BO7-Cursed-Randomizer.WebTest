@@ -179,7 +179,9 @@ HighSteaks.animateCardDeal =
 ========================================================== */
 
 HighSteaks.startOpeningDeal =
-  async function startOpeningDeal() {
+  async function startOpeningDeal(
+    options = {}
+  ) {
     const state =
       HighSteaks.prototypeState;
 
@@ -190,6 +192,31 @@ HighSteaks.startOpeningDeal =
     ) {
       return false;
     }
+
+         const dealCount =
+      Math.min(
+        state.player.hand.length,
+        state.opponent.hand.length
+      );
+
+    const openingDelayMs =
+      Number.isFinite(
+        Number(options.openingDelayMs)
+      )
+        ? Math.max(
+            0,
+            Math.floor(
+              Number(options.openingDelayMs)
+            )
+          )
+        : HighSteaks.DEAL_SETTINGS
+            .openingDelayMs;
+
+    const dealingPhaseText =
+      typeof options.phaseText === "string" &&
+      options.phaseText.trim()
+        ? options.phaseText.trim()
+        : "T.E.D.D. IS DEALING";
 
     const runId =
       HighSteaks.openingDealRunId + 1;
@@ -202,8 +229,8 @@ HighSteaks.startOpeningDeal =
 
     state.locked = true;
 
-    state.phaseText =
-      "T.E.D.D. IS DEALING";
+        state.phaseText =
+      dealingPhaseText;
 
     state.deal.playerVisible = 0;
     state.deal.opponentVisible = 0;
@@ -211,16 +238,13 @@ HighSteaks.startOpeningDeal =
 
     HighSteaks.renderPrototype();
 
-    await HighSteaks.wait(
-      HighSteaks.DEAL_SETTINGS
-        .openingDelayMs
+        await HighSteaks.wait(
+      openingDelayMs
     );
 
     for (
       let index = 0;
-      index <
-        HighSteaks.MATCH_SETTINGS
-          .openingHandSize;
+            index < dealCount;
       index += 1
     ) {
       if (
