@@ -5,6 +5,12 @@
 ========================================================== */
 
 const MEAT_INVALID_SAVE_BACKUP_KEY = "meatExeInvalidSaveBackup";
+const MEAT_INVALID_SAVE_BACKUP_SECONDARY_KEY = "meatExeInvalidSaveBackupSecondary";
+const MEAT_INVALID_SAVE_BACKUP_PREFIX = "MEAT_INVALID_SAVE_BACKUP_V1:";
+const MEAT_INVALID_SAVE_BACKUP_SLOT_KEYS = Object.freeze([
+  MEAT_INVALID_SAVE_BACKUP_KEY,
+  MEAT_INVALID_SAVE_BACKUP_SECONDARY_KEY
+]);
 
 const LOCAL_SAVE_LOAD_STATUS_NEW = "new";
 const LOCAL_SAVE_LOAD_STATUS_LOADED = "loaded";
@@ -24,7 +30,8 @@ const MAX_LOCAL_SAVE_ERROR_LENGTH = 240;
    report recovery without coupling UI code to storage logic.
 ========================================================== */
 
-let volatileInvalidLocalSaveBackup = "";
+let volatileInvalidLocalSaveBackups = [];
+let localSaveWritesBlocked = false;
 
 let localSaveLoadResult = {
   status: LOCAL_SAVE_LOAD_STATUS_NEW,
@@ -68,48 +75,121 @@ function getLocalSaveLoadResult() {
       ...localSaveLoadResult.modifiedReasons
     ]
   };
+
+   function setLocalSaveWritesBlocked(blocked) {
+  localSaveWritesBlocked = blocked === true;
+  return localSaveWritesBlocked;
+}
+
+function areLocalSaveWritesBlocked() {
+  return localSaveWritesBlocked;
+ }
 }
 
 /* ==========================================================
    3. INVALID SAVE QUARANTINE
    ----------------------------------------------------------
-   Moves an invalid raw save away from the active save key before
-   a new game can be written.
+   Copies invalid raw saves into two rotating recovery slots before
+   the active save key may be replaced. Failed persistent backup
+   writes leave the active stored save untouched.
 ========================================================== */
 
+function createInvalidLocalSaveBackupEnvelope(rawSave, createdAt) {
+  return `${MEAT_INVALID_SAVE_BACKUP_PREFIX}${createdAt}\n${rawSave}`;
+}
+
+function parseInvalidLocalSaveBackupSlot(storedValue, storageKey) {
+  if (typeof storedValue !== "string" || !storedValue) return null;
+
+  if (storedValue.startsWith(MEAT_INVALID_SAVE_BACKUP_PREFIX)) {
+    const timestampEndIndex = storedValue.indexOf("\n", MEAT_INVALID_SAVE_BACKUP_PREFIX.length);
+
+    if (timestampEndIndex > 0) {
+      const createdAt = Number(storedValue.slice(MEAT_INVALID_SAVE_BACKUP_PREFIX.length, timestampEndIndex));
+      const rawSave = storedValue.slice(timestampEndIndex + 1);
+
+      if (Number.isFinite(createdAt) && rawSave) return { rawSave, createdAt, storageKey };
+    }
+  }
+
+  return { rawSave: storedValue, createdAt: 0, storageKey };
+}
+
+function getPersistentInvalidLocalSaveBackups() {
+  try {
+    return MEAT_INVALID_SAVE_BACKUP_SLOT_KEYS
+      .map((storageKey) => parseInvalidLocalSaveBackupSlot(localStorage.getItem(storageKey), storageKey))
+      .filter(Boolean)
+      .sort((leftBackup, rightBackup) => rightBackup.createdAt - leftBackup.createdAt);
+  } catch (error) {
+    console.error("MEAT.exe persistent recovery backups could not be read:", error);
+    return [];
+  }
+}
+
+function createInvalidLocalSaveBackupCreatedAt(persistentBackups) {
+  const newestCreatedAt = [...persistentBackups, ...volatileInvalidLocalSaveBackups]
+    .reduce((currentNewest, backup) => Math.max(currentNewest, Number(backup.createdAt) || 0), 0);
+
+  return Math.max(Date.now(), newestCreatedAt + 1);
+}
+
+function rememberVolatileInvalidLocalSaveBackup(rawSave, createdAt) {
+  volatileInvalidLocalSaveBackups = [
+    { rawSave, createdAt },
+    ...volatileInvalidLocalSaveBackups.filter((backup) => backup.rawSave !== rawSave)
+  ].slice(0, MEAT_INVALID_SAVE_BACKUP_SLOT_KEYS.length);
+}
+
+function forgetVolatileInvalidLocalSaveBackup(rawSave) {
+  volatileInvalidLocalSaveBackups = volatileInvalidLocalSaveBackups.filter((backup) => backup.rawSave !== rawSave);
+}
+
+function chooseInvalidLocalSaveBackupSlot(persistentBackups) {
+  const emptyStorageKey = MEAT_INVALID_SAVE_BACKUP_SLOT_KEYS
+    .find((storageKey) => !persistentBackups.some((backup) => backup.storageKey === storageKey));
+
+  if (emptyStorageKey) return emptyStorageKey;
+
+  return [...persistentBackups]
+    .sort((leftBackup, rightBackup) => leftBackup.createdAt - rightBackup.createdAt)[0]
+    .storageKey;
+}
+
 function quarantineInvalidLocalSave(rawSave) {
-  volatileInvalidLocalSaveBackup = rawSave;
+  const persistentBackups = getPersistentInvalidLocalSaveBackups();
+  const createdAt = createInvalidLocalSaveBackupCreatedAt(persistentBackups);
+
+  rememberVolatileInvalidLocalSaveBackup(rawSave, createdAt);
 
   try {
-    localStorage.removeItem(MEAT_INVALID_SAVE_BACKUP_KEY);
-    localStorage.removeItem(MEAT_SAVE_KEY);
-    localStorage.setItem(MEAT_INVALID_SAVE_BACKUP_KEY, rawSave);
+    if (persistentBackups.some((backup) => backup.rawSave === rawSave)) {
+      forgetVolatileInvalidLocalSaveBackup(rawSave);
+      return LOCAL_SAVE_BACKUP_STORAGE_PERSISTENT;
+    }
 
-    volatileInvalidLocalSaveBackup = "";
+    const targetStorageKey = chooseInvalidLocalSaveBackupSlot(persistentBackups);
+    const backupEnvelope = createInvalidLocalSaveBackupEnvelope(rawSave, createdAt);
+
+    localStorage.setItem(targetStorageKey, backupEnvelope);
+    forgetVolatileInvalidLocalSaveBackup(rawSave);
+
     return LOCAL_SAVE_BACKUP_STORAGE_PERSISTENT;
   } catch (error) {
     console.error("MEAT.exe invalid save could not be quarantined persistently:", error);
-
-    try {
-      localStorage.setItem(MEAT_SAVE_KEY, rawSave);
-    } catch (restoreError) {
-      console.error("MEAT.exe invalid save could not be restored to its original key:", restoreError);
-    }
-
     return LOCAL_SAVE_BACKUP_STORAGE_MEMORY;
   }
 }
 
+function getInvalidLocalSaveBackups() {
+  return [
+    ...getPersistentInvalidLocalSaveBackups(),
+    ...volatileInvalidLocalSaveBackups.map((backup) => ({ ...backup, storageKey: "" }))
+  ].sort((leftBackup, rightBackup) => rightBackup.createdAt - leftBackup.createdAt);
+}
+
 function getInvalidLocalSaveBackup() {
-  const persistentBackup = localStorage.getItem(
-    MEAT_INVALID_SAVE_BACKUP_KEY
-  );
-
-  if (persistentBackup) {
-    return persistentBackup;
-  }
-
-  return volatileInvalidLocalSaveBackup;
+  return getInvalidLocalSaveBackups()[0]?.rawSave || "";
 }
 
 function hasInvalidLocalSaveBackup() {
@@ -117,45 +197,30 @@ function hasInvalidLocalSaveBackup() {
 }
 
 function clearInvalidLocalSaveBackup() {
-  volatileInvalidLocalSaveBackup = "";
-  localStorage.removeItem(MEAT_INVALID_SAVE_BACKUP_KEY);
+  volatileInvalidLocalSaveBackups = [];
+  MEAT_INVALID_SAVE_BACKUP_SLOT_KEYS.forEach((storageKey) => localStorage.removeItem(storageKey));
 }
 
 function createInvalidLocalSaveBackupTimestamp() {
-  return new Date()
-    .toISOString()
-    .replace(/[:.]/g, "-");
+  return new Date().toISOString().replace(/[:.]/g, "-");
 }
 
 function downloadInvalidLocalSaveBackup() {
   const rawBackup = getInvalidLocalSaveBackup();
 
-  if (!rawBackup) {
-    return false;
-  }
+  if (!rawBackup) return false;
 
-  const backupBlob = new Blob(
-    [rawBackup],
-    {
-      type: "text/plain;charset=utf-8"
-    }
-  );
-
+  const backupBlob = new Blob([rawBackup], { type: "text/plain;charset=utf-8" });
   const downloadUrl = URL.createObjectURL(backupBlob);
   const downloadLink = document.createElement("a");
 
   downloadLink.href = downloadUrl;
-  downloadLink.download =
-    `MEAT-exe-invalid-save-${createInvalidLocalSaveBackupTimestamp()}.txt`;
+  downloadLink.download = `MEAT-exe-invalid-save-${createInvalidLocalSaveBackupTimestamp()}.txt`;
 
   document.body.appendChild(downloadLink);
   downloadLink.click();
   downloadLink.remove();
-
-  window.setTimeout(
-    () => URL.revokeObjectURL(downloadUrl),
-    0
-  );
+  window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
 
   return true;
 }
@@ -194,7 +259,8 @@ function loadGame() {
   const savedData = localStorage.getItem(MEAT_SAVE_KEY);
 
   if (!savedData) {
-    gameState = createDefaultGameState();
+  setLocalSaveWritesBlocked(false);
+  gameState = createDefaultGameState();
 
     setLocalSaveLoadResult(
       LOCAL_SAVE_LOAD_STATUS_NEW
@@ -241,8 +307,9 @@ function loadGame() {
       migratedState
     );
 
-    gameState = migratedState;
-    calculateMeatPerSecond();
+    setLocalSaveWritesBlocked(false);
+     gameState = migratedState;
+       calculateMeatPerSecond();
 
     const trustState = getSaveTrustState(
       gameState
@@ -262,17 +329,29 @@ function loadGame() {
     console.error("MEAT.exe local save failed safety checks:", error);
 
     const backupStorage = quarantineInvalidLocalSave(
-      savedData
-    );
+  savedData
+);
 
-    gameState = createDefaultGameState();
-    calculateMeatPerSecond();
+gameState = createDefaultGameState();
+calculateMeatPerSecond();
 
-    const replacementStored = saveGame();
+if (
+  backupStorage ===
+  LOCAL_SAVE_BACKUP_STORAGE_PERSISTENT
+) {
+  setLocalSaveWritesBlocked(false);
 
-    if (!replacementStored) {
-      console.error("MEAT.exe replacement save could not be stored after recovery.");
-    }
+  const replacementStored = saveGame();
+
+  if (!replacementStored) {
+    console.error("MEAT.exe replacement save could not be stored after recovery.");
+  }
+} else {
+  setLocalSaveWritesBlocked(true);
+  console.error(
+    "MEAT.exe normal save writes were blocked because no persistent recovery backup could be created."
+  );
+}
 
     setLocalSaveLoadResult(
       LOCAL_SAVE_LOAD_STATUS_RECOVERED,
@@ -295,6 +374,14 @@ function loadGame() {
 ========================================================== */
 
 function saveGame() {
+  if (areLocalSaveWritesBlocked()) {
+    console.error(
+      "MEAT.exe save was blocked to preserve an invalid stored save without a persistent recovery backup."
+    );
+
+    return false;
+  }
+
   const previousLastSavedAt =
     gameState.lastSavedAt;
 
