@@ -10,6 +10,7 @@
 @import url("core/layout.css");
 
 @import url("components/save-transfer.css");
+@import url("components/save-status.css");
 @import url("components/offline-production.css");
 @import url("components/resource-header.css");
 @import url("components/meat-button.css");
