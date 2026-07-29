@@ -35,10 +35,11 @@ HighSteaks.applyInterfaceScreen =
     }
 
     if (highSteaksPerspectiveStage) {
-      const tableVisible =
+            const tableVisible =
         normalizedScreen ===
-        HighSteaks.SCREEN_TABLE;
-
+          HighSteaks.SCREEN_TABLE ||
+        normalizedScreen ===
+          HighSteaks.SCREEN_RESULTS;
       highSteaksPerspectiveStage
         .setAttribute(
           "aria-hidden",
@@ -56,6 +57,7 @@ HighSteaks.applyInterfaceScreen =
 HighSteaks.showLobby =
   function showLobby() {
     HighSteaks.cancelOpeningDeal?.();
+         HighSteaks.cancelRoundSequence?.();
 
     HighSteaks.prototypeState =
       HighSteaks.createLobbyState();
@@ -116,6 +118,7 @@ HighSteaks.startMatch =
     difficultyId
   ) {
     HighSteaks.cancelOpeningDeal?.();
+             HighSteaks.cancelRoundSequence?.();
 
     HighSteaks.prototypeState =
       HighSteaks.createMatchState(
@@ -170,5 +173,34 @@ highSteaksTeddStandardButton
           .highSteaksDifficultyId ||
           "standard"
       );
+    }
+  );
+/* ==========================================================
+   5. MATCH RESULT INPUT
+========================================================== */
+
+highSteaksRematchButton
+  ?.addEventListener(
+    "click",
+    (event) => {
+      event.preventDefault();
+
+      const state =
+        HighSteaks.prototypeState;
+
+      HighSteaks.startMatch(
+        state?.dealerId || "tedd",
+        state?.difficultyId || "standard"
+      );
+    }
+  );
+
+highSteaksResultsMenuButton
+  ?.addEventListener(
+    "click",
+    (event) => {
+      event.preventDefault();
+
+      HighSteaks.showLobby();
     }
   );
