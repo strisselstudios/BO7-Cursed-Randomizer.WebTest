@@ -3,8 +3,17 @@
 ========================================================== */
 
 HighSteaks.togglePrototypeCardSelection = function togglePrototypeCardSelection(cardId) {
-  const state = HighSteaks.prototypeState;
-  if (!state || state.locked) return false;
+    const state =
+    HighSteaks.prototypeState;
+
+  if (
+    !state ||
+    state.locked ||
+    state.phase !==
+      HighSteaks.PHASE_PLAYER_TURN
+  ) {
+    return false;
+  }
 
   const selectedCardIndex = state.player.selectedCardIds.indexOf(cardId);
 
@@ -33,40 +42,29 @@ HighSteaks.togglePrototypeCardSelection = function togglePrototypeCardSelection(
    2. PROTOTYPE PAIR CONTROLS
 ========================================================== */
 
-HighSteaks.clearPrototypeSelection = function clearPrototypeSelection() {
-  const state = HighSteaks.prototypeState;
-  if (!state) return;
+HighSteaks.clearPrototypeSelection =
+  function clearPrototypeSelection() {
+    const state =
+      HighSteaks.prototypeState;
 
-  const playedCards = Array.isArray(state.player.playedCards)
-    ? state.player.playedCards
-    : [];
+    if (
+      !state ||
+      state.locked ||
+      state.phase !==
+        HighSteaks.PHASE_PLAYER_TURN
+    ) {
+      return false;
+    }
 
-  if (playedCards.length > 0) {
-    const originalCardOrder = new Map(
-      HighSteaks.PLACEHOLDER_PLAYER_HAND.map(
-        (card, index) => [card.id, index]
-      )
-    );
+    state.player.selectedCardIds = [];
 
-    state.player.hand = [
-      ...state.player.hand,
-      ...playedCards
-    ].sort((firstCard, secondCard) => {
-      return (
-        (originalCardOrder.get(firstCard.id) ?? Number.MAX_SAFE_INTEGER) -
-        (originalCardOrder.get(secondCard.id) ?? Number.MAX_SAFE_INTEGER)
-      );
-    });
-  }
+    state.phaseText =
+      "CHOOSE EXACTLY TWO CARDS";
 
-  state.player.selectedCardIds = [];
-  state.player.playedCards = [];
-  state.locked = false;
-  state.sceneState = "table";
-  state.phaseText = "CHOOSE EXACTLY TWO CARDS";
+    HighSteaks.renderPrototype();
 
-  HighSteaks.renderPrototype();
-};
+    return true;
+  };
 
 HighSteaks.confirmPrototypeSelection = function confirmPrototypeSelection() {
   const state =
