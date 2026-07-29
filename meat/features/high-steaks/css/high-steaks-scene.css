@@ -115,6 +115,7 @@
 ========================================================== */
 .high-steaks-opponent-zone { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
 .high-steaks-opponent-nameplate {
+  display: none;
   position: absolute;
   top: 54.5%;
   left: 50%;
