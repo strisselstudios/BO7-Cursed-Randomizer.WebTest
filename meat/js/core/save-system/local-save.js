@@ -295,12 +295,18 @@ function loadGame() {
 ========================================================== */
 
 function saveGame() {
-  const previousLastSavedAt = gameState.lastSavedAt;
+  const previousLastSavedAt =
+    gameState.lastSavedAt;
 
   try {
-    gameState.lastSavedAt = Date.now();
+    compactNachtRaidersFieldRecords(
+      gameState.features?.nachtRaiders
+    );
 
-        validateGameStateStructure(
+    gameState.lastSavedAt =
+      Date.now();
+
+    validateGameStateStructure(
       gameState
     );
 
