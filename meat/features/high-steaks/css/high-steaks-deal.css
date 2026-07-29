@@ -1,0 +1,44 @@
+/* ==========================================================
+   1. UNDEALT CARDS
+========================================================== */
+
+.high-steaks-card.is-undealt {
+  visibility: hidden;
+}
+
+/* ==========================================================
+   2. ACTIVE DEALING CARD
+========================================================== */
+
+.high-steaks-card.is-high-steaks-being-dealt {
+  visibility: visible !important;
+  pointer-events: none !important;
+  will-change:
+    translate,
+    opacity;
+}
+
+/* ==========================================================
+   3. DEALING INPUT LOCK
+========================================================== */
+
+.high-steaks-scene[data-high-steaks-phase="dealing"]
+.high-steaks-player-controls {
+  pointer-events: none;
+  opacity: 0.52;
+}
+
+/* ==========================================================
+   4. REDUCED MOTION
+========================================================== */
+
+body.animations-disabled
+.high-steaks-card.is-high-steaks-being-dealt {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .high-steaks-card.is-high-steaks-being-dealt {
+    animation: none;
+  }
+}
