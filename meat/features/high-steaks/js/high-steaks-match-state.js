@@ -107,6 +107,77 @@ HighSteaks.cloneCardForOwner =
   };
 
 /* ==========================================================
+   3.1 PARTICIPANT HAND ORDER
+   ----------------------------------------------------------
+   Both participants receive the same card set, but their card
+   positions are randomized independently. The opponent order
+   is guaranteed not to match the player's complete order.
+========================================================== */
+
+HighSteaks.createParticipantHandOrder =
+  function createParticipantHandOrder(
+    sharedCards,
+    excludedOrder = null
+  ) {
+    const sourceCards =
+      Array.isArray(sharedCards)
+        ? sharedCards
+        : [];
+
+    if (sourceCards.length <= 1) {
+      return sourceCards.map(
+        (card) => ({ ...card })
+      );
+    }
+
+    const excludedCardIds =
+      Array.isArray(excludedOrder)
+        ? excludedOrder.map(
+            (card) => card.id
+          )
+        : null;
+
+    for (
+      let attempt = 0;
+      attempt < 12;
+      attempt += 1
+    ) {
+      const shuffledCards =
+        HighSteaks.shuffleCards(
+          sourceCards
+        );
+
+      const matchesExcludedOrder =
+        excludedCardIds &&
+        shuffledCards.every(
+          (card, index) =>
+            card.id ===
+            excludedCardIds[index]
+        );
+
+      if (!matchesExcludedOrder) {
+        return shuffledCards;
+      }
+    }
+
+    /*
+     * A complete-order collision is extraordinarily unlikely,
+     * but rotating the cards guarantees a different order.
+     */
+
+    const fallbackCards =
+      sourceCards.map(
+        (card) => ({ ...card })
+      );
+
+    fallbackCards.push(
+      fallbackCards.shift()
+    );
+
+    return fallbackCards;
+  };
+
+/* ==========================================================
    4. PARTICIPANT STATE
 ========================================================== */
 
@@ -260,8 +331,18 @@ HighSteaks.createMatchState =
         .standard;
 
     const sharedCards =
-      HighSteaks.createSharedOpeningHand();
+  HighSteaks.createSharedOpeningHand();
 
+const playerHandOrder =
+  HighSteaks.createParticipantHandOrder(
+    sharedCards
+  );
+
+const opponentHandOrder =
+  HighSteaks.createParticipantHandOrder(
+    sharedCards,
+    playerHandOrder
+  );
     return {
       screen:
         HighSteaks.SCREEN_TABLE,
@@ -295,15 +376,15 @@ HighSteaks.createMatchState =
         "PREPARING THE TABLE",
 
       opponent:
-        HighSteaks.createOpponentState(
-          dealerDefinition,
-          sharedCards
-        ),
+  HighSteaks.createOpponentState(
+    dealerDefinition,
+    opponentHandOrder
+  ),
 
-      player:
-        HighSteaks.createPlayerState(
-          sharedCards
-        ),
+player:
+  HighSteaks.createPlayerState(
+    playerHandOrder
+  ),
 
       deal: {
         playerVisible: 0,
