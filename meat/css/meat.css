@@ -37,8 +37,10 @@
 @import url("../features/high-steaks/css/high-steaks-launcher.css");
 @import url("../features/high-steaks/css/high-steaks-window.css");
 @import url("../features/high-steaks/css/high-steaks-scene.css");
+@import url("../features/high-steaks/css/high-steaks-menu.css");
 @import url("../features/high-steaks/css/high-steaks-table.css");
 @import url("../features/high-steaks/css/high-steaks-cards.css");
+@import url("../features/high-steaks/css/high-steaks-deal.css");
 @import url("../features/high-steaks/css/high-steaks-responsive.css");
 
 @import url("components/transaction-feedback.css");
