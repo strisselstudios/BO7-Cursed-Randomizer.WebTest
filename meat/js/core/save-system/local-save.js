@@ -23,6 +23,17 @@ const LOCAL_SAVE_BACKUP_STORAGE_PERSISTENT = "persistent";
 
 const MAX_LOCAL_SAVE_ERROR_LENGTH = 240;
 
+const LOCAL_SAVE_WRITE_STATUS_EVENT =
+  "meatlocalsavewritestatuschange";
+
+const LOCAL_SAVE_WRITE_STATUS_IDLE =
+  "idle";
+
+const LOCAL_SAVE_WRITE_STATUS_SAVED =
+  "saved";
+
+const LOCAL_SAVE_WRITE_STATUS_FAILED =
+  "failed";
 /* ==========================================================
    2. LOCAL SAVE LOAD RESULT
    ----------------------------------------------------------
@@ -40,6 +51,12 @@ let localSaveLoadResult = {
   errorMessage: ""
 };
 
+let localSaveWriteStatus = {
+  status: LOCAL_SAVE_WRITE_STATUS_IDLE,
+  errorMessage: "",
+  changedAt: 0
+};
+
 function normalizeLocalSaveError(error) {
   const message = error instanceof Error
     ? error.message
@@ -49,6 +66,52 @@ function normalizeLocalSaveError(error) {
     .trim()
     .replace(/\s+/g, " ")
     .slice(0, MAX_LOCAL_SAVE_ERROR_LENGTH);
+}
+function getLocalSaveWriteStatus() {
+  return {
+    ...localSaveWriteStatus
+  };
+}
+
+function setLocalSaveWriteStatus(
+  status,
+  errorMessage = ""
+) {
+  localSaveWriteStatus = {
+    status,
+    errorMessage:
+      typeof errorMessage === "string"
+        ? errorMessage
+        : "",
+    changedAt: Date.now()
+  };
+
+  window.dispatchEvent(
+    new CustomEvent(
+      LOCAL_SAVE_WRITE_STATUS_EVENT,
+      {
+        detail:
+          getLocalSaveWriteStatus()
+      }
+    )
+  );
+
+  return getLocalSaveWriteStatus();
+}
+
+function markLocalSaveWriteSucceeded() {
+  return setLocalSaveWriteStatus(
+    LOCAL_SAVE_WRITE_STATUS_SAVED
+  );
+}
+
+function markLocalSaveWriteFailed(
+  error
+) {
+  return setLocalSaveWriteStatus(
+    LOCAL_SAVE_WRITE_STATUS_FAILED,
+    normalizeLocalSaveError(error)
+  );
 }
 
 function setLocalSaveLoadResult(status, options = {}) {
@@ -269,6 +332,16 @@ function recoverInvalidLocalSave(savedData, error) {
     }
   } else {
     setLocalSaveWritesBlocked(true);
+
+    const blockedSaveError =
+      new Error(
+        "Saving is blocked because a persistent recovery backup could not be created."
+      );
+
+    markLocalSaveWriteFailed(
+      blockedSaveError
+    );
+
     console.error(
       "MEAT.exe normal save writes were blocked because no persistent recovery backup could be created."
     );
@@ -353,39 +426,71 @@ function loadGame() {
 ========================================================== */
 
 function saveGame() {
-  const previousLastSavedAt = gameState?.lastSavedAt;
+  const previousLastSavedAt =
+    gameState?.lastSavedAt;
 
   try {
-    if (areLocalSaveWritesBlocked()) {
-      console.error(
-        "MEAT.exe save was blocked to preserve an invalid stored save without a persistent recovery backup."
+    if (
+      areLocalSaveWritesBlocked()
+    ) {
+      throw new Error(
+        "Saving is blocked to preserve the original stored save without a persistent recovery backup."
       );
-
-      return false;
     }
 
     compactNachtRaidersFieldRecords(
       gameState.features?.nachtRaiders
     );
 
-    gameState.lastSavedAt = Date.now();
+    gameState.lastSavedAt =
+      Date.now();
 
-    validateGameStateStructure(gameState);
+    validateGameStateStructure(
+      gameState
+    );
 
-    const serializedGameState = JSON.stringify(gameState);
+    const serializedGameState =
+      JSON.stringify(
+        gameState
+      );
 
-    if (new Blob([serializedGameState]).size > MAX_SAVE_FILE_SIZE_BYTES) {
-      throw new Error("The active save exceeds the maximum supported size.");
+    if (
+      new Blob([
+        serializedGameState
+      ]).size >
+      MAX_SAVE_FILE_SIZE_BYTES
+    ) {
+      throw new Error(
+        "The active save exceeds the maximum supported size."
+      );
     }
 
-    localStorage.setItem(MEAT_SAVE_KEY, serializedGameState);
+    localStorage.setItem(
+      MEAT_SAVE_KEY,
+      serializedGameState
+    );
+
+    markLocalSaveWriteSucceeded();
+
     return true;
   } catch (error) {
-    if (gameState && typeof gameState === "object") {
-      gameState.lastSavedAt = previousLastSavedAt;
+    if (
+      gameState &&
+      typeof gameState === "object"
+    ) {
+      gameState.lastSavedAt =
+        previousLastSavedAt;
     }
 
-    console.error("MEAT.exe save could not be stored:", error);
+    markLocalSaveWriteFailed(
+      error
+    );
+
+    console.error(
+      "MEAT.exe save could not be stored:",
+      error
+    );
+
     return false;
   }
 }
