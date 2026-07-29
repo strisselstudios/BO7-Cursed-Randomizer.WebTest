@@ -32,7 +32,6 @@ const MAX_LOCAL_SAVE_ERROR_LENGTH = 240;
 
 let volatileInvalidLocalSaveBackups = [];
 let localSaveWritesBlocked = false;
-
 let localSaveLoadResult = {
   status: LOCAL_SAVE_LOAD_STATUS_NEW,
   modifiedReasons: [],
@@ -55,9 +54,7 @@ function normalizeLocalSaveError(error) {
 function setLocalSaveLoadResult(status, options = {}) {
   localSaveLoadResult = {
     status,
-    modifiedReasons: normalizeModifiedSaveReasons(
-      options.modifiedReasons
-    ),
+    modifiedReasons: normalizeModifiedSaveReasons(options.modifiedReasons),
     backupAvailable: options.backupAvailable === true,
     backupStorage: options.backupStorage || LOCAL_SAVE_BACKUP_STORAGE_NONE,
     errorMessage: typeof options.errorMessage === "string"
@@ -71,19 +68,17 @@ function setLocalSaveLoadResult(status, options = {}) {
 function getLocalSaveLoadResult() {
   return {
     ...localSaveLoadResult,
-    modifiedReasons: [
-      ...localSaveLoadResult.modifiedReasons
-    ]
+    modifiedReasons: [...localSaveLoadResult.modifiedReasons]
   };
+}
 
-   function setLocalSaveWritesBlocked(blocked) {
+function setLocalSaveWritesBlocked(blocked) {
   localSaveWritesBlocked = blocked === true;
   return localSaveWritesBlocked;
 }
 
 function areLocalSaveWritesBlocked() {
   return localSaveWritesBlocked;
- }
 }
 
 /* ==========================================================
@@ -251,23 +246,57 @@ function collectStoredSavePreMigrationTrustReasons(saveState) {
 /* ==========================================================
    5. LOCAL SAVE LOADING
    ----------------------------------------------------------
-   Validates the raw state, migrates it, validates the completed
-   state, and quarantines anything that cannot be loaded safely.
+   Validates and migrates stored data before activating it. Only
+   data-processing failures enter save recovery; later runtime
+   initialization errors do not falsely classify the save as corrupt.
 ========================================================== */
+
+function recoverInvalidLocalSave(savedData, error) {
+  console.error("MEAT.exe local save failed safety checks:", error);
+
+  const backupStorage = quarantineInvalidLocalSave(savedData);
+
+  gameState = createDefaultGameState();
+  calculateMeatPerSecond();
+
+  if (backupStorage === LOCAL_SAVE_BACKUP_STORAGE_PERSISTENT) {
+    setLocalSaveWritesBlocked(false);
+
+    const replacementStored = saveGame();
+
+    if (!replacementStored) {
+      console.error("MEAT.exe replacement save could not be stored after recovery.");
+    }
+  } else {
+    setLocalSaveWritesBlocked(true);
+    console.error(
+      "MEAT.exe normal save writes were blocked because no persistent recovery backup could be created."
+    );
+  }
+
+  setLocalSaveLoadResult(
+    LOCAL_SAVE_LOAD_STATUS_RECOVERED,
+    {
+      backupAvailable: hasInvalidLocalSaveBackup(),
+      backupStorage,
+      errorMessage: normalizeLocalSaveError(error)
+    }
+  );
+
+  return false;
+}
 
 function loadGame() {
   const savedData = localStorage.getItem(MEAT_SAVE_KEY);
 
   if (!savedData) {
-  setLocalSaveWritesBlocked(false);
-  gameState = createDefaultGameState();
-
-    setLocalSaveLoadResult(
-      LOCAL_SAVE_LOAD_STATUS_NEW
-    );
-
+    setLocalSaveWritesBlocked(false);
+    gameState = createDefaultGameState();
+    setLocalSaveLoadResult(LOCAL_SAVE_LOAD_STATUS_NEW);
     return true;
   }
+
+  let migratedState;
 
   try {
     if (new Blob([savedData]).size > MAX_SAVE_FILE_SIZE_BYTES) {
@@ -276,23 +305,13 @@ function loadGame() {
 
     const parsedSave = JSON.parse(savedData);
 
-    validateStoredGameStateBeforeMigration(
-      parsedSave
-    );
+    validateStoredGameStateBeforeMigration(parsedSave);
 
-    const preMigrationTrustReasons =
-      collectStoredSavePreMigrationTrustReasons(
-        parsedSave
-      );
+    const preMigrationTrustReasons = collectStoredSavePreMigrationTrustReasons(parsedSave);
 
-    const migratedState = migrateGameState(
-      parsedSave
-    );
+    migratedState = migrateGameState(parsedSave);
 
-    const impossibleStateReasons =
-      inspectGameStateForImpossibleProgress(
-        migratedState
-      );
+    const impossibleStateReasons = inspectGameStateForImpossibleProgress(migratedState);
 
     mergeSaveTrustState(
       migratedState,
@@ -303,128 +322,70 @@ function loadGame() {
       ]
     );
 
-    validateGameStateStructure(
-      migratedState
-    );
-
-    setLocalSaveWritesBlocked(false);
-     gameState = migratedState;
-       calculateMeatPerSecond();
-
-    const trustState = getSaveTrustState(
-      gameState
-    );
-
-    setLocalSaveLoadResult(
-      trustState.modified
-        ? LOCAL_SAVE_LOAD_STATUS_MODIFIED
-        : LOCAL_SAVE_LOAD_STATUS_LOADED,
-      {
-        modifiedReasons: trustState.reasons
-      }
-    );
-
-    return true;
+    validateGameStateStructure(migratedState);
   } catch (error) {
-    console.error("MEAT.exe local save failed safety checks:", error);
+    return recoverInvalidLocalSave(savedData, error);
+  }
 
-    const backupStorage = quarantineInvalidLocalSave(
-  savedData
-);
-
-gameState = createDefaultGameState();
-calculateMeatPerSecond();
-
-if (
-  backupStorage ===
-  LOCAL_SAVE_BACKUP_STORAGE_PERSISTENT
-) {
   setLocalSaveWritesBlocked(false);
+  gameState = migratedState;
+  calculateMeatPerSecond();
 
-  const replacementStored = saveGame();
+  const trustState = getSaveTrustState(gameState);
 
-  if (!replacementStored) {
-    console.error("MEAT.exe replacement save could not be stored after recovery.");
-  }
-} else {
-  setLocalSaveWritesBlocked(true);
-  console.error(
-    "MEAT.exe normal save writes were blocked because no persistent recovery backup could be created."
+  setLocalSaveLoadResult(
+    trustState.modified
+      ? LOCAL_SAVE_LOAD_STATUS_MODIFIED
+      : LOCAL_SAVE_LOAD_STATUS_LOADED,
+    {
+      modifiedReasons: trustState.reasons
+    }
   );
-}
 
-    setLocalSaveLoadResult(
-      LOCAL_SAVE_LOAD_STATUS_RECOVERED,
-      {
-        backupAvailable: hasInvalidLocalSaveBackup(),
-        backupStorage,
-        errorMessage: normalizeLocalSaveError(error)
-      }
-    );
-
-    return false;
-  }
+  return true;
 }
 
 /* ==========================================================
    6. LOCAL SAVE STORAGE
    ----------------------------------------------------------
    Refuses to overwrite the last stored state when the active
-   runtime state is structurally invalid.
+   runtime state is structurally invalid or writes are blocked.
 ========================================================== */
 
 function saveGame() {
-  if (areLocalSaveWritesBlocked()) {
-    console.error(
-      "MEAT.exe save was blocked to preserve an invalid stored save without a persistent recovery backup."
-    );
-
-    return false;
-  }
-
-  const previousLastSavedAt =
-    gameState.lastSavedAt;
+  const previousLastSavedAt = gameState?.lastSavedAt;
 
   try {
+    if (areLocalSaveWritesBlocked()) {
+      console.error(
+        "MEAT.exe save was blocked to preserve an invalid stored save without a persistent recovery backup."
+      );
+
+      return false;
+    }
+
     compactNachtRaidersFieldRecords(
       gameState.features?.nachtRaiders
     );
 
-    gameState.lastSavedAt =
-      Date.now();
+    gameState.lastSavedAt = Date.now();
 
-    validateGameStateStructure(
-      gameState
-    );
+    validateGameStateStructure(gameState);
 
-    const serializedGameState =
-      JSON.stringify(gameState);
+    const serializedGameState = JSON.stringify(gameState);
 
-    if (
-      new Blob([
-        serializedGameState
-      ]).size >
-      MAX_SAVE_FILE_SIZE_BYTES
-    ) {
-      throw new Error(
-        "The active save exceeds the maximum supported size."
-      );
+    if (new Blob([serializedGameState]).size > MAX_SAVE_FILE_SIZE_BYTES) {
+      throw new Error("The active save exceeds the maximum supported size.");
     }
 
-    localStorage.setItem(
-      MEAT_SAVE_KEY,
-      serializedGameState
-    );
-
+    localStorage.setItem(MEAT_SAVE_KEY, serializedGameState);
     return true;
   } catch (error) {
-    gameState.lastSavedAt = previousLastSavedAt;
+    if (gameState && typeof gameState === "object") {
+      gameState.lastSavedAt = previousLastSavedAt;
+    }
 
-    console.error(
-      "MEAT.exe save could not be stored:",
-      error
-    );
-
+    console.error("MEAT.exe save could not be stored:", error);
     return false;
   }
 }
