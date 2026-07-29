@@ -333,7 +333,7 @@ HighSteaks.createMatchState =
       HighSteaks.DIFFICULTY_DEFINITIONS
         .standard;
 
-    c    const sharedCards =
+    const sharedCards =
       HighSteaks.createSharedOpeningHand();
 
     const playerHandOrder =
@@ -368,14 +368,13 @@ HighSteaks.createMatchState =
         HighSteaks.MATCH_SETTINGS
           .maximumRounds,
 
-      winsRequired:
+           winsRequired:
         HighSteaks.MATCH_SETTINGS
           .winsRequired,
 
-         suddenDeath: false,
+      suddenDeath: false,
 
-         suddenDeathRound: 0,
-
+      suddenDeathRound: 0,
       ruleName:
         `${difficultyDefinition.label} DUEL`,
 
