@@ -55,6 +55,39 @@ HighSteaks.DEAL_SETTINGS = Object.freeze({
 });
 
 /* ==========================================================
+   5.1 ROUND SEQUENCE SETTINGS
+========================================================== */
+
+HighSteaks.ROUND_SETTINGS = Object.freeze({
+  playerPlacementLeadMs: 260,
+  dealerThinkMs: 460,
+
+  dealerPlacementDurationMs: 720,
+  dealerPlacementStaggerMs: 90,
+
+  dealerRevealPauseMs: 260,
+  dealerFlipHalfDurationMs: 180,
+  dealerFlipStaggerMs: 110,
+
+  roundResultDurationMs: 1800,
+  nextRoundDelayMs: 420,
+
+  suddenDeathHandSize: 4,
+  suddenDeathOpeningDelayMs: 650
+});
+
+/* ==========================================================
+   5.2 STANDARD T.E.D.D. AI SETTINGS
+========================================================== */
+
+HighSteaks.TEDD_STANDARD_AI_SETTINGS = Object.freeze({
+  trailingTargetAdjustment: 0.2,
+  leadingTargetAdjustment: -0.12,
+  lateRoundTargetAdjustment: 0.08,
+  candidateTolerance: 1.25
+});
+
+/* ==========================================================
    6. DIFFICULTY DEFINITIONS
 ========================================================== */
 
