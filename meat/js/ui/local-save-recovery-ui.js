@@ -16,10 +16,10 @@ function configureLocalSaveRecoveryDialog() {
     LOCAL_SAVE_BACKUP_STORAGE_PERSISTENT
   ) {
     localSaveRecoveryMessage.textContent =
-      "Your stored save failed safety checks. The original data was quarantined and a new game was started. A recovery backup remains stored on this device. Download it before a full reset if you want it examined. The new game remains trusted.";
+      "Your stored save failed safety checks. The original data was copied into protected rotating recovery storage before a new game was started. Download the recovery backup before a full reset if you want it examined.";
   } else {
     localSaveRecoveryMessage.textContent =
-      "Your stored save failed safety checks. The original data is available only until this page closes or reloads. Download it now. A new trusted game was started.";
+      "Your stored save failed safety checks, and a persistent recovery copy could not be created. The original stored data was left untouched. Download the temporary recovery copy now. This page is running a new unsaved game, and normal saving is blocked to protect the original data.";
   }
 
   downloadLocalSaveBackupButton.hidden =
