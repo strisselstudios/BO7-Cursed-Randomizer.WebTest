@@ -164,11 +164,22 @@ const producerData = {
     meatPerSecond: 8
   },
 
-  sunkenMiningTown: {
-    name: "Sunken Mining Town",
+    sunkenMiningTown: {
+    name: "Old Western Town",
+    names: {
+      1: "Old Western Town",
+      2: "Sunken Western Town",
+      3: "Sunken Mining Town"
+    },
     baseCost: 12000,
-    meatPerSecond: 47
+    meatPerSecond: 47,
+    descriptions: {
+      1: "Could be in Georgia, could be New Mexico. I wonder what Angola Africa is like this time of year…",
+      2: "Site of a massacre so large they decided to bury the whole town.",
+      3: "If I had a nickel for every time a western town sank into a Rift..."
+    }
   },
+   
 
   giantFactory: {
     name: "Giant Factory",
