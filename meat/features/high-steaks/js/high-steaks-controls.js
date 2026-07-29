@@ -131,30 +131,32 @@ HighSteaks.confirmPrototypeSelection = function confirmPrototypeSelection() {
   state.phaseText =
     "CARDS PLACED. AWAITING OPPONENT";
 
-  HighSteaks.renderPrototype();
+    HighSteaks.renderPrototype();
 
-  window.requestAnimationFrame(
-    () => {
-      if (
-        typeof HighSteaks.animatePlayerHandReflow ===
-          "function"
-      ) {
-        HighSteaks.animatePlayerHandReflow(
-          handReflowMotion
-        );
-      }
+  /*
+   * Install the real-card placement animations immediately
+   * after layout changes and before this event task ends.
+   * The browser never paints the cards sitting in their final
+   * positions before their starting transforms are active.
+   */
 
-      if (
-        typeof HighSteaks.animatePlacedCards ===
-          "function"
-      ) {
-        HighSteaks.animatePlacedCards(
-          placementMotion
-        );
-      }
-    }
-  );
+  if (
+    typeof HighSteaks.animatePlacedCards ===
+      "function"
+  ) {
+    HighSteaks.animatePlacedCards(
+      placementMotion
+    );
+  }
 
+  if (
+    typeof HighSteaks.animatePlayerHandReflow ===
+      "function"
+  ) {
+    HighSteaks.animatePlayerHandReflow(
+      handReflowMotion
+    );
+  }
   document.dispatchEvent(
     new CustomEvent(
       "high-steaks:prototype-pair-locked",
