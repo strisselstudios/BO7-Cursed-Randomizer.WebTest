@@ -260,13 +260,36 @@ HighSteaks.createCardFaceElement = function createCardFaceElement(card, options 
   return cardElement;
 };
 
-HighSteaks.createCardBackElement = function createCardBackElement(index) {
-  const cardElement = document.createElement("span");
-  cardElement.className = "high-steaks-card high-steaks-card-back";
-  cardElement.dataset.highSteaksOpponentCardIndex = String(index);
-  cardElement.setAttribute("aria-hidden", "true");
-  return cardElement;
-};
+HighSteaks.createCardBackElement =
+  function createCardBackElement(
+    card,
+    index
+  ) {
+    const cardElement =
+      document.createElement(
+        "span"
+      );
+
+    cardElement.className =
+      "high-steaks-card high-steaks-card-back";
+
+    cardElement.dataset
+      .highSteaksOpponentCardIndex =
+      String(index);
+
+    if (card?.id) {
+      cardElement.dataset
+        .highSteaksCardId =
+        card.id;
+    }
+
+    cardElement.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    return cardElement;
+  };
 
 HighSteaks.createEmptyPlaySlot = function createEmptyPlaySlot(label) {
   const slotElement = document.createElement("span");
@@ -296,23 +319,106 @@ HighSteaks.renderScoreboard = function renderScoreboard(state) {
   HighSteaks.renderWinPips(highSteaksPlayerWins, state.player.wins, "Player");
 };
 
-HighSteaks.renderOpponentHand = function renderOpponentHand(state) {
-  if (!highSteaksOpponentHand) return;
+HighSteaks.renderOpponentHand =
+  function renderOpponentHand(
+    state
+  ) {
+    if (!highSteaksOpponentHand) {
+      return;
+    }
 
-  highSteaksOpponentHand.replaceChildren();
+    const opponentCards =
+      Array.isArray(
+        state.opponent.hand
+      )
+        ? state.opponent.hand
+        : [];
 
-  for (let index = 0; index < state.opponent.handSize; index += 1) {
-    highSteaksOpponentHand.append(
-      HighSteaks.createCardBackElement(index)
+    const visibleCardCount =
+      Math.max(
+        0,
+        Math.floor(
+          Number(
+            state.deal
+              ?.opponentVisible
+          ) || 0
+        )
+      );
+
+    const existingCardsById =
+      new Map();
+
+    for (
+      const cardElement of
+      highSteaksOpponentHand.children
+    ) {
+      const cardId =
+        cardElement.dataset
+          ?.highSteaksCardId;
+
+      if (cardId) {
+        existingCardsById.set(
+          cardId,
+          cardElement
+        );
+      }
+    }
+
+    const activeCardIds =
+      new Set(
+        opponentCards.map(
+          (card) => card.id
+        )
+      );
+
+    for (
+      const [
+        cardId,
+        cardElement
+      ] of existingCardsById
+    ) {
+      if (!activeCardIds.has(cardId)) {
+        cardElement.remove();
+      }
+    }
+
+    opponentCards.forEach(
+      (card, index) => {
+        let cardElement =
+          existingCardsById.get(
+            card.id
+          );
+
+        if (!cardElement) {
+          cardElement =
+            HighSteaks
+              .createCardBackElement(
+                card,
+                index
+              );
+        }
+
+        cardElement.classList.toggle(
+          "is-undealt",
+          index >= visibleCardCount
+        );
+
+        highSteaksOpponentHand.append(
+          cardElement
+        );
+      }
     );
-  }
 
-  highSteaksOpponentHand.setAttribute(
-    "aria-label",
-    `Opponent hand: ${state.opponent.handSize} hidden cards`
-  );
-};
-
+    highSteaksOpponentHand.setAttribute(
+      "aria-label",
+      `Opponent hand: ${
+        Math.min(
+          opponentCards.length,
+          visibleCardCount
+        )
+      } hidden cards`
+    );
+  };
 /* ==========================================================
    4.1 PERSISTENT PLAYER HAND CARD STATE
    ----------------------------------------------------------
@@ -441,6 +547,16 @@ HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
   const cardCount =
     state.player.hand.length;
 
+     const visibleCardCount =
+    Math.max(
+      0,
+      Math.floor(
+        Number(
+          state.deal?.playerVisible
+        ) || 0
+      )
+    );
+
   const handCenter =
     (cardCount - 1) / 2;
 
@@ -502,7 +618,9 @@ HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
               interactive: true,
               selected,
               disabled:
-                state.locked
+  state.locked ||
+  state.phase !==
+    HighSteaks.PHASE_PLAYER_TURN
             }
           );
       } else {
@@ -512,7 +630,9 @@ HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
           {
             selected,
             disabled:
-              state.locked
+  state.locked ||
+  state.phase !==
+    HighSteaks.PHASE_PLAYER_TURN
           }
         );
       }
@@ -542,6 +662,11 @@ HighSteaks.renderPlayerHand = function renderPlayerHand(state) {
       cardElement.style.setProperty(
         "--high-steaks-card-z",
         String(index + 1)
+      );
+
+      cardElement.classList.toggle(
+        "is-undealt",
+        index >= visibleCardCount
       );
 
       highSteaksPlayerHand.append(
@@ -648,32 +773,41 @@ HighSteaks.renderTable = function renderTable(state) {
   }
 };
 
-HighSteaks.renderControls = function renderControls(state) {
-  const selectionCount =
-    state.player.selectedCardIds.length;
+HighSteaks.renderControls =
+  function renderControls(
+    state
+  ) {
+    const selectionCount =
+      state.player
+        .selectedCardIds
+        .length;
 
-  if (highSteaksConfirmButton) {
-    highSteaksConfirmButton.disabled =
-      selectionCount !== 2 ||
-      state.locked;
+    const playerCanAct =
+      !state.locked &&
+      state.phase ===
+        HighSteaks.PHASE_PLAYER_TURN;
 
-    highSteaksConfirmButton.textContent =
-      state.locked
-        ? "CARDS PLACED"
-        : "PLACE CARDS";
-  }
+    if (highSteaksConfirmButton) {
+      highSteaksConfirmButton.disabled =
+        !playerCanAct ||
+        selectionCount !== 2;
 
-  if (highSteaksClearButton) {
-    highSteaksClearButton.disabled =
-      selectionCount === 0 &&
-      !state.locked;
+      highSteaksConfirmButton.textContent =
+        state.locked &&
+        state.player.playedCards.length > 0
+          ? "CARDS PLACED"
+          : "PLACE CARDS";
+    }
 
-    highSteaksClearButton.textContent =
-      state.locked
-        ? "RESET PAIR"
-        : "CLEAR SELECTION";
-  }
-};
+    if (highSteaksClearButton) {
+      highSteaksClearButton.disabled =
+        !playerCanAct ||
+        selectionCount === 0;
+
+      highSteaksClearButton.textContent =
+        "CLEAR SELECTION";
+    }
+  };
 
 /* ==========================================================
    6. COMPLETE PROTOTYPE RENDER
@@ -683,6 +817,22 @@ HighSteaks.renderPrototype = function renderPrototype() {
   const state = HighSteaks.prototypeState;
 
   if (!state) return;
+
+     if (
+    typeof HighSteaks
+      .applyInterfaceScreen ===
+      "function"
+  ) {
+    HighSteaks.applyInterfaceScreen(
+      state.screen
+    );
+  }
+
+  if (highSteaksScene) {
+    highSteaksScene.dataset
+      .highSteaksPhase =
+      state.phase;
+  }
 
   if (highSteaksOpponentName) {
     highSteaksOpponentName.textContent = state.opponent.name;
