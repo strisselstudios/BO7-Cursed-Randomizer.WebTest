@@ -74,7 +74,9 @@ function parseLegacyJsonSavePackage(fileContents) {
     }
   );
 
-  validateGameStateStructure(importPackage.saveData);
+    validateStoredGameStateBeforeMigration(
+    importPackage.saveData
+  );
 
   return importPackage;
 }
@@ -120,7 +122,9 @@ async function parseEncryptedSavePackage(fileContents) {
     }
   );
 
-  validateGameStateStructure(importPackage.saveData);
+    validateStoredGameStateBeforeMigration(
+    importPackage.saveData
+  );
 
   return importPackage;
 }
@@ -264,8 +268,12 @@ async function inspectSaveImport(file) {
    and merges every permanent trust record.
 ========================================================== */
 
-function prepareInspectedSaveState(assessment) {
-  validateGameStateStructure(assessment.importedState);
+function prepareInspectedSaveState(
+  assessment
+) {
+  validateStoredGameStateBeforeMigration(
+    assessment.importedState
+  );
 
   const existingTrustState = {
     saveIntegrityVersion: gameState.saveIntegrityVersion,
