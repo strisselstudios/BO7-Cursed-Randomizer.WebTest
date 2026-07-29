@@ -28,11 +28,10 @@ HighSteaks.shouldAnimateCardMotion =
   };
 
 /* ==========================================================
-   3. SELECTED CARD CAPTURE
+   3. SELECTED CARD GEOMETRY CAPTURE
    ----------------------------------------------------------
-   The moving copies are mounted immediately at the selected
-   cards' current screen positions. The real cards can then be
-   removed from the hand without producing a visible gap.
+   Captures the selected cards' visible screen geometry before
+   the state moves them into the table. No clone is created.
 ========================================================== */
 
 HighSteaks.capturePlayerCardPlacementMotion =
@@ -41,7 +40,6 @@ HighSteaks.capturePlayerCardPlacementMotion =
   ) {
     if (
       !highSteaksPlayerHand ||
-      !highSteaksCardMotionLayer ||
       !Array.isArray(cardIds) ||
       !HighSteaks.shouldAnimateCardMotion()
     ) {
@@ -52,13 +50,6 @@ HighSteaks.capturePlayerCardPlacementMotion =
       new Set(cardIds);
 
     const capturedCards = [];
-
-    const motionLayerBounds =
-      highSteaksCardMotionLayer
-        .getBoundingClientRect();
-
-    highSteaksCardMotionLayer
-      .replaceChildren();
 
     for (
       const cardElement of
@@ -85,82 +76,39 @@ HighSteaks.capturePlayerCardPlacementMotion =
         continue;
       }
 
-      const motionClone =
-        cardElement.cloneNode(true);
-
-      motionClone.removeAttribute(
-        "disabled"
-      );
-
-      motionClone.removeAttribute(
-        "role"
-      );
-
-      motionClone.removeAttribute(
-        "aria-pressed"
-      );
-
-      motionClone.setAttribute(
-        "aria-hidden",
-        "true"
-      );
-
-      motionClone.tabIndex = -1;
-
-      motionClone.classList.add(
-        "high-steaks-card-motion-clone"
-      );
-
-      motionClone.style.left =
-        `${
-          bounds.left -
-          motionLayerBounds.left
-        }px`;
-
-      motionClone.style.top =
-        `${
-          bounds.top -
-          motionLayerBounds.top
-        }px`;
-
-      motionClone.style.width =
-        `${bounds.width}px`;
-
-      motionClone.style.height =
-        `${bounds.height}px`;
-
-      const sourceZIndex =
-        Number.parseInt(
-          window
-            .getComputedStyle(
-              cardElement
-            )
-            .zIndex,
-          10
+      const computedStyle =
+        window.getComputedStyle(
+          cardElement
         );
-
-      motionClone.style.zIndex =
-        Number.isFinite(sourceZIndex)
-          ? String(sourceZIndex)
-          : String(
-              capturedCards.length + 1
-            );
-
-      highSteaksCardMotionLayer.append(
-        motionClone
-      );
 
       capturedCards.push({
         cardId,
 
-        bounds: {
+        sourceBounds: {
           left: bounds.left,
           top: bounds.top,
           width: bounds.width,
-          height: bounds.height
+          height: bounds.height,
+          centerX:
+            bounds.left +
+            bounds.width / 2,
+          centerY:
+            bounds.top +
+            bounds.height / 2
         },
 
-        clone: motionClone
+        sourceRotation:
+          Number.parseFloat(
+            computedStyle.getPropertyValue(
+              "--high-steaks-card-rotation"
+            )
+          ) || 0,
+
+        sourceFilter:
+          computedStyle.filter,
+
+        sourceBoxShadow:
+          computedStyle.boxShadow
       });
     }
 
@@ -268,7 +216,53 @@ HighSteaks.getPlayerHandCardElement =
   };
 
 /* ==========================================================
+   5.1 TABLE-SPACE COORDINATE CONVERSION
+   ----------------------------------------------------------
+   The player play zone is scaled and rotated in perspective.
+   Screen-space movement must be converted into that zone's
+   local coordinate system before animating the real card.
+========================================================== */
+
+HighSteaks.getPlayerPlayZoneScreenScale =
+  function getPlayerPlayZoneScreenScale() {
+    const playZone =
+      highSteaksPlayerPlayZone
+        ?.closest(
+          ".high-steaks-play-zone-player"
+        );
+
+    if (!playZone) {
+      return {
+        x: 1,
+        y: 1
+      };
+    }
+
+    const bounds =
+      playZone.getBoundingClientRect();
+
+    return {
+      x:
+        bounds.width /
+        Math.max(
+          1,
+          playZone.offsetWidth
+        ),
+
+      y:
+        bounds.height /
+        Math.max(
+          1,
+          playZone.offsetHeight
+        )
+    };
+  };
+
+/* ==========================================================
    6. SINGLE-CARD TABLE PLACEMENT
+   ----------------------------------------------------------
+   Animates the actual final table card. There is no clone,
+   destination reveal, opacity transition, or element swap.
 ========================================================== */
 
 HighSteaks.animatePlacedCard =
@@ -281,21 +275,15 @@ HighSteaks.animatePlacedCard =
         capturedCard?.cardId
       );
 
-    const motionClone =
-      capturedCard?.clone;
-
     const sourceBounds =
-      capturedCard?.bounds;
+      capturedCard?.sourceBounds;
 
     if (
       !destinationCard ||
-      !motionClone ||
       !sourceBounds ||
-      typeof motionClone.animate !==
+      typeof destinationCard.animate !==
         "function"
     ) {
-      motionClone?.remove();
-
       return false;
     }
 
@@ -307,145 +295,182 @@ HighSteaks.animatePlacedCard =
       destinationBounds.width <= 0 ||
       destinationBounds.height <= 0
     ) {
-      motionClone.remove();
-
       return false;
     }
 
-    /*
-     * The clone uses top-left transform origin. These coordinate
-     * differences therefore place its final top-left corner at
-     * the destination card's exact rendered top-left corner.
-     */
+    const destinationCenterX =
+      destinationBounds.left +
+      destinationBounds.width / 2;
 
-    const translationX =
-      destinationBounds.left -
-      sourceBounds.left;
+    const destinationCenterY =
+      destinationBounds.top +
+      destinationBounds.height / 2;
 
-    const translationY =
-      destinationBounds.top -
-      sourceBounds.top;
+    const playZoneScale =
+      HighSteaks
+        .getPlayerPlayZoneScreenScale();
 
-    const scaleX =
-      destinationBounds.width /
-      sourceBounds.width;
-
-    const scaleY =
-      destinationBounds.height /
-      sourceBounds.height;
-
-    const middleScaleX =
-      1 +
+    const startingTranslationX =
       (
-        scaleX -
-        1
-      ) *
-      0.72;
+        sourceBounds.centerX -
+        destinationCenterX
+      ) /
+      Math.max(
+        0.001,
+        playZoneScale.x
+      );
 
-    const middleScaleY =
-      1 +
+    const startingTranslationY =
       (
-        scaleY -
-        1
-      ) *
-      0.72;
+        sourceBounds.centerY -
+        destinationCenterY
+      ) /
+      Math.max(
+        0.001,
+        playZoneScale.y
+      );
+
+    const startingScaleX =
+      sourceBounds.width /
+      destinationBounds.width;
+
+    const startingScaleY =
+      sourceBounds.height /
+      destinationBounds.height;
 
     const arcHeight =
       Math.max(
-        10,
-        sourceBounds.height * 0.12
+        8,
+        destinationBounds.height * 0.14
+      ) /
+      Math.max(
+        0.001,
+        playZoneScale.y
       );
-
-    const middleTranslationX =
-      translationX * 0.7;
-
-    const middleTranslationY =
-      translationY * 0.68 -
-      arcHeight;
-
-    const rotationDirection =
-      index % 2 === 0
-        ? -2.5
-        : 2.5;
 
     const delay =
       index *
       HIGH_STEAKS_CARD_PLACEMENT_STAGGER_MS;
 
-    destinationCard.classList.add(
-      "is-high-steaks-placement-target"
-    );
-
-    
-        const cleanup = () => {
-      /*
-       * Reveal the real card and remove the moving copy in the
-       * same JavaScript task. The browser paints only the real
-       * destination card on the following frame.
-       */
-
-      destinationCard.classList.remove(
-        "is-high-steaks-placement-target"
+    const destinationStyle =
+      window.getComputedStyle(
+        destinationCard
       );
 
-      motionClone.remove();
-    };
+    const destinationFilter =
+      destinationStyle.filter;
+
+    const destinationBoxShadow =
+      destinationStyle.boxShadow;
+
+    destinationCard.classList.add(
+      "is-high-steaks-card-moving"
+    );
+
     const animation =
-      motionClone.animate(
-            [
+      destinationCard.animate(
+        [
           {
             offset: 0,
 
-            transform:
-              "translate3d(0, 0, 0) scale(1, 1) rotate(0deg)"
+            translate:
+              `${startingTranslationX}px ${startingTranslationY}px`,
+
+            scale:
+              `${startingScaleX} ${startingScaleY}`,
+
+            rotate:
+              `${capturedCard.sourceRotation || 0}deg`,
+
+            filter:
+              capturedCard.sourceFilter ||
+              destinationFilter,
+
+            boxShadow:
+              capturedCard.sourceBoxShadow ||
+              destinationBoxShadow
           },
 
           {
             offset: 0.7,
 
-            transform:
-              [
-                `translate3d(${middleTranslationX}px,`,
-                `${middleTranslationY}px, 0)`,
-                `scale(${middleScaleX}, ${middleScaleY})`,
-                `rotate(${rotationDirection}deg)`
-              ].join(" ")
+            translate:
+              `${
+                startingTranslationX * 0.28
+              }px ${
+                startingTranslationY * 0.3 -
+                arcHeight
+              }px`,
+
+            scale:
+              `${
+                1 +
+                (
+                  startingScaleX -
+                  1
+                ) *
+                0.28
+              } ${
+                1 +
+                (
+                  startingScaleY -
+                  1
+                ) *
+                0.28
+              }`,
+
+            rotate:
+              `${
+                (
+                  capturedCard.sourceRotation ||
+                  0
+                ) *
+                0.2
+              }deg`,
+
+            filter:
+              destinationFilter,
+
+            boxShadow:
+              destinationBoxShadow
           },
 
           {
-            offset: 0.88,
+            offset: 0.9,
 
-            transform:
-              [
-                `translate3d(${translationX}px,`,
-                `${translationY - 3}px, 0)`,
-                `scale(${scaleX * 1.02}, ${scaleY * 1.02})`,
-                "rotate(0deg)"
-              ].join(" ")
-          },
+            translate:
+              "0px -3px",
 
-          {
-            offset: 0.94,
+            scale:
+              "1.025 1.025",
 
-            transform:
-              [
-                `translate3d(${translationX}px,`,
-                `${translationY}px, 0)`,
-                `scale(${scaleX}, ${scaleY})`,
-                "rotate(0deg)"
-              ].join(" ")
+            rotate:
+              "0deg",
+
+            filter:
+              destinationFilter,
+
+            boxShadow:
+              destinationBoxShadow
           },
 
           {
             offset: 1,
 
-            transform:
-              [
-                `translate3d(${translationX}px,`,
-                `${translationY}px, 0)`,
-                `scale(${scaleX}, ${scaleY})`,
-                "rotate(0deg)"
-              ].join(" ")
+            translate:
+              "0px 0px",
+
+            scale:
+              "1 1",
+
+            rotate:
+              "0deg",
+
+            filter:
+              destinationFilter,
+
+            boxShadow:
+              destinationBoxShadow
           }
         ],
         {
@@ -461,6 +486,19 @@ HighSteaks.animatePlacedCard =
             "both"
         }
       );
+
+    const cleanup = () => {
+      /*
+       * This is already the real table card. Cancelling the
+       * finished animation exposes its identical base state.
+       */
+
+      destinationCard.classList.remove(
+        "is-high-steaks-card-moving"
+      );
+
+      animation.cancel();
+    };
 
     animation.finished.then(
       cleanup,
@@ -479,18 +517,9 @@ HighSteaks.animatePlacedCards =
   ) {
     if (
       !Array.isArray(capturedCards) ||
-      capturedCards.length === 0
-    ) {
-      return 0;
-    }
-
-    if (
+      capturedCards.length === 0 ||
       !HighSteaks.shouldAnimateCardMotion()
     ) {
-      for (const capturedCard of capturedCards) {
-        capturedCard.clone?.remove();
-      }
-
       return 0;
     }
 
