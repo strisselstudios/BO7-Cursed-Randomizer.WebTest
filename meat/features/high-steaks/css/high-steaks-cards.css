@@ -224,8 +224,11 @@ button.high-steaks-card-face:focus-visible:not(:disabled):not(.is-selected) {
         var(
           --high-steaks-card-drop,
           0px
-        ) -
-        14px
+                ) -
+        var(
+          --high-steaks-hover-lift,
+          14px
+        )
       )
     )
     rotate(
@@ -261,8 +264,11 @@ button.high-steaks-card-face.is-selected:focus-visible {
         var(
           --high-steaks-card-drop,
           0px
-        ) -
-        36px
+                ) -
+        var(
+          --high-steaks-selected-lift,
+          36px
+        )
       )
     )
     rotate(
