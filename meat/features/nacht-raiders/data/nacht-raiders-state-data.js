@@ -121,6 +121,75 @@ function normalizeNachtRaidersRecordArray(
       ...record
     }));
 }
+/* ==========================================================
+   2.1 FIELD-RECORD COMPACTION
+   ----------------------------------------------------------
+   Removes malformed flavor records and retains only the newest
+   supported entries before the active game is serialized.
+========================================================== */
+
+function compactNachtRaidersFieldRecords(
+  nachtRaidersState
+) {
+  if (
+    !isNachtRaidersPlainObject(
+      nachtRaidersState
+    )
+  ) {
+    return false;
+  }
+
+  const fieldRecords =
+    nachtRaidersState.fieldRecords;
+
+  if (
+    !isNachtRaidersPlainObject(
+      fieldRecords
+    )
+  ) {
+    return false;
+  }
+
+  const previousPendingEntries =
+    Array.isArray(
+      fieldRecords.pendingEntries
+    )
+      ? fieldRecords.pendingEntries
+      : [];
+
+  const previousReports =
+    Array.isArray(
+      fieldRecords.reports
+    )
+      ? fieldRecords.reports
+      : [];
+
+  const compactedPendingEntries =
+    normalizeNachtRaidersRecordArray(
+      previousPendingEntries,
+      NACHT_RAIDERS_PENDING_RECORD_LIMIT
+    );
+
+  const compactedReports =
+    normalizeNachtRaidersRecordArray(
+      previousReports,
+      NACHT_RAIDERS_REPORT_ARCHIVE_LIMIT
+    );
+
+  const recordsChanged =
+    compactedPendingEntries.length !==
+      previousPendingEntries.length ||
+    compactedReports.length !==
+      previousReports.length;
+
+  fieldRecords.pendingEntries =
+    compactedPendingEntries;
+
+  fieldRecords.reports =
+    compactedReports;
+
+  return recordsChanged;
+}
 
 /* ==========================================================
    3. EXPEDITION SEED
