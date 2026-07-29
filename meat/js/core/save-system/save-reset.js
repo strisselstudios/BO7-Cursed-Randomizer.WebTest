@@ -9,6 +9,7 @@ function resetGameState() {
   try {
     localStorage.removeItem(MEAT_SAVE_KEY);
     clearInvalidLocalSaveBackup();
+    setLocalSaveWritesBlocked(false);
 
     gameState = createDefaultGameState();
     calculateMeatPerSecond();
