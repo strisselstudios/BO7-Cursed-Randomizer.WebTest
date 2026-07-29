@@ -149,10 +149,11 @@ const producerInfoControl = card.querySelector(".producer-info-button");
       return;
     }
 
-    const displayedProducerName = producerKey === "silverSpoon"
-      ? getTemporarySilverSpoonDisplayName()
-      : producer.name;
-
+        const displayedProducerName =
+      getProducerDisplayNameForCurrentTier(
+        producerKey
+      );
+     
     producerName.textContent = displayedProducerName;
 
     if (producerInfoControl) {
