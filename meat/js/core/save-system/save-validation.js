@@ -417,8 +417,12 @@ function validateHarvesterSaveState(
 ========================================================== */
 
 function validateNachtRaidersSaveState(
-  nachtRaidersState
+  nachtRaidersState,
+  options = {}
 ) {
+  const allowRecordPruning =
+    options.allowRecordPruning === true;
+
   requirePlainSaveObject(
     nachtRaidersState,
     "The Nacht Raiders save data"
@@ -672,7 +676,9 @@ function validateNachtRaidersSaveState(
       requireSaveArray(
         fieldRecords.pendingEntries,
         "The Nacht Raiders pending records",
-        NACHT_RAIDERS_PENDING_RECORD_LIMIT
+        allowRecordPruning
+          ? MAX_SAVE_OBJECT_ENTRIES
+          : NACHT_RAIDERS_PENDING_RECORD_LIMIT
       );
 
       fieldRecords.pendingEntries
@@ -691,7 +697,9 @@ function validateNachtRaidersSaveState(
       requireSaveArray(
         fieldRecords.reports,
         "The Nacht Raiders report archive",
-        NACHT_RAIDERS_REPORT_ARCHIVE_LIMIT
+        allowRecordPruning
+          ? MAX_SAVE_OBJECT_ENTRIES
+          : NACHT_RAIDERS_REPORT_ARCHIVE_LIMIT
       );
 
       fieldRecords.reports
@@ -883,8 +891,16 @@ function validateStoredGameStateBeforeMigration(saveState) {
       validateHarvesterSaveState(saveState.features.harvester);
     }
 
-    if (saveState.features.nachtRaiders !== undefined) {
-      validateNachtRaidersSaveState(saveState.features.nachtRaiders);
+        if (
+      saveState.features.nachtRaiders !==
+      undefined
+    ) {
+      validateNachtRaidersSaveState(
+        saveState.features.nachtRaiders,
+        {
+          allowRecordPruning: true
+        }
+      );
     }
   }
 
