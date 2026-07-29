@@ -1,13 +1,21 @@
 /* ==========================================================
    1. FULL-HEIGHT DESKTOP STAGE
    ----------------------------------------------------------
-   The removed title bar no longer reserves vertical space.
+   Desktop retains the complete original 1528 × 1079 scene.
 ========================================================== */
 
-@media (min-aspect-ratio: 4 / 3) {
+@media
+  (min-aspect-ratio: 4 / 3)
+  and
+  (hover: hover)
+  and
+  (pointer: fine) {
   .high-steaks-perspective-stage {
     width: auto;
     height: min(1079px, 100dvh);
+    max-width: none;
+    max-height: none;
+    aspect-ratio: 1528 / 1079;
   }
 }
 
@@ -18,7 +26,11 @@
 @media
   (max-width: 900px)
   and
-  (min-height: 701px) {
+  (min-height: 701px)
+  and
+  (hover: hover)
+  and
+  (pointer: fine) {
   .high-steaks-scoreboard {
     width: 50%;
   }
@@ -33,20 +45,31 @@
 }
 
 /* ==========================================================
-   3. MOBILE PORTRAIT FOCUS CROP
+   3. PORTRAIT VIEW
    ----------------------------------------------------------
-   The saloon canvas fills the full viewport height and crops
-   horizontally around the opponent, table, and player hand.
+   The original scene ratio is preserved. The canvas fills the
+   complete viewport height and is cropped equally on both sides.
 ========================================================== */
 
 @media
-  (max-width: 700px)
-  and
-  (orientation: portrait) {
+  (orientation: portrait),
+  (max-aspect-ratio: 1 / 1) {
+  .high-steaks-scene {
+    place-items: center;
+  }
+
   .high-steaks-perspective-stage {
-    width: calc(100dvh * 1.416126043);
+    width: 141.6126043dvh;
     height: 100dvh;
     max-width: none;
+    max-height: none;
+    aspect-ratio: 1528 / 1079;
+    transform: none;
+  }
+
+  .high-steaks-close-button {
+    width: 42px;
+    height: 42px;
   }
 
   .high-steaks-scoreboard {
@@ -89,22 +112,12 @@
   }
 
   .high-steaks-opponent-hand {
+    top: 64.2%;
     width: 34%;
   }
 
-  .high-steaks-player-hand {
-    width: 34%;
-    height: 27%;
-  }
-
-  .high-steaks-player-hand >
-  .high-steaks-card {
-    width:
-      clamp(
-        46px,
-        13%,
-        70px
-      );
+  .high-steaks-play-zone {
+    width: 14%;
   }
 
   .high-steaks-table-status {
@@ -119,6 +132,22 @@
     width: 14%;
   }
 
+  .high-steaks-player-hand {
+    width: 34%;
+    height: 27%;
+    bottom: -1.5%;
+  }
+
+  .high-steaks-player-hand >
+  .high-steaks-card {
+    width:
+      clamp(
+        48px,
+        13%,
+        72px
+      );
+  }
+
   .high-steaks-control-button {
     min-height: 28px;
     padding: 0.3rem 0.25rem;
@@ -127,30 +156,72 @@
 }
 
 /* ==========================================================
-   4. MOBILE AND SHORT LANDSCAPE TABLE
+   4. MOBILE LANDSCAPE
    ----------------------------------------------------------
-   Landscape uses the complete viewport instead of a small
-   aspect-ratio window. UI regions are separated laterally.
+   The stage covers the viewport without stretching. Excess
+   vertical canvas is cropped rather than compressed.
+
+   The block-crop value represents the hidden portion above and
+   below the visible mobile viewport.
 ========================================================== */
 
 @media
   (orientation: landscape)
   and
   (max-height: 700px),
-  (orientation: landscape)
+  (min-aspect-ratio: 1 / 1)
   and
   (hover: none)
   and
   (pointer: coarse) {
+  .high-steaks-scene {
+    place-items: center;
+  }
+
   .high-steaks-perspective-stage {
-    width: 100%;
-    height: 100%;
+    --high-steaks-landscape-block-crop:
+      max(
+        0px,
+        calc(
+          50% -
+          50dvh
+        )
+      );
+
+    --high-steaks-landscape-inline-crop:
+      max(
+        0px,
+        calc(
+          50% -
+          50vw
+        )
+      );
+
+    width:
+      max(
+        100vw,
+        141.6126043dvh
+      );
+    height: auto;
     max-width: none;
-    aspect-ratio: auto;
+    max-height: none;
+    aspect-ratio: 1528 / 1079;
+    transform: none;
+  }
+
+  .high-steaks-close-button {
+    width: 40px;
+    height: 40px;
   }
 
   .high-steaks-scoreboard {
-    top: 1%;
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        0.45rem
+      );
     width: 46%;
     gap: 0.36rem;
     padding: 0.22rem 0.4rem;
@@ -178,7 +249,13 @@
   }
 
   .high-steaks-opponent-nameplate {
-    top: 47.5%;
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        40dvh
+      );
     min-width: 0;
     width: 16%;
     padding: 0.2rem 0.3rem;
@@ -189,34 +266,76 @@
   }
 
   .high-steaks-opponent-hand {
-    top: 58.5%;
-    width: 52%;
-    height: 7%;
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        49dvh
+      );
+    width: 58%;
+    height: 8dvh;
   }
 
   .high-steaks-play-zone {
-    width: 14%;
+    width: 13%;
   }
 
   .high-steaks-play-zone-opponent {
-    top: 63.5%;
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        58dvh
+      );
   }
 
   .high-steaks-play-zone-player {
-    top: 70.5%;
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        67dvh
+      );
   }
 
   .high-steaks-table-status {
-    left: 1.5%;
-    top: 64%;
-    width: 17%;
+    left:
+      calc(
+        var(
+          --high-steaks-landscape-inline-crop
+        ) +
+        0.75rem
+      );
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        61dvh
+      );
+    width: 18%;
     gap: 0.22rem;
   }
 
   .high-steaks-player-controls {
-    right: 1.5%;
-    top: 64%;
-    width: 17%;
+    right:
+      calc(
+        var(
+          --high-steaks-landscape-inline-crop
+        ) +
+        0.75rem
+      );
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        61dvh
+      );
+    width: 18%;
     gap: 0.22rem;
   }
 
@@ -228,18 +347,25 @@
   .high-steaks-player-hand {
     --high-steaks-hover-lift: 8px;
     --high-steaks-selected-lift: 20px;
-    width: 62%;
-    height: 23%;
-    bottom: -6%;
+
+    width: 68%;
+    height: 28dvh;
+    bottom:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) -
+        5dvh
+      );
   }
 
   .high-steaks-player-hand >
   .high-steaks-card {
     width:
       clamp(
-        38px,
+        44px,
         8.6%,
-        74px
+        76px
       );
   }
 
@@ -265,22 +391,63 @@
   and
   (max-height: 430px) {
   .high-steaks-close-button {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
   }
 
   .high-steaks-scoreboard {
-    top: 0.6%;
     padding-block: 0.16rem;
   }
 
   .high-steaks-opponent-nameplate {
-    top: 46.5%;
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        38dvh
+      );
+  }
+
+  .high-steaks-opponent-hand {
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        47dvh
+      );
+  }
+
+  .high-steaks-play-zone-opponent {
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        56dvh
+      );
+  }
+
+  .high-steaks-play-zone-player {
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        65dvh
+      );
   }
 
   .high-steaks-table-status,
   .high-steaks-player-controls {
-    top: 63%;
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        59dvh
+      );
   }
 
   .high-steaks-control-button {
@@ -288,7 +455,14 @@
   }
 
   .high-steaks-player-hand {
-    bottom: -8%;
+    height: 27dvh;
+    bottom:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) -
+        6dvh
+      );
   }
 }
 
