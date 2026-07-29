@@ -322,17 +322,17 @@ function commitInspectedSaveImport(assessment) {
   const importableStatus = assessment?.status === SAVE_IMPORT_STATUS_TRUSTED ||
     assessment?.status === SAVE_IMPORT_STATUS_UNTRUSTED;
 
-  if (!importableStatus || !assessment.importedState) {
-    return false;
-  }
+  if (!importableStatus || !assessment.importedState) return false;
 
   const previousGameState = gameState;
+  const previousLocalSaveWritesBlocked = areLocalSaveWritesBlocked();
 
   try {
     const importedGameState = prepareInspectedSaveState(assessment);
 
     gameState = importedGameState;
     calculateMeatPerSecond();
+    setLocalSaveWritesBlocked(false);
 
     if (!saveGame()) {
       throw new Error("The imported save could not be stored.");
@@ -342,6 +342,7 @@ function commitInspectedSaveImport(assessment) {
   } catch (error) {
     gameState = previousGameState;
     calculateMeatPerSecond();
+    setLocalSaveWritesBlocked(previousLocalSaveWritesBlocked);
 
     console.error("MEAT.exe inspected save could not be imported:", error);
     return false;
