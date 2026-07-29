@@ -192,7 +192,37 @@
 
     </nav>
 
+    </div>
+
+  <!-- ==========================================================
+       2.4 PERSISTENT SAVE FAILURE STATUS
+       ----------------------------------------------------------
+       Remains visible after any failed save operation and clears
+       only after a later save succeeds.
+  ========================================================== -->
+
+  <div
+    id="saveFailureBanner"
+    class="save-failure-banner"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    hidden
+  >
+    <strong class="save-failure-title">
+      SAVE FAILED
+    </strong>
+
+    <span
+      id="saveFailureMessage"
+      class="save-failure-message"
+    >
+      Your current progress could not be stored. Do not clear browser data or close this page until saving succeeds.
+    </span>
   </div>
+
+  <!-- ==========================================================
+       3. GLOBAL DIALOGS AND OVERLAYS
 
   <!-- ==========================================================
        3. GLOBAL DIALOGS AND OVERLAYS
