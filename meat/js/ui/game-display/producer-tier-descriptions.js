@@ -29,13 +29,17 @@ const TEMPORARY_PRODUCER_TIER_THRESHOLDS = Object.freeze({
    2. TEMPORARY PRODUCER TIER ACCESS
 ========================================================== */
 
-function getTemporaryProducerTierForOwnedAmount(producerKey, ownedAmount) {
+function getTemporaryProducerTierForOwnedAmount(
+  producerKey,
+  ownedAmount
+) {
   const normalizedOwnedAmount = Math.max(
     0,
     Math.floor(Number(ownedAmount) || 0)
   );
 
-  const thresholds = TEMPORARY_PRODUCER_TIER_THRESHOLDS[producerKey];
+  const thresholds =
+    TEMPORARY_PRODUCER_TIER_THRESHOLDS[producerKey];
 
   if (!thresholds) {
     return 1;
@@ -60,7 +64,30 @@ function getTemporaryProducerTier(producerKey) {
 }
 
 /* ==========================================================
-   3. TIER DESCRIPTION ACCESS
+   3. TIER NAME ACCESS
+========================================================== */
+
+function getProducerDisplayNameForCurrentTier(producerKey) {
+  const producer = producerData[producerKey];
+
+  if (!producer) {
+    return "Unknown Producer";
+  }
+
+  if (
+    producerKey === "silverSpoon" &&
+    typeof getTemporarySilverSpoonDisplayName === "function"
+  ) {
+    return getTemporarySilverSpoonDisplayName();
+  }
+
+  const currentTier = getTemporaryProducerTier(producerKey);
+
+  return producer.names?.[currentTier] ?? producer.name;
+}
+
+/* ==========================================================
+   4. TIER DESCRIPTION ACCESS
 ========================================================== */
 
 function getProducerDescriptionForCurrentTier(producerKey) {
