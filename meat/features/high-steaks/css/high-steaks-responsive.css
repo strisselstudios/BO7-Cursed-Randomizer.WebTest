@@ -465,7 +465,184 @@
       );
   }
 }
+/* ==========================================================
+   5.1 MOBILE PORTRAIT COMPOSITION CORRECTION
+   ----------------------------------------------------------
+   Explicitly centers the oversized portrait canvas.
 
+   Grid alignment cannot be trusted to center an element that
+   is substantially wider than its containing viewport.
+========================================================== */
+
+@media
+  (orientation: portrait)
+  and
+  (hover: none)
+  and
+  (pointer: coarse) {
+  .high-steaks-perspective-stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    aspect-ratio: 1528 / 1079;
+    transform:
+      translate(
+        -50%,
+        -50%
+      );
+  }
+}
+
+/* ==========================================================
+   5.2 MOBILE LANDSCAPE COMPOSITION CORRECTION
+   ----------------------------------------------------------
+   Lowers T.E.D.D. inside his transparent art layer.
+
+   Raises the table horizon without leaving an empty area at
+   the bottom.
+
+   Lowers the dealer hand, card slots, status, and controls so
+   they visually occupy the table instead of his torso.
+========================================================== */
+
+@media
+  (orientation: landscape)
+  and
+  (hover: none)
+  and
+  (pointer: coarse) {
+  .high-steaks-perspective-stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform:
+      translate(
+        -50%,
+        -50%
+      );
+  }
+
+  .high-steaks-scene-dealer-art {
+    transform:
+      translateY(
+        12dvh
+      );
+  }
+
+  .high-steaks-scene-table-art {
+    top: -8dvh;
+    bottom: auto;
+    height:
+      calc(
+        100% +
+        8dvh
+      );
+  }
+
+  .high-steaks-opponent-nameplate {
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        48dvh
+      );
+  }
+
+  .high-steaks-opponent-hand {
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        58dvh
+      );
+  }
+
+  .high-steaks-play-zone-opponent {
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        66dvh
+      );
+  }
+
+  .high-steaks-play-zone-player {
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        75dvh
+      );
+  }
+
+  .high-steaks-table-status,
+  .high-steaks-player-controls {
+    top:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) +
+        67dvh
+      );
+  }
+
+  .high-steaks-player-hand {
+    bottom:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) -
+        5dvh
+      );
+  }
+}
+
+/* ==========================================================
+   5.3 VERY SHORT MOBILE LANDSCAPE
+========================================================== */
+
+@media
+  (orientation: landscape)
+  and
+  (hover: none)
+  and
+  (pointer: coarse)
+  and
+  (max-height: 430px) {
+  .high-steaks-scene-dealer-art {
+    transform:
+      translateY(
+        14dvh
+      );
+  }
+
+  .high-steaks-scene-table-art {
+    top: -9dvh;
+    height:
+      calc(
+        100% +
+        9dvh
+      );
+  }
+
+  .high-steaks-player-hand {
+    bottom:
+      calc(
+        var(
+          --high-steaks-landscape-block-crop
+        ) -
+        6dvh
+      );
+  }
+}
 /* ==========================================================
    6. REDUCED MOTION
 ========================================================== */
