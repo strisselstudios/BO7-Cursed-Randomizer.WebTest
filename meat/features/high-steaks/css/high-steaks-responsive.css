@@ -496,6 +496,10 @@
       );
   }
 
+       .high-steaks-scoreboard {
+    width: 26%;
+  }
+
        .high-steaks-player-hand {
     width: 38%;
     height: 30%;
@@ -513,16 +517,17 @@
   }
 }
 
+
 /* ==========================================================
    5.2 MOBILE LANDSCAPE COMPOSITION CORRECTION
    ----------------------------------------------------------
-   Lowers T.E.D.D. inside his transparent art layer.
+   Scales T.E.D.D. from the bottom of his transparent canvas so
+   his complete head remains visible.
 
-   Raises the table horizon without leaving an empty area at
-   the bottom.
+   Expands the table upward from its bottom edge so the wood
+   remains attached to the bottom of the screen.
 
-   Lowers the dealer hand, card slots, status, and controls so
-   they visually occupy the table instead of his torso.
+   Lowers the opponent hand onto the raised table horizon.
 ========================================================== */
 
 @media
@@ -543,30 +548,16 @@
   }
 
   .high-steaks-scene-dealer-art {
-    transform:
-      translateY(
-        12dvh
-      );
+    transform: scale(0.84);
+    transform-origin: 50% 100%;
   }
 
   .high-steaks-scene-table-art {
-    top: -12dvh;
-    bottom: auto;
-    height:
-      calc(
-        100% +
-        12dvh
-      );
-  }
-
-  .high-steaks-opponent-nameplate {
-    top:
-      calc(
-        var(
-          --high-steaks-landscape-block-crop
-        ) +
-        48dvh
-      );
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: scaleY(1.14);
+    transform-origin: 50% 100%;
   }
 
   .high-steaks-opponent-hand {
@@ -575,7 +566,7 @@
         var(
           --high-steaks-landscape-block-crop
         ) +
-        58dvh
+        61dvh
       );
   }
 
@@ -622,7 +613,31 @@
 }
 
 /* ==========================================================
-   5.3 VERY SHORT MOBILE LANDSCAPE
+   5.3 SHORT MOBILE LANDSCAPE
+   ----------------------------------------------------------
+   Phone browser toolbars leave substantially less usable
+   height, requiring a stronger dealer reduction.
+========================================================== */
+
+@media
+  (orientation: landscape)
+  and
+  (hover: none)
+  and
+  (pointer: coarse)
+  and
+  (max-height: 620px) {
+  .high-steaks-scene-dealer-art {
+    transform: scale(0.76);
+  }
+
+  .high-steaks-scene-table-art {
+    transform: scaleY(1.16);
+  }
+}
+
+/* ==========================================================
+   5.4 VERY SHORT MOBILE LANDSCAPE
 ========================================================== */
 
 @media
@@ -634,19 +649,11 @@
   and
   (max-height: 430px) {
   .high-steaks-scene-dealer-art {
-    transform:
-      translateY(
-        14dvh
-      );
+    transform: scale(0.72);
   }
 
   .high-steaks-scene-table-art {
-    top: -13dvh;
-    height:
-      calc(
-        100% +
-        13dvh
-      );
+    transform: scaleY(1.2);
   }
 
   .high-steaks-player-hand {
@@ -657,17 +664,5 @@
         ) -
         6dvh
       );
-  }
-}
-/* ==========================================================
-   6. REDUCED MOTION
-========================================================== */
-
-@media (prefers-reduced-motion: reduce) {
-  .high-steaks-player-hand >
-  .high-steaks-card,
-  .high-steaks-control-button,
-  .high-steaks-close-button {
-    transition: none;
   }
 }
