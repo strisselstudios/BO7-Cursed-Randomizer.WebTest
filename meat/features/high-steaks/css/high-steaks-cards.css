@@ -11,6 +11,7 @@
   overflow: hidden;
   border-radius: clamp(3px, 0.5vw, 6px);
   box-shadow: 0 4px 9px rgba(0, 0, 0, 0.56);
+   container-type: inline-size;
 }
 
 /* ==========================================================
@@ -113,22 +114,12 @@ button.high-steaks-card-face {
 }
 
 .high-steaks-card-rank {
-  font-size:
-    clamp(
-      0.66rem,
-      1.45vw,
-      1.02rem
-    );
+  font-size: clamp(0.56rem, 22cqw, 1.02rem);
   line-height: 0.86;
 }
 
 .high-steaks-card-corner-suit {
-  font-size:
-    clamp(
-      0.5rem,
-      1vw,
-      0.76rem
-    );
+  font-size: clamp(0.42rem, 16cqw, 0.76rem);
   line-height: 0.86;
 }
 
@@ -137,17 +128,8 @@ button.high-steaks-card-face {
   top: 50%;
   left: 50%;
   z-index: 1;
-  transform:
-    translate(
-      -50%,
-      -50%
-    );
-  font-size:
-    clamp(
-      1.25rem,
-      3vw,
-      2.3rem
-    );
+  transform: translate(-50%, -50%);
+  font-size: clamp(0.94rem, 42cqw, 2.3rem);
   line-height: 1;
   pointer-events: none;
 }
@@ -168,17 +150,8 @@ button.high-steaks-card-face {
 
 .high-steaks-card-pip {
   position: absolute;
-  transform:
-    translate(
-      -50%,
-      -50%
-    );
-  font-size:
-    clamp(
-      0.82rem,
-      1.82vw,
-      1.42rem
-    );
+  transform: translate(-50%, -50%);
+  font-size: clamp(0.64rem, 28cqw, 1.42rem);
   line-height: 1;
 }
 
@@ -318,6 +291,9 @@ button.high-steaks-card-face:disabled {
 
 /* ==========================================================
    6. PLAYED CARD SCALE
+   ----------------------------------------------------------
+   Card typography scales from each card's own inline size.
+   The hand and table therefore use the same card component.
 ========================================================== */
 
 .high-steaks-play-card-row
@@ -328,6 +304,7 @@ button.high-steaks-card-face:disabled {
       5.8vw,
       64px
     );
+
   width:
     clamp(
       42px,
@@ -336,80 +313,23 @@ button.high-steaks-card-face:disabled {
     );
 }
 
-.high-steaks-play-card-row
-.high-steaks-card-rank {
-  font-size:
-    clamp(
-      0.56rem,
-      1.05vw,
-      0.82rem
-    );
-}
-
-.high-steaks-play-card-row
-.high-steaks-card-corner-suit {
-  font-size:
-    clamp(
-      0.42rem,
-      0.78vw,
-      0.62rem
-    );
-}
-
-.high-steaks-play-card-row
-.high-steaks-card-center-suit {
-  font-size:
-    clamp(
-      0.94rem,
-      2vw,
-      1.5rem
-    );
-}
-
-.high-steaks-play-card-row
-.high-steaks-card-pip {
-  font-size:
-    clamp(
-      0.64rem,
-      1.3vw,
-      1rem
-    );
-}
-
 /* ==========================================================
-   7. CARD PLACEMENT MOTION
+   7. REAL CARD PLACEMENT MOTION
    ----------------------------------------------------------
-   The motion layer sits above the table play area but below the
-   foreground hand. Moving cards therefore pass behind the row
-   of cards as they leave the hand.
+   The real player table card is animated. It remains in the
+   table layer beneath the foreground hand for the entire move.
 ========================================================== */
 
-.high-steaks-card-motion-layer {
-  position: absolute;
-  z-index: 12;
-  inset: 0;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.high-steaks-card-motion-clone {
-  position: absolute !important;
-  box-sizing: border-box !important;
-  display: grid !important;
-  margin: 0 !important;
-  opacity: 1;
-  visibility: visible !important;
+.is-high-steaks-card-moving {
   pointer-events: none !important;
-  transform-origin: 0 0 !important;
-  backface-visibility: hidden;
+  transform-origin: center center;
   transition: none !important;
   will-change:
-    transform,
-    opacity;
-}
-
-.is-high-steaks-placement-target {
-  visibility: hidden;
+    translate,
+    scale,
+    rotate,
+    filter,
+    box-shadow;
 }
 
 /* ==========================================================
@@ -442,12 +362,3 @@ body.animations-disabled
   .high-steaks-card {
     transition: none;
   }
-
-  .high-steaks-card-motion-clone {
-    display: none !important;
-  }
-
-   .is-high-steaks-placement-target {
-  visibility: visible;
-   }
-}
