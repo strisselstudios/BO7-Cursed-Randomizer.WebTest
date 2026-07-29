@@ -77,6 +77,15 @@ const saveGameButtonLabel = document.getElementById("saveGameButtonLabel");
 const exportSaveButton = document.getElementById("exportSaveButton");
 const importSaveButton = document.getElementById("importSaveButton");
 const resetGameButton = document.getElementById("resetGameButton");
+const saveFailureBanner =
+  document.getElementById(
+    "saveFailureBanner"
+  );
+
+const saveFailureMessage =
+  document.getElementById(
+    "saveFailureMessage"
+  );
 
 /* ==========================================================
    3.2 LOCAL SAVE RECOVERY
