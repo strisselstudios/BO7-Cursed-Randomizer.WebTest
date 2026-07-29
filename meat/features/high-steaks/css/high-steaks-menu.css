@@ -27,6 +27,8 @@
 
 .high-steaks-scene:not(
   [data-high-steaks-screen="table"]
+):not(
+  [data-high-steaks-screen="results"]
 )
 .high-steaks-perspective-stage {
   visibility: hidden;
